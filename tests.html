@@ -2,11 +2,124 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Test Creation | SchoolMS</title>
+  <title>Test Creation & Printing | SchoolMS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .question-bank-item {
+      cursor: grab;
+      transition: all 0.3s ease;
+    }
+    .question-bank-item:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .question-bank-item:active {
+      cursor: grabbing;
+    }
+    .test-question {
+      border: 2px dashed #dee2e6;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+      transition: all 0.3s ease;
+    }
+    .test-question.dragover {
+      border-color: #007bff;
+      background-color: #f8f9fa;
+    }
+    .question-type-badge {
+      font-size: 0.75rem;
+    }
+    .difficulty-badge {
+      font-size: 0.7rem;
+    }
+    .rubric-item {
+      background: #f8f9fa;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 5px 0;
+    }
+    .layout-preview {
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      padding: 20px;
+      margin: 10px 0;
+      min-height: 200px;
+      background: white;
+    }
+    .layout-preview.selected {
+      border-color: #007bff;
+      background: #f8f9ff;
+    }
+    .ai-suggestion {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 8px;
+      padding: 15px;
+      margin: 10px 0;
+    }
+    .version-history-item {
+      border-left: 3px solid #007bff;
+      padding-left: 15px;
+      margin: 10px 0;
+    }
+    .collaboration-indicator {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background: #28a745;
+      color: white;
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.7rem;
+    }
+    .qr-code-container {
+      text-align: center;
+      padding: 20px;
+      background: #f8f9fa;
+      border-radius: 8px;
+      margin: 10px 0;
+    }
+    .accessibility-option {
+      border: 1px solid #dee2e6;
+      border-radius: 6px;
+      padding: 10px;
+      margin: 5px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+    .accessibility-option:hover {
+      border-color: #007bff;
+      background: #f8f9ff;
+    }
+    .accessibility-option.selected {
+      border-color: #007bff;
+      background: #e3f2fd;
+    }
+    .bloom-taxonomy {
+      display: flex;
+      gap: 5px;
+      flex-wrap: wrap;
+    }
+    .bloom-level {
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.7rem;
+      cursor: pointer;
+    }
+    .bloom-level.selected {
+      background: #007bff;
+      color: white;
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -22,7 +135,7 @@
           <li class="nav-item"><a class="nav-link" href="staff.html">Staff & HR</a></li>
           <li class="nav-item"><a class="nav-link" href="attendance.html">Attendance</a></li>
           <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
-          <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
+          <li class="nav-item"><a class="nav-link active" href="tests.html">Tests</a></li>
           <li class="nav-item"><a class="nav-link" href="homework.html">Homework</a></li>
           <li class="nav-item"><a class="nav-link" href="finance.html">Finance</a></li>
           <li class="nav-item"><a class="nav-link" href="inventory.html">Inventory</a></li>
@@ -32,44 +145,327 @@
       </div>
     </div>
   </nav>
-  <div class="container mt-4">
-    <h2 class="mb-4">Test Creation & Printing</h2>
-    <!-- Test Creation Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Create Test</div>
-      <div class="card-body">
-        <form id="testForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Subject</label>
-              <input type="text" class="form-control" id="testSubject" placeholder="Subject" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Type</label>
-              <select class="form-select" id="testType" required>
-                <option>MCQ</option>
-                <option>Short Answer</option>
-                <option>Long Answer</option>
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Attach File</label>
-              <input type="file" class="form-control" id="testFile">
-            </div>
-          </div>
-          <button class="btn btn-primary mt-3" type="submit">Save Test</button>
-        </form>
+
+  <div class="container-fluid mt-4">
+    <!-- Header with Quick Actions -->
+    <div class="row mb-4">
+      <div class="col-md-8">
+        <h2 class="mb-2">Test Creation & Printing</h2>
+        <p class="text-muted">Create comprehensive tests with AI assistance, question banks, and advanced printing options</p>
+      </div>
+      <div class="col-md-4 text-end">
+        <button class="btn btn-success me-2" onclick="openQuestionBank()">
+          <i class="fas fa-database"></i> Question Bank
+        </button>
+        <button class="btn btn-primary" onclick="createNewTest()">
+          <i class="fas fa-plus"></i> New Test
+        </button>
       </div>
     </div>
-    <!-- Tests Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Tests</div>
+
+    <div class="row">
+      <!-- Main Test Creation Area -->
+      <div class="col-lg-8">
+        <!-- Test Information Card -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Test Information</h5>
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm btn-outline-primary" onclick="saveTest()">
+                <i class="fas fa-save"></i> Save
+              </button>
+              <button class="btn btn-sm btn-outline-success" onclick="previewTest()">
+                <i class="fas fa-eye"></i> Preview
+              </button>
+              <button class="btn btn-sm btn-outline-info" onclick="exportPDF()">
+                <i class="fas fa-file-pdf"></i> Export PDF
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <form id="testInfoForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Test Title</label>
+                  <input type="text" class="form-control" id="testTitle" placeholder="e.g., Mid-Term Mathematics Test" required>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Subject</label>
+                  <select class="form-select" id="testSubject" required>
+                    <option value="">Select Subject</option>
+                    <option value="mathematics">Mathematics</option>
+                    <option value="english">English</option>
+                    <option value="science">Science</option>
+                    <option value="history">History</option>
+                    <option value="geography">Geography</option>
+                    <option value="physics">Physics</option>
+                    <option value="chemistry">Chemistry</option>
+                    <option value="biology">Biology</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Duration (minutes)</label>
+                  <input type="number" class="form-control" id="testDuration" min="15" max="180" value="60">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Total Marks</label>
+                  <input type="number" class="form-control" id="totalMarks" min="10" max="100" value="50">
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Class/Grade</label>
+                  <select class="form-select" id="testClass">
+                    <option value="">Select Class</option>
+                    <option value="grade-9">Grade 9</option>
+                    <option value="grade-10">Grade 10</option>
+                    <option value="grade-11">Grade 11</option>
+                    <option value="grade-12">Grade 12</option>
+                  </select>
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Topics Covered</label>
+                  <input type="text" class="form-control" id="testTopics" placeholder="e.g., Algebra, Geometry, Trigonometry">
+                </div>
+                <div class="col-12">
+                  <label class="form-label">Instructions</label>
+                  <textarea class="form-control" id="testInstructions" rows="3" placeholder="Special instructions for students..."></textarea>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+
+        <!-- Questions Section -->
+        <div class="card mb-4 animate__animated animate__fadeInUp">
+          <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Questions</h5>
+            <div class="btn-group" role="group">
+              <button class="btn btn-sm btn-outline-primary" onclick="addQuestion('mcq')">
+                <i class="fas fa-list"></i> MCQ
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="addQuestion('short')">
+                <i class="fas fa-align-left"></i> Short Answer
+              </button>
+              <button class="btn btn-sm btn-outline-primary" onclick="addQuestion('long')">
+                <i class="fas fa-file-text"></i> Long Answer
+              </button>
+              <button class="btn btn-sm btn-outline-success" onclick="generateAIQuestion()">
+                <i class="fas fa-robot"></i> AI Generate
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <div class="btn-group" role="group">
+                <button class="btn btn-sm btn-outline-secondary" onclick="shuffleQuestions()">
+                  <i class="fas fa-random"></i> Shuffle Questions
+                </button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="shuffleOptions()">
+                  <i class="fas fa-exchange-alt"></i> Shuffle MCQ Options
+                </button>
+              </div>
+            </div>
+            <div id="questionsContainer">
+              <!-- Questions will be added here dynamically -->
+            </div>
+            <div class="text-center mt-3">
+              <button class="btn btn-outline-primary" onclick="addQuestion('mcq')">
+                <i class="fas fa-plus"></i> Add Question
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Marking Scheme -->
+        <div class="card mb-4 animate__animated animate__fadeInUp">
+          <div class="card-header">
+            <h5 class="mb-0">Marking Scheme</h5>
+          </div>
+          <div class="card-body">
+            <div id="markingSchemeContainer">
+              <!-- Marking scheme will be auto-generated here -->
+            </div>
+            <button class="btn btn-outline-primary" onclick="generateMarkingScheme()">
+              <i class="fas fa-magic"></i> Generate Marking Scheme
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sidebar -->
+      <div class="col-lg-4">
+        <!-- Question Bank -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">Question Bank</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <input type="text" class="form-control form-control-sm" id="questionBankSearch" placeholder="Search questions...">
+            </div>
+            <div class="mb-3">
+              <select class="form-select form-select-sm" id="questionBankFilter">
+                <option value="">All Types</option>
+                <option value="mcq">MCQ</option>
+                <option value="short">Short Answer</option>
+                <option value="long">Long Answer</option>
+              </select>
+            </div>
+            <div id="questionBankList" style="max-height: 300px; overflow-y: auto;">
+              <!-- Question bank items will be loaded here -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Layout Options -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">Print Layout</h6>
+          </div>
+          <div class="card-body">
+            <div class="layout-preview selected" onclick="selectLayout('exam-booklet')">
+              <h6>Exam Booklet</h6>
+              <p class="small text-muted">Traditional exam format with cover page</p>
+            </div>
+            <div class="layout-preview" onclick="selectLayout('single-page')">
+              <h6>Single Page</h6>
+              <p class="small text-muted">Compact single-page format</p>
+            </div>
+            <div class="layout-preview" onclick="selectLayout('column')">
+              <h6>Column Layout</h6>
+              <p class="small text-muted">Two-column layout for space efficiency</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Accessibility Options -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">Accessibility</h6>
+          </div>
+          <div class="card-body">
+            <div class="accessibility-option" onclick="toggleAccessibility('high-contrast')">
+              <i class="fas fa-adjust"></i> High Contrast
+            </div>
+            <div class="accessibility-option" onclick="toggleAccessibility('dyslexia-friendly')">
+              <i class="fas fa-font"></i> Dyslexia-Friendly Font
+            </div>
+            <div class="accessibility-option" onclick="toggleAccessibility('large-text')">
+              <i class="fas fa-text-height"></i> Large Text
+            </div>
+          </div>
+        </div>
+
+        <!-- Cover Page Designer -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">Cover Page Designer</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">School Logo</label>
+              <input type="file" class="form-control form-control-sm" accept="image/*">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Student Info Fields</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="showName" checked>
+                <label class="form-check-label" for="showName">Name</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="showClass" checked>
+                <label class="form-check-label" for="showClass">Class</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="showDate" checked>
+                <label class="form-check-label" for="showDate">Date</label>
+              </div>
+            </div>
+            <button class="btn btn-outline-primary btn-sm w-100" onclick="previewCoverPage()">
+              <i class="fas fa-eye"></i> Preview Cover
+            </button>
+          </div>
+        </div>
+
+        <!-- AI Features -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">AI Assistant</h6>
+          </div>
+          <div class="card-body">
+            <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="generateAIDistractors()">
+              <i class="fas fa-lightbulb"></i> Suggest Distractors
+            </button>
+            <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="checkPlagiarism()">
+              <i class="fas fa-search"></i> Check Similarity
+            </button>
+            <button class="btn btn-outline-primary btn-sm w-100" onclick="predictDifficulty()">
+              <i class="fas fa-chart-line"></i> Predict Difficulty
+            </button>
+          </div>
+        </div>
+
+        <!-- Language & Analytics -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">Language & Analytics</h6>
+          </div>
+          <div class="card-body">
+            <div class="mb-3">
+              <label class="form-label">Language</label>
+              <select class="form-select form-select-sm" onchange="translateTest(this.value)">
+                <option value="en">English</option>
+                <option value="es">Spanish</option>
+                <option value="fr">French</option>
+                <option value="de">German</option>
+                <option value="zh">Chinese</option>
+              </select>
+            </div>
+            <button class="btn btn-outline-primary btn-sm w-100 mb-2" onclick="showTestAnalytics()">
+              <i class="fas fa-chart-bar"></i> Test Analytics
+            </button>
+            <button class="btn btn-outline-secondary btn-sm w-100" onclick="showVersionHistory()">
+              <i class="fas fa-history"></i> Version History
+            </button>
+          </div>
+        </div>
+
+        <!-- QR Code -->
+        <div class="card mb-4 animate__animated animate__fadeInRight">
+          <div class="card-header">
+            <h6 class="mb-0">QR Code</h6>
+          </div>
+          <div class="card-body">
+            <div class="qr-code-container">
+              <div id="qrCode"></div>
+              <p class="small text-muted mt-2">Scan for answer key & resources</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tests Table -->
+    <div class="card mt-4 animate__animated animate__fadeInUp">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Saved Tests</h5>
+        <div class="btn-group" role="group">
+          <button class="btn btn-sm btn-outline-secondary" onclick="exportToMoodle()">
+            <i class="fas fa-download"></i> Export to Moodle
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="exportToGoogleForms()">
+            <i class="fas fa-share"></i> Google Forms
+          </button>
+        </div>
+      </div>
       <div class="card-body">
         <table class="table table-striped" id="testsTable">
           <thead>
             <tr>
+              <th>Title</th>
               <th>Subject</th>
               <th>Type</th>
+              <th>Questions</th>
+              <th>Marks</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -81,7 +477,153 @@
       </div>
     </div>
   </div>
+
+  <!-- Modals -->
+  
+  <!-- Question Bank Modal -->
+  <div class="modal fade" id="questionBankModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Question Bank</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <div id="questionBankModalContent">
+                <!-- Question bank content -->
+              </div>
+            </div>
+            <div class="col-md-4">
+              <h6>Filters</h6>
+              <div class="mb-3">
+                <label class="form-label">Subject</label>
+                <select class="form-select" id="modalSubjectFilter">
+                  <option value="">All Subjects</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Difficulty</label>
+                <select class="form-select" id="modalDifficultyFilter">
+                  <option value="">All Difficulties</option>
+                  <option value="easy">Easy</option>
+                  <option value="medium">Medium</option>
+                  <option value="hard">Hard</option>
+                </select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Bloom's Taxonomy</label>
+                <div class="bloom-taxonomy">
+                  <span class="bloom-level" onclick="toggleBloomLevel('remember')">Remember</span>
+                  <span class="bloom-level" onclick="toggleBloomLevel('understand')">Understand</span>
+                  <span class="bloom-level" onclick="toggleBloomLevel('apply')">Apply</span>
+                  <span class="bloom-level" onclick="toggleBloomLevel('analyze')">Analyze</span>
+                  <span class="bloom-level" onclick="toggleBloomLevel('evaluate')">Evaluate</span>
+                  <span class="bloom-level" onclick="toggleBloomLevel('create')">Create</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Question Generator Modal -->
+  <div class="modal fade" id="aiQuestionModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">AI Question Generator</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="aiQuestionForm">
+            <div class="mb-3">
+              <label class="form-label">Topic</label>
+              <input type="text" class="form-control" id="aiTopic" placeholder="e.g., Photosynthesis">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Question Type</label>
+              <select class="form-select" id="aiQuestionType">
+                <option value="mcq">Multiple Choice</option>
+                <option value="short">Short Answer</option>
+                <option value="long">Long Answer</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Bloom's Taxonomy Level</label>
+              <select class="form-select" id="aiBloomLevel">
+                <option value="remember">Remember</option>
+                <option value="understand">Understand</option>
+                <option value="apply">Apply</option>
+                <option value="analyze">Analyze</option>
+                <option value="evaluate">Evaluate</option>
+                <option value="create">Create</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Difficulty</label>
+              <select class="form-select" id="aiDifficulty">
+                <option value="easy">Easy</option>
+                <option value="medium">Medium</option>
+                <option value="hard">Hard</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="fas fa-magic"></i> Generate Question
+            </button>
+          </form>
+          <div id="aiGeneratedQuestion" class="mt-3" style="display: none;">
+            <!-- Generated question will appear here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rubric Designer Modal -->
+  <div class="modal fade" id="rubricModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Rubric Designer</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="rubricDesigner">
+            <!-- Rubric designer content -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Version History Modal -->
+  <div class="modal fade" id="versionHistoryModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Version History</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="versionHistoryList">
+            <!-- Version history will be loaded here -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" id="toastContainer">
+    <!-- Toasts will be dynamically added here -->
+  </div>
+
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 </body>
 </html> 

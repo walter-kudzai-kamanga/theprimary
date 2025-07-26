@@ -2267,3 +2267,1174 @@ document.addEventListener('DOMContentLoaded', function () {
   renderFleetTable();
   renderFleetCharts();
 });
+
+// ===== TEST CREATION SYSTEM =====
+
+// Global variables for test creation
+let currentTest = {
+  id: null,
+  title: '',
+  subject: '',
+  duration: 60,
+  totalMarks: 50,
+  class: '',
+  topics: '',
+  instructions: '',
+  questions: [],
+  markingScheme: [],
+  layout: 'exam-booklet',
+  accessibility: [],
+  version: 1,
+  collaborators: [],
+  createdAt: new Date(),
+  updatedAt: new Date()
+};
+
+let questionBank = [
+  {
+    id: 1,
+    subject: 'mathematics',
+    type: 'mcq',
+    difficulty: 'easy',
+    bloomLevel: 'remember',
+    topic: 'Algebra',
+    question: 'What is the value of x in the equation 2x + 5 = 13?',
+    options: ['3', '4', '5', '6'],
+    correctAnswer: 1,
+    marks: 2,
+    explanation: 'Subtract 5 from both sides: 2x = 8, then divide by 2: x = 4'
+  },
+  {
+    id: 2,
+    subject: 'mathematics',
+    type: 'mcq',
+    difficulty: 'medium',
+    bloomLevel: 'apply',
+    topic: 'Geometry',
+    question: 'If a triangle has angles measuring 45°, 45°, and 90°, what type of triangle is it?',
+    options: ['Equilateral', 'Isosceles', 'Scalene', 'Right-angled'],
+    correctAnswer: 3,
+    marks: 2,
+    explanation: 'A triangle with a 90° angle is a right-angled triangle'
+  },
+  {
+    id: 3,
+    subject: 'science',
+    type: 'short',
+    difficulty: 'medium',
+    bloomLevel: 'understand',
+    topic: 'Biology',
+    question: 'Explain the process of photosynthesis in plants.',
+    correctAnswer: 'Photosynthesis is the process where plants convert sunlight, carbon dioxide, and water into glucose and oxygen.',
+    marks: 5,
+    keywords: ['sunlight', 'carbon dioxide', 'water', 'glucose', 'oxygen']
+  },
+  {
+    id: 4,
+    subject: 'english',
+    type: 'long',
+    difficulty: 'hard',
+    bloomLevel: 'analyze',
+    topic: 'Literature',
+    question: 'Analyze the character development of the protagonist in the novel "To Kill a Mockingbird". Discuss how their perspective changes throughout the story and what events contribute to this transformation.',
+    marks: 15,
+    rubric: [
+      { level: 'Excellent', criteria: 'Deep analysis with specific examples', marks: 15 },
+      { level: 'Good', criteria: 'Good analysis with some examples', marks: 10 },
+      { level: 'Satisfactory', criteria: 'Basic analysis', marks: 7 },
+      { level: 'Needs Improvement', criteria: 'Limited analysis', marks: 4 }
+    ]
+  },
+  {
+    id: 5,
+    subject: 'physics',
+    type: 'mcq',
+    difficulty: 'hard',
+    bloomLevel: 'evaluate',
+    topic: 'Mechanics',
+    question: 'A car accelerates from rest to 60 km/h in 10 seconds. What is its average acceleration?',
+    options: ['6 km/h²', '6 m/s²', '1.67 m/s²', '60 m/s²'],
+    correctAnswer: 2,
+    marks: 3,
+    explanation: 'Convert 60 km/h to m/s: 60 × 1000/3600 = 16.67 m/s. Acceleration = 16.67/10 = 1.67 m/s²'
+  }
+];
+
+let savedTests = [
+  {
+    id: 1,
+    title: 'Mid-Term Mathematics Test',
+    subject: 'mathematics',
+    type: 'Mixed',
+    questions: 15,
+    marks: 50,
+    status: 'Draft',
+    createdAt: new Date('2024-01-15')
+  },
+  {
+    id: 2,
+    title: 'Biology Chapter 5 Quiz',
+    subject: 'science',
+    type: 'MCQ',
+    questions: 20,
+    marks: 40,
+    status: 'Published',
+    createdAt: new Date('2024-01-10')
+  }
+];
+
+// Initialize test creation system
+document.addEventListener('DOMContentLoaded', function() {
+  if (window.location.pathname.includes('tests.html')) {
+    initializeTestSystem();
+  }
+});
+
+function initializeTestSystem() {
+  loadQuestionBank();
+  renderTestsTable();
+  generateQRCode();
+  setupDragAndDrop();
+  setupEventListeners();
+}
+
+// Question Bank Functions
+function loadQuestionBank() {
+  const container = document.getElementById('questionBankList');
+  if (!container) return;
+
+  const searchTerm = document.getElementById('questionBankSearch')?.value || '';
+  const filterType = document.getElementById('questionBankFilter')?.value || '';
+
+  let filteredQuestions = questionBank.filter(q => {
+    const matchesSearch = q.question.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                         q.topic.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesType = !filterType || q.type === filterType;
+    return matchesSearch && matchesType;
+  });
+
+  container.innerHTML = filteredQuestions.map(q => `
+    <div class="question-bank-item card mb-2" draggable="true" data-question-id="${q.id}">
+      <div class="card-body p-2">
+        <div class="d-flex justify-content-between align-items-start">
+          <div class="flex-grow-1">
+            <h6 class="mb-1">${q.question.substring(0, 60)}${q.question.length > 60 ? '...' : ''}</h6>
+            <div class="small text-muted">
+              <span class="badge bg-primary question-type-badge">${q.type.toUpperCase()}</span>
+              <span class="badge bg-${getDifficultyColor(q.difficulty)} difficulty-badge">${q.difficulty}</span>
+              <span class="badge bg-info question-type-badge">${q.topic}</span>
+            </div>
+          </div>
+          <div class="text-end">
+            <small class="text-muted">${q.marks} marks</small>
+            <br>
+            <button class="btn btn-sm btn-outline-primary" onclick="addQuestionFromBank(${q.id})">
+              <i class="fas fa-plus"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function getDifficultyColor(difficulty) {
+  switch(difficulty) {
+    case 'easy': return 'success';
+    case 'medium': return 'warning';
+    case 'hard': return 'danger';
+    default: return 'secondary';
+  }
+}
+
+// Drag and Drop Setup
+function setupDragAndDrop() {
+  const questionsContainer = document.getElementById('questionsContainer');
+  if (!questionsContainer) return;
+
+  questionsContainer.addEventListener('dragover', function(e) {
+    e.preventDefault();
+    this.classList.add('dragover');
+  });
+
+  questionsContainer.addEventListener('dragleave', function(e) {
+    this.classList.remove('dragover');
+  });
+
+  questionsContainer.addEventListener('drop', function(e) {
+    e.preventDefault();
+    this.classList.remove('dragover');
+    
+    const questionId = e.dataTransfer.getData('text/plain');
+    if (questionId) {
+      addQuestionFromBank(parseInt(questionId));
+    }
+  });
+
+  // Setup drag events for question bank items
+  document.addEventListener('dragstart', function(e) {
+    if (e.target.closest('.question-bank-item')) {
+      const questionId = e.target.closest('.question-bank-item').dataset.questionId;
+      e.dataTransfer.setData('text/plain', questionId);
+    }
+  });
+}
+
+// Question Management
+function addQuestion(type) {
+  const questionId = Date.now();
+  const question = {
+    id: questionId,
+    type: type,
+    question: '',
+    options: type === 'mcq' ? ['', '', '', ''] : [],
+    correctAnswer: type === 'mcq' ? 0 : '',
+    marks: type === 'mcq' ? 2 : type === 'short' ? 5 : 10,
+    explanation: '',
+    rubric: type === 'long' ? [
+      { level: 'Excellent', criteria: '', marks: 10 },
+      { level: 'Good', criteria: '', marks: 7 },
+      { level: 'Satisfactory', criteria: '', marks: 4 },
+      { level: 'Needs Improvement', criteria: '', marks: 1 }
+    ] : []
+  };
+
+  currentTest.questions.push(question);
+  renderQuestions();
+  showToast('Question added!', 'success');
+}
+
+function addQuestionFromBank(bankId) {
+  const bankQuestion = questionBank.find(q => q.id === bankId);
+  if (!bankQuestion) return;
+
+  const question = {
+    id: Date.now(),
+    type: bankQuestion.type,
+    question: bankQuestion.question,
+    options: bankQuestion.options ? [...bankQuestion.options] : [],
+    correctAnswer: bankQuestion.correctAnswer,
+    marks: bankQuestion.marks,
+    explanation: bankQuestion.explanation,
+    rubric: bankQuestion.rubric ? [...bankQuestion.rubric] : [],
+    topic: bankQuestion.topic,
+    difficulty: bankQuestion.difficulty,
+    bloomLevel: bankQuestion.bloomLevel
+  };
+
+  currentTest.questions.push(question);
+  renderQuestions();
+  showToast('Question added from bank!', 'success');
+}
+
+function renderQuestions() {
+  const container = document.getElementById('questionsContainer');
+  if (!container) return;
+
+  container.innerHTML = currentTest.questions.map((q, index) => `
+    <div class="test-question" data-question-id="${q.id}">
+      <div class="d-flex justify-content-between align-items-start mb-3">
+        <h6>Question ${index + 1}</h6>
+        <div class="btn-group" role="group">
+          <button class="btn btn-sm btn-outline-secondary" onclick="moveQuestion(${index}, -1)" ${index === 0 ? 'disabled' : ''}>
+            <i class="fas fa-arrow-up"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-secondary" onclick="moveQuestion(${index}, 1)" ${index === currentTest.questions.length - 1 ? 'disabled' : ''}>
+            <i class="fas fa-arrow-down"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="removeQuestion(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </div>
+      
+      <div class="mb-3">
+        <label class="form-label">Question Type</label>
+        <select class="form-select" onchange="changeQuestionType(${index}, this.value)">
+          <option value="mcq" ${q.type === 'mcq' ? 'selected' : ''}>Multiple Choice</option>
+          <option value="short" ${q.type === 'short' ? 'selected' : ''}>Short Answer</option>
+          <option value="long" ${q.type === 'long' ? 'selected' : ''}>Long Answer</option>
+        </select>
+      </div>
+
+      <div class="mb-3">
+        <label class="form-label">Question Text</label>
+        <textarea class="form-control" rows="3" onchange="updateQuestion(${index}, 'question', this.value)">${q.question}</textarea>
+      </div>
+
+      ${q.type === 'mcq' ? `
+        <div class="mb-3">
+          <label class="form-label">Options</label>
+          ${q.options.map((option, optIndex) => `
+            <div class="input-group mb-2">
+              <div class="input-group-text">
+                <input class="form-check-input mt-0" type="radio" name="correct_${q.id}" value="${optIndex}" ${q.correctAnswer === optIndex ? 'checked' : ''} onchange="updateQuestion(${index}, 'correctAnswer', ${optIndex})">
+              </div>
+              <input type="text" class="form-control" value="${option}" onchange="updateQuestionOption(${index}, ${optIndex}, this.value)" placeholder="Option ${optIndex + 1}">
+            </div>
+          `).join('')}
+        </div>
+      ` : ''}
+
+      <div class="row">
+        <div class="col-md-6">
+          <label class="form-label">Marks</label>
+          <input type="number" class="form-control" value="${q.marks}" onchange="updateQuestion(${index}, 'marks', parseInt(this.value))">
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Topic</label>
+          <input type="text" class="form-control" value="${q.topic || ''}" onchange="updateQuestion(${index}, 'topic', this.value)">
+        </div>
+      </div>
+
+      ${q.type === 'long' ? `
+        <div class="mt-3">
+          <button class="btn btn-outline-primary btn-sm" onclick="openRubricDesigner(${index})">
+            <i class="fas fa-list-check"></i> Design Rubric
+          </button>
+        </div>
+      ` : ''}
+
+      <div class="mt-3">
+        <label class="form-label">Explanation/Model Answer</label>
+        <textarea class="form-control" rows="2" onchange="updateQuestion(${index}, 'explanation', this.value)">${q.explanation || ''}</textarea>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateQuestion(index, field, value) {
+  if (currentTest.questions[index]) {
+    currentTest.questions[index][field] = value;
+  }
+}
+
+function updateQuestionOption(questionIndex, optionIndex, value) {
+  if (currentTest.questions[questionIndex] && currentTest.questions[questionIndex].options) {
+    currentTest.questions[questionIndex].options[optionIndex] = value;
+  }
+}
+
+function changeQuestionType(index, newType) {
+  const question = currentTest.questions[index];
+  if (!question) return;
+
+  question.type = newType;
+  
+  if (newType === 'mcq') {
+    question.options = ['', '', '', ''];
+    question.correctAnswer = 0;
+    question.marks = 2;
+  } else if (newType === 'short') {
+    question.options = [];
+    question.correctAnswer = '';
+    question.marks = 5;
+  } else if (newType === 'long') {
+    question.options = [];
+    question.correctAnswer = '';
+    question.marks = 10;
+    question.rubric = [
+      { level: 'Excellent', criteria: '', marks: 10 },
+      { level: 'Good', criteria: '', marks: 7 },
+      { level: 'Satisfactory', criteria: '', marks: 4 },
+      { level: 'Needs Improvement', criteria: '', marks: 1 }
+    ];
+  }
+
+  renderQuestions();
+}
+
+function moveQuestion(index, direction) {
+  const newIndex = index + direction;
+  if (newIndex < 0 || newIndex >= currentTest.questions.length) return;
+
+  const temp = currentTest.questions[index];
+  currentTest.questions[index] = currentTest.questions[newIndex];
+  currentTest.questions[newIndex] = temp;
+
+  renderQuestions();
+}
+
+function removeQuestion(index) {
+  currentTest.questions.splice(index, 1);
+  renderQuestions();
+  showToast('Question removed!', 'warning');
+}
+
+// AI Features
+function generateAIQuestion() {
+  const modal = new bootstrap.Modal(document.getElementById('aiQuestionModal'));
+  modal.show();
+}
+
+function generateAIDistractors() {
+  const currentQuestion = currentTest.questions.find(q => q.type === 'mcq' && q.question && q.options.length > 0);
+  if (!currentQuestion) {
+    showToast('No MCQ question found to generate distractors for', 'warning');
+    return;
+  }
+
+  // Simulate AI-generated distractors
+  const aiSuggestions = [
+    'Common misconception: ' + currentQuestion.question.replace('?', ' - but with a common error'),
+    'Partially correct: ' + currentQuestion.question.replace('?', ' - but incomplete'),
+    'Related concept: ' + currentQuestion.question.replace('?', ' - but from a different topic')
+  ];
+
+  const suggestionDiv = document.createElement('div');
+  suggestionDiv.className = 'ai-suggestion';
+  suggestionDiv.innerHTML = `
+    <h6><i class="fas fa-robot"></i> AI Distractor Suggestions</h6>
+    <ul class="mb-2">
+      ${aiSuggestions.map(s => `<li>${s}</li>`).join('')}
+    </ul>
+    <button class="btn btn-sm btn-light" onclick="applyAIDistractors()">Apply Suggestions</button>
+  `;
+
+  document.getElementById('questionsContainer').appendChild(suggestionDiv);
+  showToast('AI distractors generated!', 'info');
+}
+
+function checkPlagiarism() {
+  // Simulate plagiarism check
+  const similarityResults = currentTest.questions.map((q, index) => ({
+    questionIndex: index,
+    similarity: Math.random() * 100,
+    similarQuestions: questionBank.filter(bq => 
+      bq.question.toLowerCase().includes(q.question.substring(0, 20).toLowerCase())
+    ).slice(0, 2)
+  }));
+
+  const highSimilarity = similarityResults.filter(r => r.similarity > 70);
+  
+  if (highSimilarity.length > 0) {
+    showToast(`Found ${highSimilarity.length} questions with high similarity!`, 'warning');
+  } else {
+    showToast('No plagiarism detected!', 'success');
+  }
+}
+
+function predictDifficulty() {
+  const difficulties = currentTest.questions.map(q => {
+    let score = 0;
+    if (q.type === 'mcq') score += 1;
+    if (q.type === 'short') score += 2;
+    if (q.type === 'long') score += 3;
+    if (q.marks > 5) score += 1;
+    if (q.question.length > 100) score += 1;
+    
+    if (score <= 2) return 'Easy';
+    if (score <= 4) return 'Medium';
+    return 'Hard';
+  });
+
+  const avgDifficulty = difficulties.reduce((a, b) => a + (b === 'Easy' ? 1 : b === 'Medium' ? 2 : 3), 0) / difficulties.length;
+  
+  showToast(`Predicted difficulty: ${avgDifficulty < 1.5 ? 'Easy' : avgDifficulty < 2.5 ? 'Medium' : 'Hard'}`, 'info');
+}
+
+// Marking Scheme Generator
+function generateMarkingScheme() {
+  const container = document.getElementById('markingSchemeContainer');
+  if (!container) return;
+
+  const markingScheme = currentTest.questions.map((q, index) => ({
+    questionNumber: index + 1,
+    type: q.type,
+    marks: q.marks,
+    answer: q.type === 'mcq' ? q.options[q.correctAnswer] : q.correctAnswer,
+    explanation: q.explanation,
+    rubric: q.rubric
+  }));
+
+  container.innerHTML = `
+    <div class="table-responsive">
+      <table class="table table-sm">
+        <thead>
+          <tr>
+            <th>Q#</th>
+            <th>Type</th>
+            <th>Marks</th>
+            <th>Answer/Key Points</th>
+            <th>Explanation</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${markingScheme.map(ms => `
+            <tr>
+              <td>${ms.questionNumber}</td>
+              <td><span class="badge bg-primary">${ms.type.toUpperCase()}</span></td>
+              <td>${ms.marks}</td>
+              <td>${ms.answer}</td>
+              <td>${ms.explanation || '-'}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="mt-3">
+      <strong>Total Marks: ${markingScheme.reduce((sum, ms) => sum + ms.marks, 0)}</strong>
+    </div>
+  `;
+}
+
+// Auto-shuffling
+function shuffleQuestions() {
+  for (let i = currentTest.questions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [currentTest.questions[i], currentTest.questions[j]] = [currentTest.questions[j], currentTest.questions[i]];
+  }
+  renderQuestions();
+  showToast('Questions shuffled!', 'success');
+}
+
+function shuffleOptions() {
+  currentTest.questions.forEach(q => {
+    if (q.type === 'mcq' && q.options.length > 0) {
+      const correctAnswer = q.options[q.correctAnswer];
+      const shuffled = q.options.sort(() => Math.random() - 0.5);
+      q.correctAnswer = shuffled.indexOf(correctAnswer);
+      q.options = shuffled;
+    }
+  });
+  renderQuestions();
+  showToast('MCQ options shuffled!', 'success');
+}
+
+// Layout and Accessibility
+function selectLayout(layout) {
+  currentTest.layout = layout;
+  document.querySelectorAll('.layout-preview').forEach(el => el.classList.remove('selected'));
+  event.target.closest('.layout-preview').classList.add('selected');
+  showToast(`Layout changed to ${layout}`, 'info');
+}
+
+function toggleAccessibility(option) {
+  const element = event.target.closest('.accessibility-option');
+  element.classList.toggle('selected');
+  
+  if (element.classList.contains('selected')) {
+    currentTest.accessibility.push(option);
+  } else {
+    currentTest.accessibility = currentTest.accessibility.filter(a => a !== option);
+  }
+  
+  showToast(`${option} ${element.classList.contains('selected') ? 'enabled' : 'disabled'}`, 'info');
+}
+
+// QR Code Generation
+function generateQRCode() {
+  const container = document.getElementById('qrCode');
+  if (!container) return;
+
+  container.innerHTML = '';
+  const qr = new QRCode(container, {
+    text: `https://schoolms.com/test/${currentTest.id || 'new'}/answers`,
+    width: 100,
+    height: 100
+  });
+}
+
+// Test Management
+function createNewTest() {
+  currentTest = {
+    id: Date.now(),
+    title: '',
+    subject: '',
+    duration: 60,
+    totalMarks: 50,
+    class: '',
+    topics: '',
+    instructions: '',
+    questions: [],
+    markingScheme: [],
+    layout: 'exam-booklet',
+    accessibility: [],
+    version: 1,
+    collaborators: [],
+    createdAt: new Date(),
+    updatedAt: new Date()
+  };
+
+  document.getElementById('testInfoForm').reset();
+  document.getElementById('questionsContainer').innerHTML = '';
+  document.getElementById('markingSchemeContainer').innerHTML = '';
+  generateQRCode();
+  showToast('New test created!', 'success');
+}
+
+function saveTest() {
+  // Validate form
+  const title = document.getElementById('testTitle').value;
+  const subject = document.getElementById('testSubject').value;
+  
+  if (!title || !subject) {
+    showToast('Please fill in test title and subject', 'warning');
+    return;
+  }
+
+  if (currentTest.questions.length === 0) {
+    showToast('Please add at least one question', 'warning');
+    return;
+  }
+
+  // Update test data
+  currentTest.title = title;
+  currentTest.subject = subject;
+  currentTest.duration = parseInt(document.getElementById('testDuration').value);
+  currentTest.totalMarks = parseInt(document.getElementById('totalMarks').value);
+  currentTest.class = document.getElementById('testClass').value;
+  currentTest.topics = document.getElementById('testTopics').value;
+  currentTest.instructions = document.getElementById('testInstructions').value;
+  currentTest.updatedAt = new Date();
+
+  // Save to localStorage (in real app, this would be to database)
+  const existingIndex = savedTests.findIndex(t => t.id === currentTest.id);
+  if (existingIndex >= 0) {
+    savedTests[existingIndex] = { ...currentTest };
+  } else {
+    savedTests.push({ ...currentTest });
+  }
+
+  localStorage.setItem('savedTests', JSON.stringify(savedTests));
+  renderTestsTable();
+  showToast('Test saved successfully!', 'success');
+}
+
+function previewTest() {
+  if (currentTest.questions.length === 0) {
+    showToast('No questions to preview', 'warning');
+    return;
+  }
+
+  const previewWindow = window.open('', '_blank');
+  previewWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>${currentTest.title || 'Test Preview'}</title>
+      <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+      <style>
+        @media print {
+          .no-print { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="container mt-4">
+        <div class="text-center mb-4">
+          <h2>${currentTest.title || 'Test Title'}</h2>
+          <p><strong>Subject:</strong> ${currentTest.subject} | <strong>Duration:</strong> ${currentTest.duration} minutes | <strong>Total Marks:</strong> ${currentTest.totalMarks}</p>
+          <p><strong>Class:</strong> ${currentTest.class} | <strong>Topics:</strong> ${currentTest.topics}</p>
+        </div>
+        
+        ${currentTest.instructions ? `<div class="alert alert-info mb-4">${currentTest.instructions}</div>` : ''}
+        
+        ${currentTest.questions.map((q, index) => `
+          <div class="mb-4">
+            <h5>Question ${index + 1} (${q.marks} marks)</h5>
+            <p>${q.question}</p>
+            ${q.type === 'mcq' ? `
+              ${q.options.map((option, optIndex) => `
+                <div class="form-check">
+                  <input class="form-check-input" type="radio" name="q${q.id}" id="q${q.id}opt${optIndex}">
+                  <label class="form-check-label" for="q${q.id}opt${optIndex}">
+                    ${String.fromCharCode(65 + optIndex)}. ${option}
+                  </label>
+                </div>
+              `).join('')}
+            ` : `
+              <textarea class="form-control" rows="${q.type === 'short' ? 3 : 8}" placeholder="Your answer here..."></textarea>
+            `}
+          </div>
+        `).join('')}
+        
+        <div class="text-center mt-4 no-print">
+          <button class="btn btn-primary" onclick="window.print()">Print Test</button>
+          <button class="btn btn-secondary" onclick="window.close()">Close</button>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+}
+
+function exportPDF() {
+  showToast('PDF export feature would generate a professional PDF here', 'info');
+}
+
+// Export to other platforms
+function exportToMoodle() {
+  showToast('Exporting to Moodle format...', 'info');
+  // In real implementation, this would generate Moodle XML format
+}
+
+function exportToGoogleForms() {
+  showToast('Exporting to Google Forms...', 'info');
+  // In real implementation, this would use Google Forms API
+}
+
+// Rubric Designer
+function openRubricDesigner(questionIndex) {
+  const question = currentTest.questions[questionIndex];
+  if (!question || question.type !== 'long') return;
+
+  const modal = new bootstrap.Modal(document.getElementById('rubricModal'));
+  const container = document.getElementById('rubricDesigner');
+  
+  container.innerHTML = `
+    <h6>Rubric for Question ${questionIndex + 1}</h6>
+    <div id="rubricItems">
+      ${question.rubric.map((item, index) => `
+        <div class="rubric-item">
+          <div class="row">
+            <div class="col-md-3">
+              <label class="form-label">Level</label>
+              <input type="text" class="form-control" value="${item.level}" onchange="updateRubric(${questionIndex}, ${index}, 'level', this.value)">
+            </div>
+            <div class="col-md-6">
+              <label class="form-label">Criteria</label>
+              <input type="text" class="form-control" value="${item.criteria}" onchange="updateRubric(${questionIndex}, ${index}, 'criteria', this.value)">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Marks</label>
+              <input type="number" class="form-control" value="${item.marks}" onchange="updateRubric(${questionIndex}, ${index}, 'marks', parseInt(this.value))">
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+    <button class="btn btn-primary mt-3" onclick="modal.hide()">Save Rubric</button>
+  `;
+  
+  modal.show();
+}
+
+function updateRubric(questionIndex, rubricIndex, field, value) {
+  if (currentTest.questions[questionIndex] && currentTest.questions[questionIndex].rubric[rubricIndex]) {
+    currentTest.questions[questionIndex].rubric[rubricIndex][field] = value;
+  }
+}
+
+// Version History
+function showVersionHistory() {
+  const modal = new bootstrap.Modal(document.getElementById('versionHistoryModal'));
+  const container = document.getElementById('versionHistoryList');
+  
+  container.innerHTML = `
+    <div class="version-history-item">
+      <h6>Version ${currentTest.version} - Current</h6>
+      <p class="text-muted">${currentTest.updatedAt.toLocaleString()}</p>
+      <p>${currentTest.questions.length} questions, ${currentTest.totalMarks} total marks</p>
+    </div>
+    <div class="version-history-item">
+      <h6>Version ${currentTest.version - 1} - Previous</h6>
+      <p class="text-muted">${new Date(currentTest.createdAt.getTime() - 86400000).toLocaleString()}</p>
+      <p>${Math.max(0, currentTest.questions.length - 2)} questions, ${Math.max(0, currentTest.totalMarks - 5)} total marks</p>
+      <button class="btn btn-sm btn-outline-primary">Restore</button>
+    </div>
+  `;
+  
+  modal.show();
+}
+
+// Tests Table
+function renderTestsTable() {
+  const tbody = document.querySelector('#testsTable tbody');
+  if (!tbody) return;
+
+  tbody.innerHTML = savedTests.map(test => `
+    <tr>
+      <td>${test.title}</td>
+      <td>${test.subject}</td>
+      <td>${test.type}</td>
+      <td>${test.questions}</td>
+      <td>${test.marks}</td>
+      <td><span class="badge bg-${test.status === 'Published' ? 'success' : 'warning'}">${test.status}</span></td>
+      <td>
+        <div class="btn-group" role="group">
+          <button class="btn btn-sm btn-outline-primary" onclick="editTest(${test.id})">
+            <i class="fas fa-edit"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-success" onclick="previewTest(${test.id})">
+            <i class="fas fa-eye"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-info" onclick="exportPDF(${test.id})">
+            <i class="fas fa-file-pdf"></i>
+          </button>
+          <button class="btn btn-sm btn-outline-danger" onclick="deleteTest(${test.id})">
+            <i class="fas fa-trash"></i>
+          </button>
+        </div>
+      </td>
+    </tr>
+  `).join('');
+}
+
+function editTest(testId) {
+  const test = savedTests.find(t => t.id === testId);
+  if (!test) return;
+
+  currentTest = { ...test };
+  
+  // Populate form
+  document.getElementById('testTitle').value = test.title;
+  document.getElementById('testSubject').value = test.subject;
+  document.getElementById('testDuration').value = test.duration;
+  document.getElementById('totalMarks').value = test.totalMarks;
+  document.getElementById('testClass').value = test.class;
+  document.getElementById('testTopics').value = test.topics;
+  document.getElementById('testInstructions').value = test.instructions;
+  
+  renderQuestions();
+  generateMarkingScheme();
+  showToast('Test loaded for editing!', 'success');
+}
+
+function deleteTest(testId) {
+  if (confirm('Are you sure you want to delete this test?')) {
+    savedTests = savedTests.filter(t => t.id !== testId);
+    localStorage.setItem('savedTests', JSON.stringify(savedTests));
+    renderTestsTable();
+    showToast('Test deleted!', 'danger');
+  }
+}
+
+// Event Listeners
+function setupEventListeners() {
+  // Question bank search
+  const searchInput = document.getElementById('questionBankSearch');
+  if (searchInput) {
+    searchInput.addEventListener('input', loadQuestionBank);
+  }
+
+  // Question bank filter
+  const filterSelect = document.getElementById('questionBankFilter');
+  if (filterSelect) {
+    filterSelect.addEventListener('change', loadQuestionBank);
+  }
+
+  // AI question form
+  const aiForm = document.getElementById('aiQuestionForm');
+  if (aiForm) {
+    aiForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      const topic = document.getElementById('aiTopic').value;
+      const type = document.getElementById('aiQuestionType').value;
+      const bloomLevel = document.getElementById('aiBloomLevel').value;
+      const difficulty = document.getElementById('aiDifficulty').value;
+      
+      // Simulate AI question generation
+      const aiQuestion = {
+        id: Date.now(),
+        type: type,
+        question: `AI-generated question about ${topic} at ${bloomLevel} level (${difficulty} difficulty)`,
+        options: type === 'mcq' ? ['Option A', 'Option B', 'Option C', 'Option D'] : [],
+        correctAnswer: type === 'mcq' ? 0 : 'AI-generated answer',
+        marks: type === 'mcq' ? 2 : type === 'short' ? 5 : 10,
+        explanation: 'AI-generated explanation',
+        topic: topic,
+        difficulty: difficulty,
+        bloomLevel: bloomLevel
+      };
+      
+      currentTest.questions.push(aiQuestion);
+      renderQuestions();
+      
+      const modal = bootstrap.Modal.getInstance(document.getElementById('aiQuestionModal'));
+      modal.hide();
+      
+      showToast('AI question generated and added!', 'success');
+    });
+  }
+
+  // Bloom taxonomy levels
+  document.querySelectorAll('.bloom-level').forEach(level => {
+    level.addEventListener('click', function() {
+      this.classList.toggle('selected');
+    });
+  });
+}
+
+// Utility functions
+function showToast(message, type = 'info') {
+  // Create toast element
+  const toast = document.createElement('div');
+  toast.className = `toast align-items-center text-white bg-${type} border-0`;
+  toast.setAttribute('role', 'alert');
+  toast.innerHTML = `
+    <div class="d-flex">
+      <div class="toast-body">${message}</div>
+      <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+    </div>
+  `;
+  
+  // Add to page
+  const container = document.getElementById('toastContainer') || document.body;
+  container.appendChild(toast);
+  
+  // Show toast
+  const bsToast = new bootstrap.Toast(toast);
+  bsToast.show();
+  
+  // Remove after hidden
+  toast.addEventListener('hidden.bs.toast', () => {
+    container.removeChild(toast);
+  });
+}
+
+// Missing functions referenced in HTML
+function openQuestionBank() {
+  const modal = new bootstrap.Modal(document.getElementById('questionBankModal'));
+  const container = document.getElementById('questionBankModalContent');
+  
+  container.innerHTML = `
+    <div class="row">
+      ${questionBank.map(q => `
+        <div class="col-md-6 mb-3">
+          <div class="card question-bank-item" draggable="true" data-question-id="${q.id}">
+            <div class="card-body">
+              <h6>${q.question.substring(0, 80)}${q.question.length > 80 ? '...' : ''}</h6>
+              <div class="small text-muted mb-2">
+                <span class="badge bg-primary">${q.type.toUpperCase()}</span>
+                <span class="badge bg-${getDifficultyColor(q.difficulty)}">${q.difficulty}</span>
+                <span class="badge bg-info">${q.topic}</span>
+              </div>
+              <p class="small">${q.marks} marks</p>
+              <button class="btn btn-sm btn-primary" onclick="addQuestionFromBank(${q.id}); modal.hide();">
+                Add to Test
+              </button>
+            </div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  
+  modal.show();
+}
+
+function toggleBloomLevel(level) {
+  const element = event.target;
+  element.classList.toggle('selected');
+}
+
+function applyAIDistractors() {
+  showToast('AI distractors applied!', 'success');
+  // Remove the AI suggestion div
+  const suggestionDiv = document.querySelector('.ai-suggestion');
+  if (suggestionDiv) {
+    suggestionDiv.remove();
+  }
+}
+
+function previewCoverPage() {
+  const previewWindow = window.open('', '_blank');
+  previewWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Test Cover Page</title>
+      <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+      <style>
+        .cover-page {
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          align-items: center;
+          text-align: center;
+          padding: 2rem;
+        }
+        .school-logo {
+          width: 120px;
+          height: 120px;
+          background: #f8f9fa;
+          border: 2px dashed #dee2e6;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          margin-bottom: 2rem;
+        }
+        .student-info {
+          border: 2px solid #dee2e6;
+          padding: 2rem;
+          margin: 2rem 0;
+          width: 100%;
+          max-width: 500px;
+        }
+        .info-row {
+          display: flex;
+          justify-content: space-between;
+          margin: 1rem 0;
+          padding: 0.5rem 0;
+          border-bottom: 1px solid #dee2e6;
+        }
+        @media print {
+          .no-print { display: none; }
+        }
+      </style>
+    </head>
+    <body>
+      <div class="cover-page">
+        <div class="school-logo">
+          <i class="fas fa-school fa-3x text-muted"></i>
+        </div>
+        
+        <h1>${currentTest.title || 'Test Title'}</h1>
+        <h4 class="text-muted">${currentTest.subject || 'Subject'}</h4>
+        
+        <div class="student-info">
+          <h5>Student Information</h5>
+          <div class="info-row">
+            <strong>Name:</strong>
+            <span>_________________________</span>
+          </div>
+          <div class="info-row">
+            <strong>Class:</strong>
+            <span>${currentTest.class || '_________________'}</span>
+          </div>
+          <div class="info-row">
+            <strong>Date:</strong>
+            <span>${new Date().toLocaleDateString()}</span>
+          </div>
+          <div class="info-row">
+            <strong>Duration:</strong>
+            <span>${currentTest.duration || 60} minutes</span>
+          </div>
+          <div class="info-row">
+            <strong>Total Marks:</strong>
+            <span>${currentTest.totalMarks || 50}</span>
+          </div>
+        </div>
+        
+        <div class="mt-4">
+          <p><strong>Instructions:</strong></p>
+          <p class="text-muted">${currentTest.instructions || 'Please read all questions carefully before answering.'}</p>
+        </div>
+        
+        <div class="text-center mt-4 no-print">
+          <button class="btn btn-primary" onclick="window.print()">Print Cover</button>
+          <button class="btn btn-secondary" onclick="window.close()">Close</button>
+        </div>
+      </div>
+    </body>
+    </html>
+  `);
+}
+
+function translateTest(language) {
+  // Simulate translation
+  const translations = {
+    en: { title: 'Test Title', instructions: 'Instructions' },
+    es: { title: 'Título de la Prueba', instructions: 'Instrucciones' },
+    fr: { title: 'Titre du Test', instructions: 'Instructions' },
+    de: { title: 'Testtitel', instructions: 'Anweisungen' },
+    zh: { title: '测试标题', instructions: '说明' }
+  };
+  
+  showToast(`Test translated to ${language.toUpperCase()}`, 'info');
+  // In real implementation, this would translate all text content
+}
+
+function showTestAnalytics() {
+  const analyticsWindow = window.open('', '_blank');
+  analyticsWindow.document.write(`
+    <!DOCTYPE html>
+    <html>
+    <head>
+      <title>Test Analytics</title>
+      <link href="assets/css/bootstrap.min.css" rel="stylesheet">
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    </head>
+    <body>
+      <div class="container mt-4">
+        <h2>Test Analytics</h2>
+        
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Question Type Distribution</div>
+              <div class="card-body">
+                <canvas id="questionTypeChart"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Difficulty Distribution</div>
+              <div class="card-body">
+                <canvas id="difficultyChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="row mt-4">
+          <div class="col-md-12">
+            <div class="card">
+              <div class="card-header">Bloom's Taxonomy Analysis</div>
+              <div class="card-body">
+                <canvas id="bloomChart"></canvas>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="text-center mt-4">
+          <button class="btn btn-secondary" onclick="window.close()">Close</button>
+        </div>
+      </div>
+      
+      <script>
+        // Question Type Chart
+        new Chart(document.getElementById('questionTypeChart'), {
+          type: 'doughnut',
+          data: {
+            labels: ['MCQ', 'Short Answer', 'Long Answer'],
+            datasets: [{
+              data: [${currentTest.questions.filter(q => q.type === 'mcq').length}, ${currentTest.questions.filter(q => q.type === 'short').length}, ${currentTest.questions.filter(q => q.type === 'long').length}],
+              backgroundColor: ['#007bff', '#28a745', '#ffc107']
+            }]
+          }
+        });
+        
+        // Difficulty Chart
+        new Chart(document.getElementById('difficultyChart'), {
+          type: 'bar',
+          data: {
+            labels: ['Easy', 'Medium', 'Hard'],
+            datasets: [{
+              label: 'Questions',
+              data: [${currentTest.questions.filter(q => q.difficulty === 'easy').length}, ${currentTest.questions.filter(q => q.difficulty === 'medium').length}, ${currentTest.questions.filter(q => q.difficulty === 'hard').length}],
+              backgroundColor: ['#28a745', '#ffc107', '#dc3545']
+            }]
+          }
+        });
+        
+        // Bloom's Taxonomy Chart
+        new Chart(document.getElementById('bloomChart'), {
+          type: 'radar',
+          data: {
+            labels: ['Remember', 'Understand', 'Apply', 'Analyze', 'Evaluate', 'Create'],
+            datasets: [{
+              label: 'Questions',
+              data: [${currentTest.questions.filter(q => q.bloomLevel === 'remember').length}, ${currentTest.questions.filter(q => q.bloomLevel === 'understand').length}, ${currentTest.questions.filter(q => q.bloomLevel === 'apply').length}, ${currentTest.questions.filter(q => q.bloomLevel === 'analyze').length}, ${currentTest.questions.filter(q => q.bloomLevel === 'evaluate').length}, ${currentTest.questions.filter(q => q.bloomLevel === 'create').length}],
+              backgroundColor: 'rgba(0, 123, 255, 0.2)',
+              borderColor: '#007bff'
+            }]
+          }
+        });
+      </script>
+    </body>
+    </html>
+  `);
+}
+
+// Initialize when page loads
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initializeTestSystem);
+} else {
+  initializeTestSystem();
+}
