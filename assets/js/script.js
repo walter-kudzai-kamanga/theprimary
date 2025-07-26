@@ -3,7 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- Personalization ---
   const user = {
-    name: 'Jordan Smith',
+    name: 'Walter Kamanga',
     role: 'Administrator',
   };
   document.getElementById('userName').textContent = user.name;
