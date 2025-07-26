@@ -122,3 +122,74 @@ body.dark-mode .quick-actions .btn-secondary:hover {
   background: #343a40;
   color: #fff;
 } 
+
+/* Profile photo */
+.profile-photo {
+  width: 40px;
+  height: 40px;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 2px solid #b39ddb;
+}
+
+/* Status badge */
+.badge-status {
+  font-size: 0.85em;
+  padding: 0.4em 0.7em;
+}
+
+/* Toast notification */
+.toast-container {
+  z-index: 9999;
+}
+
+/* Dark mode */
+.dark-mode {
+  background: #222 !important;
+  color: #eee !important;
+}
+.dark-mode .card, .dark-mode .table {
+  background: #333 !important;
+  color: #eee !important;
+}
+.dark-mode .form-control, .dark-mode .form-select {
+  background: #222 !important;
+  color: #eee !important;
+  border-color: #555;
+}
+.dark-mode .btn-primary {
+  background: #7c4dff;
+  border-color: #7c4dff;
+}
+.dark-mode .btn-outline-secondary, .dark-mode .btn-outline-danger {
+  color: #eee;
+  border-color: #bbb;
+}
+.dark-mode .btn-outline-secondary:hover, .dark-mode .btn-outline-danger:hover {
+  background: #444;
+}
+
+/* Table modern look */
+.table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #f3f0fa;
+}
+.dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+  background-color: #2a2633;
+}
+
+/* Card modern look */
+.card {
+  border-radius: 1rem;
+  box-shadow: 0 2px 12px rgba(124,77,255,0.08);
+}
+
+/* Pagination modern look */
+.pagination .page-item.active .page-link {
+  background: #7c4dff;
+  border-color: #7c4dff;
+}
+
+/* Misc */
+#studentDetailModal .modal-content {
+  border-radius: 1rem;
+} 

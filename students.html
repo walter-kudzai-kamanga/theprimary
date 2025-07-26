@@ -2,11 +2,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Management | SchoolMS</title>
+  <title>Student Registration & Profile | SchoolMS</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    .profile-photo { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #b39ddb; }
+    .drag-drop-area { border: 2px dashed #7c4dff; border-radius: 1rem; padding: 2rem; text-align: center; background: #faf7ff; cursor: pointer; transition: background 0.2s; }
+    .drag-drop-area.dragover { background: #ede7f6; }
+    .qr-code { margin: 0.5rem 0; }
+    .heatmap-cell { width: 32px; height: 32px; display: inline-block; margin: 2px; border-radius: 4px; text-align: center; line-height: 32px; color: #fff; font-weight: bold; }
+    .timeline { border-left: 3px solid #7c4dff; margin-left: 1rem; padding-left: 1.5rem; }
+    .timeline-event { margin-bottom: 1rem; }
+    .timeline-event .date { font-size: 0.9em; color: #888; }
+    .webcam-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #7c4dff; }
+    .subject-badge { margin: 0 2px 2px 0; }
+    .audit-log { font-size: 0.95em; }
+    .survey-link { color: #7c4dff; text-decoration: underline; cursor: pointer; }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
@@ -29,62 +44,170 @@
           <li class="nav-item"><a class="nav-link" href="transport.html">Transport</a></li>
           <li class="nav-item"><a class="nav-link" href="alerts.html">Alerts</a></li>
         </ul>
+        <span class="dark-toggle" id="darkModeToggle" title="Toggle dark mode">🌙</span>
       </div>
     </div>
   </nav>
-  <div class="container mt-4">
-    <h2 class="mb-4">Student Management</h2>
-    <!-- Add/Edit Student Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Add/Edit Student</div>
-      <div class="card-body">
-        <form id="studentForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="studentName" placeholder="Student Name" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Date of Birth</label>
-              <input type="date" class="form-control" id="studentDOB" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Class</label>
-              <select class="form-select" id="studentClass" required>
-                <option value="">-- Select --</option>
-                <option value="Grade 1">Grade 1</option>
-                <option value="Grade 2">Grade 2</option>
-                <option value="Grade 3">Grade 3</option>
-                <!-- Add more classes as needed -->
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Registration Number</label>
-              <input type="text" class="form-control" id="studentRegNo" value="SCH-2024-XXXXXX" readonly>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Photo</label>
-              <input type="file" class="form-control" id="studentPhoto">
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Birth Certificate</label>
-              <input type="file" class="form-control" id="studentBirthCert">
-            </div>
+  <div class="container mt-4 mb-5">
+    <h2 class="mb-4">Student Registration & Profile</h2>
+    <div class="row g-4">
+      <div class="col-lg-8">
+        <!-- Registration/Profile Form -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header">Student Details</div>
+          <div class="card-body">
+            <form id="studentForm" enctype="multipart/form-data">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="studentName" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Date of Birth</label>
+                  <input type="date" class="form-control" id="studentDOB" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Gender</label>
+                  <select class="form-select" id="studentGender" required>
+                    <option value="">-- Select --</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Other</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Class</label>
+                  <select class="form-select" id="studentClass" required>
+                    <option value="">-- Select --</option>
+                    <option value="Grade 1">Grade 1</option>
+                    <option value="Grade 2">Grade 2</option>
+                    <option value="Grade 3">Grade 3</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Registration Number</label>
+                  <input type="text" class="form-control" id="studentRegNo" readonly>
+                  <div class="qr-code" id="qrCode"></div>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">Photo</label>
+                  <div class="d-flex align-items-center gap-2">
+                    <input type="file" class="form-control" id="studentPhoto" accept="image/*">
+                    <button type="button" class="btn btn-outline-secondary" id="webcamBtn"><i class="fa fa-camera"></i></button>
+                  </div>
+                  <video id="webcam" width="120" height="120" autoplay style="display:none;"></video>
+                  <img id="webcamPreview" class="webcam-preview mt-2" style="display:none;"/>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Guardian/Parent Information</label>
+                  <div class="row g-2">
+                    <div class="col-md-3"><input type="text" class="form-control" id="guardianName" placeholder="Name" required></div>
+                    <div class="col-md-2"><input type="text" class="form-control" id="guardianRelation" placeholder="Relation" required></div>
+                    <div class="col-md-3"><input type="text" class="form-control" id="guardianContact" placeholder="Contact" required></div>
+                    <div class="col-md-4"><input type="text" class="form-control" id="guardianOccupation" placeholder="Occupation"></div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Health Records</label>
+                  <div class="row g-2">
+                    <div class="col-md-4"><input type="text" class="form-control" id="allergies" placeholder="Allergies"></div>
+                    <div class="col-md-4"><input type="text" class="form-control" id="immunizations" placeholder="Immunizations"></div>
+                    <div class="col-md-4"><input type="text" class="form-control" id="conditions" placeholder="Medical Conditions"></div>
+                  </div>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Subject Enrollment</label>
+                  <select class="form-select" id="subjectEnrollment" multiple>
+                    <option>Math</option>
+                    <option>English</option>
+                    <option>Science</option>
+                    <option>History</option>
+                    <option>Art</option>
+                  </select>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Individual Learning Plan (ILP)</label>
+                  <textarea class="form-control" id="ilp" rows="2" placeholder="Teacher-defined learning goals..."></textarea>
+                </div>
+                <div class="col-md-12">
+                  <label class="form-label">Portfolio Uploads</label>
+                  <div class="drag-drop-area" id="portfolioDrop">Drag & drop files here or click to upload</div>
+                  <input type="file" id="portfolioFiles" multiple style="display:none;">
+                  <div id="portfolioList" class="mt-2"></div>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Birth Certificate (Expiry)</label>
+                  <input type="file" class="form-control" id="birthCert" accept="application/pdf,image/*">
+                  <input type="date" class="form-control mt-1" id="birthCertExpiry" placeholder="Expiry Date">
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Passport (Expiry)</label>
+                  <input type="file" class="form-control" id="passport" accept="application/pdf,image/*">
+                  <input type="date" class="form-control mt-1" id="passportExpiry" placeholder="Expiry Date">
+                </div>
+              </div>
+              <button class="btn btn-primary mt-3" type="submit">Save Student</button>
+            </form>
           </div>
-          <button class="btn btn-primary mt-3" type="submit">Save Student</button>
-        </form>
+        </div>
+        <!-- Timeline & Audit Log -->
+        <div class="card mb-4 animate__animated animate__fadeInUp">
+          <div class="card-header">Student Timeline & Audit Log</div>
+          <div class="card-body">
+            <div class="timeline" id="studentTimeline"></div>
+            <hr>
+            <div class="audit-log" id="auditLog"></div>
+          </div>
+        </div>
+        <!-- Surveys & Feedback -->
+        <div class="card mb-4 animate__animated animate__fadeInUp">
+          <div class="card-header">Feedback & Surveys</div>
+          <div class="card-body">
+            <span class="survey-link" id="surveyLink">Take Student Feedback Survey</span>
+            <div id="surveyResults" class="mt-3"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <!-- Performance Heatmap -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header">Performance Heatmap</div>
+          <div class="card-body">
+            <div id="performanceHeatmap"></div>
+          </div>
+        </div>
+        <!-- Birthday & Document Alerts -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header">Smart Alerts</div>
+          <div class="card-body">
+            <div id="birthdayAlert"></div>
+            <div id="docExpiryAlert"></div>
+            <div id="missingDocAlert"></div>
+          </div>
+        </div>
+        <!-- Integrations & Advanced Features -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header">Integrations & Advanced</div>
+          <div class="card-body">
+            <button class="btn btn-outline-success w-100 mb-2" id="smsBtn"><i class="fa fa-sms"></i> Send SMS (Demo)</button>
+            <button class="btn btn-outline-primary w-100 mb-2" id="whatsappBtn"><i class="fa fa-whatsapp"></i> WhatsApp (Demo)</button>
+            <button class="btn btn-outline-secondary w-100 mb-2" id="driveBtn"><i class="fa fa-google-drive"></i> Google Drive Sync (Demo)</button>
+            <button class="btn btn-outline-dark w-100 mb-2" id="biometricBtn"><i class="fa fa-fingerprint"></i> Biometrics (Demo)</button>
+          </div>
+        </div>
       </div>
     </div>
-    <!-- Student List Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
+    <!-- Student List Section -->
+    <div class="card mt-4 animate__animated animate__fadeInUp">
       <div class="card-header">Student List</div>
       <div class="card-body">
-        <table class="table table-striped" id="studentsTable">
+        <table class="table table-striped align-middle" id="studentsTable">
           <thead>
             <tr>
               <th>Reg No</th>
               <th>Name</th>
               <th>Class</th>
+              <th>Guardian</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -94,8 +217,27 @@
         </table>
       </div>
     </div>
+    <!-- Student Detail Modal -->
+    <div class="modal fade" id="studentDetailModal" tabindex="-1" aria-labelledby="studentDetailModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="studentDetailModalLabel">Student Details</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="studentDetailContent">
+              <!-- Populated by JS -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html> 
