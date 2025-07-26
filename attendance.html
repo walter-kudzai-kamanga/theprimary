@@ -7,10 +7,56 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    /* Inline critical styles for sticky and scroll, rest in style.css */
+    .sticky-col {
+      position: sticky;
+      left: 0;
+      background: #fff;
+      z-index: 2;
+    }
+    .attendance-table-scroll {
+      overflow-x: auto;
+      white-space: nowrap;
+    }
+    .status-badge {
+      min-width: 70px;
+      display: inline-block;
+      text-align: center;
+      font-weight: 600;
+      border-radius: 20px;
+      padding: 0.25em 0.75em;
+    }
+    .badge-present { background: #6f42c1; color: #fff; } /* purple */
+    .badge-absent { background: #dc3545; color: #fff; }
+    .badge-late { background: #fd7e14; color: #fff; }
+    .badge-excused { background: #0d6efd; color: #fff; }
+    .badge-unmarked { background: #adb5bd; color: #fff; }
+    .calendar-placeholder, .analytics-placeholder, .auditlog-placeholder {
+      min-height: 180px;
+      background: #f8f9fa;
+      border: 1px dashed #ccc;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #888;
+      font-size: 1.1em;
+      margin-bottom: 1.5rem;
+    }
+    .sticky-action-bar {
+      position: sticky;
+      top: 70px;
+      z-index: 10;
+      background: #fff;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #eee;
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark" style="background: #6f42c1;">
     <div class="container-fluid">
       <a class="navbar-brand" href="dashboard.html">SchoolMS</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -20,7 +66,7 @@
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="students.html">Students</a></li>
           <li class="nav-item"><a class="nav-link" href="staff.html">Staff & HR</a></li>
-          <li class="nav-item"><a class="nav-link" href="attendance.html">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link active" href="attendance.html">Attendance</a></li>
           <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
           <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
           <li class="nav-item"><a class="nav-link" href="homework.html">Homework</a></li>
@@ -33,55 +79,125 @@
     </div>
   </nav>
   <div class="container mt-4">
-    <h2 class="mb-4">Attendance & Register Marking</h2>
-    <!-- Attendance Marking Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Mark Attendance</div>
-      <div class="card-body">
-        <form id="attendanceForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Class</label>
-              <select class="form-select" id="attendanceClass" required>
-                <option value="">-- Select --</option>
-                <option value="Grade 1">Grade 1</option>
-                <option value="Grade 2">Grade 2</option>
-                <option value="Grade 3">Grade 3</option>
-                <!-- Add more classes as needed -->
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Date</label>
-              <input type="date" class="form-control" id="attendanceDate" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Session</label>
-              <select class="form-select" id="attendanceSession" required>
-                <option value="AM">AM</option>
-                <option value="PM">PM</option>
-              </select>
-            </div>
-          </div>
-          <button class="btn btn-primary mt-3" type="submit">Load Students</button>
-        </form>
+    <h2 class="mb-3">Attendance & Register Marking</h2>
+    <!-- Notification/Alert Area -->
+    <div id="notificationArea" class="mb-3"></div>
+    <!-- Filters & Bulk Actions -->
+    <div class="sticky-action-bar row g-2 align-items-center mb-2">
+      <div class="col-md-2">
+        <select class="form-select" id="filterClass">
+          <option value="">Class</option>
+          <option>Grade 1</option>
+          <option>Grade 2</option>
+          <option>Grade 3</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="date" class="form-control" id="filterDate">
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" id="filterSession">
+          <option value="">Session</option>
+          <option>AM</option>
+          <option>PM</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <select class="form-select" id="filterGender">
+          <option value="">Gender</option>
+          <option>Male</option>
+          <option>Female</option>
+        </select>
+      </div>
+      <div class="col-md-2">
+        <input type="text" class="form-control" id="searchStudent" placeholder="Search student...">
+      </div>
+      <div class="col-md-2 text-end">
+        <button class="btn btn-outline-secondary me-1" id="btnExportPDF">Export PDF</button>
+        <button class="btn btn-outline-secondary" id="btnExportCSV">Export CSV</button>
       </div>
     </div>
-    <!-- Attendance Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Attendance List</div>
-      <div class="card-body">
-        <table class="table table-striped" id="attendanceTable">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Populated by JS -->
-          </tbody>
-        </table>
+    <!-- Bulk Actions -->
+    <div class="mb-2 d-flex flex-wrap align-items-center gap-2">
+      <div>
+        <button class="btn btn-success btn-sm" id="markAllPresent">Mark All Present</button>
+        <button class="btn btn-danger btn-sm" id="markAllAbsent">Mark All Absent</button>
+        <button class="btn btn-warning btn-sm" id="markAllLate">Mark All Late</button>
+        <button class="btn btn-info btn-sm" id="bulkActions">Bulk Actions</button>
+      </div>
+      <div class="ms-auto">
+        <button class="btn btn-primary btn-sm" id="openAnalytics">Analytics 📊</button>
+        <button class="btn btn-outline-primary btn-sm" id="openCalendar">Calendar 📅</button>
+        <button class="btn btn-outline-dark btn-sm" id="openAuditLog">Audit Log 📝</button>
+      </div>
+    </div>
+    <!-- Attendance Register Table -->
+    <div class="attendance-table-scroll mb-4">
+      <table class="table table-bordered align-middle" id="attendanceTable" style="min-width:900px;">
+        <thead class="table-light">
+          <tr>
+            <th class="sticky-col">Date</th>
+            <th>Student 1</th>
+            <th>Student 2</th>
+            <th>Student 3</th>
+            <th>Student 4</th>
+            <th>Student 5</th>
+            <!-- More students dynamically -->
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="sticky-col">2024-06-10 (AM)</td>
+            <td><span class="status-badge badge-present">Present</span></td>
+            <td><span class="status-badge badge-absent">Absent</span></td>
+            <td><span class="status-badge badge-late">Late</span></td>
+            <td><span class="status-badge badge-excused">Excused</span></td>
+            <td><span class="status-badge badge-unmarked">Unmarked</span></td>
+          </tr>
+          <tr>
+            <td class="sticky-col">2024-06-10 (PM)</td>
+            <td><span class="status-badge badge-present">Present</span></td>
+            <td><span class="status-badge badge-present">Present</span></td>
+            <td><span class="status-badge badge-absent">Absent</span></td>
+            <td><span class="status-badge badge-late">Late</span></td>
+            <td><span class="status-badge badge-excused">Excused</span></td>
+          </tr>
+          <!-- More rows dynamically -->
+        </tbody>
+      </table>
+    </div>
+    <!-- Analytics Panel Placeholder -->
+    <div class="analytics-placeholder mb-4">[Analytics Dashboard: Heatmap, Trends, Top 10, etc. Placeholder]</div>
+    <!-- Calendar/Timeline Placeholder -->
+    <div class="calendar-placeholder mb-4">[Calendar & Timeline View Placeholder]</div>
+    <!-- Audit Log Placeholder -->
+    <div class="auditlog-placeholder mb-4">[Audit & History Tracking Placeholder]</div>
+  </div>
+  <!-- Leave/Excuse Modal -->
+  <div class="modal fade" id="leaveModal" tabindex="-1" aria-labelledby="leaveModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="leaveModalLabel">Submit Leave/Excuse</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="leaveForm">
+            <div class="mb-3">
+              <label for="leaveDate" class="form-label">Date</label>
+              <input type="date" class="form-control" id="leaveDate" required>
+            </div>
+            <div class="mb-3">
+              <label for="leaveReason" class="form-label">Reason</label>
+              <textarea class="form-control" id="leaveReason" rows="2" required></textarea>
+            </div>
+            <div class="mb-3">
+              <label for="leaveAttachment" class="form-label">Attachment (optional)</label>
+              <input type="file" class="form-control" id="leaveAttachment" accept="image/*,application/pdf">
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+          </form>
+        </div>
       </div>
     </div>
   </div>

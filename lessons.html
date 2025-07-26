@@ -21,7 +21,7 @@
           <li class="nav-item"><a class="nav-link" href="students.html">Students</a></li>
           <li class="nav-item"><a class="nav-link" href="staff.html">Staff & HR</a></li>
           <li class="nav-item"><a class="nav-link" href="attendance.html">Attendance</a></li>
-          <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
+          <li class="nav-item"><a class="nav-link active" href="lessons.html">Lessons</a></li>
           <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
           <li class="nav-item"><a class="nav-link" href="homework.html">Homework</a></li>
           <li class="nav-item"><a class="nav-link" href="finance.html">Finance</a></li>
@@ -34,38 +34,86 @@
   </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Lesson Planning</h2>
-    <!-- Lesson Plan Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Create Lesson Plan</div>
+    <!-- AI Plan Drafting & Smart Suggestions -->
+    <div class="alert alert-info animate__animated animate__fadeIn mb-3" id="aiPlanDraftingSection">
+      <strong>AI Plan Drafting:</strong> <button class="btn btn-sm btn-outline-primary" id="aiDraftBtn">Auto-Generate Lesson Plan</button>
+      <span id="aiSuggestionResult" class="ms-3"></span>
+    </div>
+    <!-- Curriculum Mapping & Learning Objectives -->
+    <div class="card mb-4 animate__animated animate__fadeIn" id="curriculumMappingSection">
+      <div class="card-header">Create Lesson Plan <span class="badge bg-secondary">Curriculum Mapping</span></div>
       <div class="card-body">
         <form id="lessonForm">
           <div class="row g-3">
-            <div class="col-md-4">
+            <div class="col-md-3">
               <label class="form-label">Subject</label>
               <input type="text" class="form-control" id="lessonSubject" placeholder="Subject" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-2">
               <label class="form-label">Week</label>
               <input type="number" class="form-control" id="lessonWeek" placeholder="Week Number" required>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+              <label class="form-label">Learning Objectives</label>
+              <input type="text" class="form-control" id="lessonObjectives" placeholder="e.g. Understand Photosynthesis" required>
+              <div class="form-text" id="autoSuggestObjectives">Auto-suggested: <span id="suggestedObjectives"></span></div>
+            </div>
+            <div class="col-md-2">
               <label class="form-label">Attach Material</label>
-              <input type="file" class="form-control" id="lessonMaterial">
+              <input type="file" class="form-control" id="lessonMaterial" multiple>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Coverage (%)</label>
+              <input type="number" class="form-control" id="lessonCoverage" min="0" max="100" value="0">
+            </div>
+          </div>
+          <div class="row g-3 mt-2">
+            <div class="col-md-4">
+              <label class="form-label">Curriculum Standard</label>
+              <input type="text" class="form-control" id="curriculumStandard" placeholder="e.g. NGSS MS-LS1-1">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Tags</label>
+              <input type="text" class="form-control" id="lessonTags" placeholder="e.g. Biology, Grade 7, Photosynthesis">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Template</label>
+              <select class="form-select" id="lessonTemplate">
+                <option value="">Select Template</option>
+                <option value="school">School Provided</option>
+                <option value="my">My Saved Templates</option>
+              </select>
+              <button class="btn btn-link btn-sm p-0" id="saveTemplateBtn">Save as Template</button>
             </div>
           </div>
           <button class="btn btn-primary mt-3" type="submit">Save Plan</button>
         </form>
       </div>
     </div>
-    <!-- Lesson Plans Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Lesson Plans</div>
+    <!-- Integrated Calendar View -->
+    <div class="card mb-4 animate__animated animate__fadeInUp" id="calendarSection">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Calendar View <span class="badge bg-secondary">Drag & Drop</span></span>
+        <button class="btn btn-outline-secondary btn-sm" id="syncCalendarBtn">Sync with Academic Calendar</button>
+      </div>
+      <div class="card-body">
+        <div id="calendarView" style="min-height: 300px;">[Calendar Placeholder]</div>
+      </div>
+    </div>
+    <!-- Lesson Plans Table -->
+    <div class="card animate__animated animate__fadeInUp" id="lessonPlansSection">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <span>Lesson Plans</span>
+        <button class="btn btn-outline-primary btn-sm" id="searchMaterialsBtn">Search Materials</button>
+      </div>
       <div class="card-body">
         <table class="table table-striped" id="lessonsTable">
           <thead>
             <tr>
               <th>Subject</th>
               <th>Week</th>
+              <th>Objectives</th>
+              <th>Coverage</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
@@ -76,7 +124,137 @@
         </table>
       </div>
     </div>
+    <!-- Collaborative Planning & Comments -->
+    <div class="card mt-4 animate__animated animate__fadeIn" id="collabSection">
+      <div class="card-header">Collaborative Planning & Comments</div>
+      <div class="card-body">
+        <div id="collabComments" style="max-height: 200px; overflow-y: auto;"></div>
+        <form id="collabCommentForm" class="d-flex mt-2">
+          <input type="text" class="form-control me-2" id="collabCommentInput" placeholder="Add a comment...">
+          <button class="btn btn-secondary" type="submit">Send</button>
+        </form>
+      </div>
+    </div>
+    <!-- Interactive Content & Resource Embeds -->
+    <div class="card mt-4 animate__animated animate__fadeIn" id="interactiveContentSection">
+      <div class="card-header">Interactive Content & Embeds</div>
+      <div class="card-body">
+        <button class="btn btn-outline-info btn-sm mb-2" id="embedResourceBtn">Embed Resource (YouTube, Google Slides, Quizizz, etc.)</button>
+        <div id="embeddedResources"></div>
+      </div>
+    </div>
+    <!-- Progress & Analytics -->
+    <div class="row mt-4" id="analyticsSection">
+      <div class="col-md-6">
+        <div class="card animate__animated animate__fadeIn">
+          <div class="card-header">Coverage & Progress</div>
+          <div class="card-body">
+            <div id="coverageChart" style="height: 200px;">[Coverage Chart]</div>
+            <div id="coverageAlerts" class="mt-2"></div>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6">
+        <div class="card animate__animated animate__fadeIn">
+          <div class="card-header">Time-on-Topic Analysis</div>
+          <div class="card-body">
+            <div id="timeOnTopicChart" style="height: 200px;">[Time-on-Topic Chart]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Evidence of Delivery -->
+    <div class="card mt-4 animate__animated animate__fadeIn" id="evidenceSection">
+      <div class="card-header">Evidence of Delivery</div>
+      <div class="card-body">
+        <form id="evidenceForm" class="mb-2">
+          <input type="file" class="form-control mb-2" id="evidenceUpload" multiple>
+          <button class="btn btn-outline-success btn-sm" type="submit">Upload Evidence</button>
+        </form>
+        <div id="evidenceGallery" class="row g-2"></div>
+      </div>
+    </div>
+    <!-- Approval, Feedback, Version History (HOD/Admin) -->
+    <div class="card mt-4 animate__animated animate__fadeIn" id="approvalSection">
+      <div class="card-header">Approval & Feedback <span class="badge bg-warning text-dark">HOD/Admin</span></div>
+      <div class="card-body">
+        <div id="approvalStatus">Status: <span class="badge bg-secondary">Pending</span></div>
+        <form id="feedbackForm" class="mt-2">
+          <textarea class="form-control mb-2" id="feedbackInput" rows="2" placeholder="Add feedback..."></textarea>
+          <button class="btn btn-primary btn-sm" type="submit">Submit Feedback</button>
+        </form>
+        <div id="feedbackList" class="mt-2"></div>
+        <div class="mt-3">
+          <button class="btn btn-outline-secondary btn-sm" id="viewVersionHistoryBtn">View Version History</button>
+          <button class="btn btn-outline-danger btn-sm" id="revertVersionBtn">Revert to Previous Version</button>
+        </div>
+      </div>
+    </div>
+    <!-- Dashboard & Reports -->
+    <div class="card mt-4 animate__animated animate__fadeIn" id="dashboardSection">
+      <div class="card-header">Department Dashboard & Reports</div>
+      <div class="card-body">
+        <div id="dashboardOverview">[Department-wide overview of lesson plan coverage, status, and approvals]</div>
+        <button class="btn btn-outline-success btn-sm mt-2" id="exportReportBtn">Export to PDF/Excel</button>
+      </div>
+    </div>
   </div>
+  <!-- Modals for Embeds, Search, Calendar, etc. -->
+  <div class="modal fade" id="embedResourceModal" tabindex="-1" aria-labelledby="embedResourceModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="embedResourceModalLabel">Embed Resource</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control mb-2" id="embedResourceUrl" placeholder="Paste YouTube, Google Slides, Quizizz, etc. URL">
+          <button class="btn btn-primary" id="addEmbedBtn">Embed</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="modal fade" id="searchMaterialsModal" tabindex="-1" aria-labelledby="searchMaterialsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="searchMaterialsModalLabel">Search Materials</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="text" class="form-control mb-2" id="searchMaterialsInput" placeholder="Search by tag, subject, topic, grade...">
+          <div id="searchMaterialsResults">[Search Results]</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Add before </body> -->
+  <div class="modal fade" id="versionHistoryModal" tabindex="-1" aria-labelledby="versionHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="versionHistoryModalLabel">
+            <i class="fa fa-history"></i> Version History
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="versionHistoryList" class="list-group">
+            <!-- Version list will be rendered here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="revertVersionBtn" class="btn btn-warning">
+            <i class="fa fa-undo"></i> Revert to Selected Version
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- JS -->
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
 </body>

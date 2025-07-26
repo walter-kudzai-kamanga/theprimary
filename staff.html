@@ -7,10 +7,44 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .sidebar {
+      min-width: 220px;
+      max-width: 220px;
+      background: #f8f9fa;
+      border-right: 1px solid #e0e0e0;
+      height: 100vh;
+      position: fixed;
+      top: 0;
+      left: 0;
+      padding-top: 56px;
+    }
+    .sidebar .nav-link.active {
+      background: #6f42c1;
+      color: #fff !important;
+    }
+    .main-content {
+      margin-left: 230px;
+      padding: 2rem 1rem;
+    }
+    @media (max-width: 991.98px) {
+      .sidebar {
+        position: static;
+        height: auto;
+        min-width: 100%;
+        max-width: 100%;
+        border-right: none;
+        padding-top: 0;
+      }
+      .main-content {
+        margin-left: 0;
+      }
+    }
+  </style>
 </head>
 <body>
   <!-- Navbar -->
-  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
     <div class="container-fluid">
       <a class="navbar-brand" href="dashboard.html">SchoolMS</a>
       <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
@@ -19,7 +53,7 @@
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
           <li class="nav-item"><a class="nav-link" href="students.html">Students</a></li>
-          <li class="nav-item"><a class="nav-link" href="staff.html">Staff & HR</a></li>
+          <li class="nav-item"><a class="nav-link active" href="staff.html">Staff & HR</a></li>
           <li class="nav-item"><a class="nav-link" href="attendance.html">Attendance</a></li>
           <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
           <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
@@ -32,57 +66,530 @@
       </div>
     </div>
   </nav>
-  <div class="container mt-4">
-    <h2 class="mb-4">Staff & HR</h2>
-    <!-- Add/Edit Staff Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Add/Edit Staff</div>
-      <div class="card-body">
-        <form id="staffForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Full Name</label>
-              <input type="text" class="form-control" id="staffName" placeholder="Staff Name" required>
+  <div class="sidebar d-none d-lg-block">
+    <nav class="nav flex-column pt-3" role="tablist">
+      <a class="nav-link active" id="profiles-tab" data-bs-toggle="tab" href="#profiles" role="tab" aria-controls="profiles" aria-selected="true">Profiles</a>
+      <a class="nav-link" id="payroll-tab" data-bs-toggle="tab" href="#payroll" role="tab" aria-controls="payroll" aria-selected="false">Payroll</a>
+      <a class="nav-link" id="attendance-tab" data-bs-toggle="tab" href="#attendance" role="tab" aria-controls="attendance" aria-selected="false">Attendance</a>
+      <a class="nav-link" id="leave-tab" data-bs-toggle="tab" href="#leave" role="tab" aria-controls="leave" aria-selected="false">Leave</a>
+      <a class="nav-link" id="performance-tab" data-bs-toggle="tab" href="#performance" role="tab" aria-controls="performance" aria-selected="false">Performance</a>
+      <a class="nav-link" id="documents-tab" data-bs-toggle="tab" href="#documents" role="tab" aria-controls="documents" aria-selected="false">Documents</a>
+      <a class="nav-link" id="development-tab" data-bs-toggle="tab" href="#development" role="tab" aria-controls="development" aria-selected="false">Development</a>
+      <a class="nav-link" id="shifts-tab" data-bs-toggle="tab" href="#shifts" role="tab" aria-controls="shifts" aria-selected="false">Shifts</a>
+      <a class="nav-link" id="incidents-tab" data-bs-toggle="tab" href="#incidents" role="tab" aria-controls="incidents" aria-selected="false">Incidents</a>
+      <a class="nav-link" id="wellness-tab" data-bs-toggle="tab" href="#wellness" role="tab" aria-controls="wellness" aria-selected="false">Wellness</a>
+      <a class="nav-link" id="recruitment-tab" data-bs-toggle="tab" href="#recruitment" role="tab" aria-controls="recruitment" aria-selected="false">Recruitment</a>
+      <a class="nav-link" id="assets-tab" data-bs-toggle="tab" href="#assets" role="tab" aria-controls="assets" aria-selected="false">Assets</a>
+      <a class="nav-link" id="chatbot-tab" data-bs-toggle="tab" href="#chatbot" role="tab" aria-controls="chatbot" aria-selected="false">HR Chatbot</a>
+    </nav>
+  </div>
+  <div class="main-content">
+    <div class="tab-content">
+      <!-- Profiles Section -->
+      <div class="tab-pane fade show active" id="profiles" role="tabpanel" aria-labelledby="profiles-tab">
+        <h2 class="mb-4">Staff Profiles</h2>
+        <!-- Add/Edit Staff Form -->
+        <div class="card mb-4 animate__animated animate__fadeIn">
+          <div class="card-header">Add/Edit Staff</div>
+          <div class="card-body">
+            <form id="staffForm">
+              <div class="row g-3">
+                <div class="col-md-3">
+                  <label class="form-label">Full Name</label>
+                  <input type="text" class="form-control" id="staffName" placeholder="Staff Name" required>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Role</label>
+                  <select class="form-select" id="staffRole" required>
+                    <option value="">-- Select --</option>
+                    <option>Teacher</option>
+                    <option>Admin</option>
+                    <!-- Add more roles as needed -->
+                  </select>
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Subject</label>
+                  <input type="text" class="form-control" id="staffSubject" placeholder="Subject">
+                </div>
+                <div class="col-md-3">
+                  <label class="form-label">Schedule</label>
+                  <input type="text" class="form-control" id="staffSchedule" placeholder="e.g. Mon-Fri 8am-4pm">
+                </div>
+              </div>
+              <button class="btn btn-primary mt-3" type="submit">Save Staff</button>
+            </form>
+          </div>
+        </div>
+        <!-- Staff List Table -->
+        <div class="card animate__animated animate__fadeInUp">
+          <div class="card-header">Staff List</div>
+          <div class="card-body">
+            <table class="table table-striped" id="staffTable">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Subject</th>
+                  <th>Schedule</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Payroll Section -->
+      <div class="tab-pane fade" id="payroll" role="tabpanel" aria-labelledby="payroll-tab">
+        <h2 class="mb-4">Payroll Manager</h2>
+        <!-- Payroll Table & Actions Placeholder -->
+        <div class="card mb-4">
+          <div class="card-header">Payroll Overview</div>
+          <div class="card-body">
+            <button class="btn btn-success mb-2">Generate Payslips</button>
+            <button class="btn btn-secondary mb-2">Download Bank File</button>
+            <button class="btn btn-info mb-2">Tax Forms</button>
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th>Pay Grade</th>
+                  <th>Allowances</th>
+                  <th>Tax</th>
+                  <th>Pension</th>
+                  <th>Net Pay</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Payroll data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Attendance Section -->
+      <div class="tab-pane fade" id="attendance" role="tabpanel" aria-labelledby="attendance-tab">
+        <h2 class="mb-4">Staff Attendance</h2>
+        <div class="card mb-4">
+          <div class="card-header">Check-in/Check-out</div>
+          <div class="card-body">
+            <button class="btn btn-primary">Check In (GPS + Selfie)</button>
+            <button class="btn btn-danger">Check Out</button>
+            <div class="mt-3">Location: <span id="locationStatus">Not checked in</span></div>
+            <div class="mt-2">Today's Attendance: <span id="attendanceStatus">-</span></div>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Attendance Records</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Check-in</th>
+                  <th>Check-out</th>
+                  <th>Location</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Attendance data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Leave Management Section -->
+      <div class="tab-pane fade" id="leave" role="tabpanel" aria-labelledby="leave-tab">
+        <h2 class="mb-4">Leave Management</h2>
+        <div class="card mb-4">
+          <div class="card-header">Request Leave</div>
+          <div class="card-body">
+            <form id="leaveForm">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Type</label>
+                  <select class="form-select" required>
+                    <option value="">-- Select --</option>
+                    <option>Sick Leave</option>
+                    <option>Annual Leave</option>
+                    <option>Maternity/Paternity</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">From</label>
+                  <input type="date" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label">To</label>
+                  <input type="date" class="form-control" required>
+                </div>
+              </div>
+              <button class="btn btn-primary mt-3" type="submit">Submit Request</button>
+            </form>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Leave Records</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>From</th>
+                  <th>To</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Leave data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Performance & Evaluation Section -->
+      <div class="tab-pane fade" id="performance" role="tabpanel" aria-labelledby="performance-tab">
+        <h2 class="mb-4">Performance & Evaluation</h2>
+        <div class="row">
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-header">Smart KPIs</div>
+              <div class="card-body">
+                <ul>
+                  <li>Attendance Rate: <span id="kpiAttendance">-</span></li>
+                  <li>Student Feedback: <span id="kpiFeedback">-</span></li>
+                  <li>Class Outcomes: <span id="kpiOutcomes">-</span></li>
+                </ul>
+              </div>
             </div>
-            <div class="col-md-4">
-              <label class="form-label">Role</label>
-              <select class="form-select" id="staffRole" required>
-                <option value="">-- Select --</option>
-                <option>Teacher</option>
-                <option>Admin</option>
-                <!-- Add more roles as needed -->
-              </select>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Subject</label>
-              <input type="text" class="form-control" id="staffSubject" placeholder="Subject">
+            <div class="card mb-4">
+              <div class="card-header">360° Feedback</div>
+              <div class="card-body">
+                <button class="btn btn-outline-primary">Collect Feedback</button>
+                <div id="feedbackList">
+                  <!-- Feedback entries -->
+                </div>
+              </div>
             </div>
           </div>
-          <button class="btn btn-primary mt-3" type="submit">Save Staff</button>
-        </form>
+          <div class="col-md-6">
+            <div class="card mb-4">
+              <div class="card-header">Progress Reports</div>
+              <div class="card-body">
+                <canvas id="progressChart" height="120"></canvas>
+                <div class="mt-3">Training Recommendations: <span id="trainingRecs">-</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <!-- Staff List Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Staff List</div>
-      <div class="card-body">
-        <table class="table table-striped" id="staffTable">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Role</th>
-              <th>Subject</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Populated by JS -->
-          </tbody>
-        </table>
+      <!-- Document Vault Section -->
+      <div class="tab-pane fade" id="documents" role="tabpanel" aria-labelledby="documents-tab">
+        <h2 class="mb-4">Document Vault</h2>
+        <div class="card mb-4">
+          <div class="card-header">Upload Document</div>
+          <div class="card-body">
+            <form id="docUploadForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Document Type</label>
+                  <select class="form-select" required>
+                    <option value="">-- Select --</option>
+                    <option>Contract</option>
+                    <option>Certification</option>
+                    <option>ID</option>
+                    <option>Offer Letter</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Expiry Date</label>
+                  <input type="date" class="form-control">
+                </div>
+              </div>
+              <input type="file" class="form-control mt-3" required>
+              <button class="btn btn-primary mt-3" type="submit">Upload</button>
+            </form>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Document List & Expiry Alerts</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Expiry</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Document data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Professional Development Section -->
+      <div class="tab-pane fade" id="development" role="tabpanel" aria-labelledby="development-tab">
+        <h2 class="mb-4">Professional Development</h2>
+        <div class="card mb-4">
+          <div class="card-header">Training Sessions</div>
+          <div class="card-body">
+            <button class="btn btn-primary mb-2">Add Training</button>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Session</th>
+                  <th>Date</th>
+                  <th>CPD Hours</th>
+                  <th>Recommendations</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Training data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Course Suggestions</div>
+          <div class="card-body">
+            <ul id="courseSuggestions">
+              <!-- Suggested courses -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Shift & Substitute Management Section -->
+      <div class="tab-pane fade" id="shifts" role="tabpanel" aria-labelledby="shifts-tab">
+        <h2 class="mb-4">Shift & Substitute Management</h2>
+        <div class="card mb-4">
+          <div class="card-header">Shift Scheduling</div>
+          <div class="card-body">
+            <button class="btn btn-primary mb-2">Add Shift</button>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Staff</th>
+                  <th>Shift</th>
+                  <th>Date</th>
+                  <th>Time</th>
+                  <th>Substitute</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Shift data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Substitution Alerts</div>
+          <div class="card-body">
+            <div id="subAlerts">
+              <!-- Substitution alerts -->
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Incident & Disciplinary Section -->
+      <div class="tab-pane fade" id="incidents" role="tabpanel" aria-labelledby="incidents-tab">
+        <h2 class="mb-4">Incident & Disciplinary Tracking</h2>
+        <div class="card mb-4">
+          <div class="card-header">Log Incident</div>
+          <div class="card-body">
+            <form id="incidentForm">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Type</label>
+                  <select class="form-select" required>
+                    <option value="">-- Select --</option>
+                    <option>Behavioral</option>
+                    <option>Professional</option>
+                  </select>
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Date</label>
+                  <input type="date" class="form-control" required>
+                </div>
+              </div>
+              <label class="form-label mt-3">Description</label>
+              <textarea class="form-control" rows="2" required></textarea>
+              <button class="btn btn-danger mt-3" type="submit">Log Incident</button>
+            </form>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Incident Records</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Type</th>
+                  <th>Date</th>
+                  <th>Description</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Incident data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- Wellness & Satisfaction Section -->
+      <div class="tab-pane fade" id="wellness" role="tabpanel" aria-labelledby="wellness-tab">
+        <h2 class="mb-4">Wellness & Satisfaction Surveys</h2>
+        <div class="card mb-4">
+          <div class="card-header">Mood Check-in</div>
+          <div class="card-body">
+            <form id="wellnessForm">
+              <label class="form-label">How are you feeling today?</label>
+              <select class="form-select w-50" required>
+                <option value="">-- Select --</option>
+                <option>😊 Happy</option>
+                <option>😐 Neutral</option>
+                <option>😟 Stressed</option>
+                <option>😞 Burnt Out</option>
+              </select>
+              <button class="btn btn-primary mt-3" type="submit">Submit</button>
+            </form>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Wellness Trends</div>
+          <div class="card-body">
+            <canvas id="wellnessChart" height="120"></canvas>
+            <div class="mt-3">Department Trends: <span id="wellnessTrends">-</span></div>
+          </div>
+        </div>
+      </div>
+      <!-- Recruitment & Onboarding Section -->
+      <div class="tab-pane fade" id="recruitment" role="tabpanel" aria-labelledby="recruitment-tab">
+        <h2 class="mb-4">Recruitment & Onboarding</h2>
+        <div class="card mb-4">
+          <div class="card-header">Vacancy Listings</div>
+          <div class="card-body">
+            <button class="btn btn-primary mb-2">Add Vacancy</button>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Position</th>
+                  <th>Department</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Vacancy data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Application Tracking</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Applicant</th>
+                  <th>Position</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Application data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Onboarding Checklist</div>
+          <div class="card-body">
+            <ul id="onboardingChecklist">
+              <!-- Checklist items -->
+            </ul>
+          </div>
+        </div>
+      </div>
+      <!-- Asset Allocation Section -->
+      <div class="tab-pane fade" id="assets" role="tabpanel" aria-labelledby="assets-tab">
+        <h2 class="mb-4">Asset Allocation</h2>
+        <div class="card mb-4">
+          <div class="card-header">Assigned Assets</div>
+          <div class="card-body">
+            <button class="btn btn-primary mb-2">Assign Asset</button>
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Assigned To</th>
+                  <th>Condition</th>
+                  <th>Return Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Asset data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card mb-4">
+          <div class="card-header">Return Records</div>
+          <div class="card-body">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Item</th>
+                  <th>Returned By</th>
+                  <th>Date</th>
+                  <th>Condition</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Return data -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+      <!-- HR Chatbot/Self-Service Section -->
+      <div class="tab-pane fade" id="chatbot" role="tabpanel" aria-labelledby="chatbot-tab">
+        <h2 class="mb-4">HR Chatbot & Self-Service</h2>
+        <div class="card mb-4">
+          <div class="card-header">HR Assistant</div>
+          <div class="card-body">
+            <div class="mb-3">
+              <button class="btn btn-outline-primary">Request Leave</button>
+              <button class="btn btn-outline-secondary">Download Payslip</button>
+              <button class="btn btn-outline-info">View Schedule</button>
+            </div>
+            <div class="mb-3">
+              <input type="text" class="form-control" placeholder="Ask HR bot...">
+              <button class="btn btn-primary mt-2">Send</button>
+            </div>
+            <div id="chatbotResponse">
+              <!-- Chatbot responses -->
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
+  <script src="assets/js/chart.min.js"></script>
 </body>
 </html> 

@@ -34,9 +34,62 @@
   </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Inventory Management</h2>
-    <!-- Add/Edit Inventory Item Form (placeholder) -->
+    <!-- Dashboard Summary Cards & Charts -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Total Assets</h5>
+            <h2 id="invTotalAssets">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>In Use</h5>
+            <h2 id="invInUse">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Under Repair</h5>
+            <h2 id="invUnderRepair">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Low Stock</h5>
+            <h2 id="invLowStock">0</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h6>Asset Distribution</h6>
+            <canvas id="invCategoryChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h6>Depreciation Overview</h6>
+            <canvas id="invDepreciationChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Add/Edit Inventory Item Form -->
     <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Add/Edit Item</div>
+      <div class="card-header">Add/Edit Asset</div>
       <div class="card-body">
         <form id="inventoryForm">
           <div class="row g-3">
@@ -46,18 +99,74 @@
             </div>
             <div class="col-md-4">
               <label class="form-label">Category</label>
-              <input type="text" class="form-control" id="inventoryCategory" placeholder="Category" required>
+              <select class="form-select" id="inventoryCategory" required></select>
             </div>
             <div class="col-md-4">
+              <label class="form-label">Tags</label>
+              <input type="text" class="form-control" id="inventoryTags" placeholder="e.g. laptop, science">
+            </div>
+            <div class="col-md-3">
               <label class="form-label">Quantity</label>
               <input type="number" class="form-control" id="inventoryQuantity" placeholder="Quantity" required>
             </div>
+            <div class="col-md-3">
+              <label class="form-label">Location</label>
+              <select class="form-select" id="inventoryLocation"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Assigned To</label>
+              <select class="form-select" id="inventoryAssignedTo"></select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Status</label>
+              <select class="form-select" id="inventoryStatus">
+                <option>In Use</option>
+                <option>Under Repair</option>
+                <option>Retired</option>
+                <option>Lost</option>
+                <option>In Stock</option>
+              </select>
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Purchase Date</label>
+              <input type="date" class="form-control" id="inventoryPurchaseDate">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Supplier</label>
+              <input type="text" class="form-control" id="inventorySupplier" placeholder="Supplier Name">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Warranty Expiry</label>
+              <input type="date" class="form-control" id="inventoryWarranty">
+            </div>
+            <div class="col-md-3">
+              <label class="form-label">Depreciation Rate (%)</label>
+              <input type="number" class="form-control" id="inventoryDepreciation" min="0" max="100">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">QR/Barcode</label>
+              <div class="input-group">
+                <input type="text" class="form-control" id="inventoryBarcode" placeholder="Scan or generate">
+                <button class="btn btn-outline-secondary" type="button" id="scanBarcodeBtn">Scan</button>
+                <button class="btn btn-outline-primary" type="button" id="generateBarcodeBtn">Generate</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Attachments</label>
+              <input type="file" class="form-control" id="inventoryAttachments" multiple>
+            </div>
           </div>
-          <button class="btn btn-primary mt-3" type="submit">Save Item</button>
+          <div class="mt-3 d-flex flex-wrap gap-2">
+            <button class="btn btn-primary" type="submit">Save Asset</button>
+            <button class="btn btn-outline-info" type="button" id="bulkImportBtn">Bulk Import (Excel/CSV)</button>
+            <button class="btn btn-outline-success" type="button" id="bulkExportBtn">Export (Excel/CSV)</button>
+            <button class="btn btn-outline-warning" type="button" id="transferStockBtn">Transfer Stock</button>
+            <button class="btn btn-outline-dark" type="button" id="viewAuditTrailBtn">View Audit Trail</button>
+          </div>
         </form>
       </div>
     </div>
-    <!-- Inventory Table (placeholder) -->
+    <!-- Inventory Table -->
     <div class="card animate__animated animate__fadeInUp">
       <div class="card-header">Inventory List</div>
       <div class="card-body">
@@ -66,8 +175,16 @@
             <tr>
               <th>Item</th>
               <th>Category</th>
+              <th>Tags</th>
               <th>Quantity</th>
+              <th>Location</th>
+              <th>Assigned To</th>
               <th>Status</th>
+              <th>Purchase Date</th>
+              <th>Supplier</th>
+              <th>Warranty</th>
+              <th>Depreciation</th>
+              <th>QR/Barcode</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -75,6 +192,80 @@
             <!-- Populated by JS -->
           </tbody>
         </table>
+      </div>
+    </div>
+    <!-- Modals -->
+    <!-- Stock Transfer Modal -->
+    <div class="modal fade" id="stockTransferModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Transfer Stock</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <form id="stockTransferForm">
+              <div class="mb-3">
+                <label class="form-label">Asset</label>
+                <select class="form-select" id="transferAsset"></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">From Location</label>
+                <select class="form-select" id="transferFrom"></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">To Location</label>
+                <select class="form-select" id="transferTo"></select>
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Quantity</label>
+                <input type="number" class="form-control" id="transferQuantity" min="1">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Reason</label>
+                <input type="text" class="form-control" id="transferReason">
+              </div>
+              <button class="btn btn-primary" type="submit">Transfer</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Audit Trail Modal -->
+    <div class="modal fade" id="auditTrailModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Inventory Audit Trail</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body" id="auditTrailBody">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Bulk Import/Export Modal -->
+    <div class="modal fade" id="bulkImportExportModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Bulk Import/Export</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <div class="mb-3">
+              <label class="form-label">Import Excel/CSV</label>
+              <input type="file" class="form-control" id="bulkImportFile" accept=".csv,.xlsx">
+            </div>
+            <button class="btn btn-primary mb-2" id="importInventoryBtn">Import</button>
+            <hr>
+            <button class="btn btn-success" id="exportInventoryBtn">Export Current Inventory</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- QR/Barcode Scanner Modal -->
+    <div class="modal fade" id="barcodeScannerModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">QR/Barcode Scanner</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <div id="barcodeScannerArea" class="text-center">[Camera/Scanner Placeholder]</div>
+            <button class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
       </div>
     </div>
   </div>

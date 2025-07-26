@@ -32,51 +32,229 @@
       </div>
     </div>
   </nav>
-  <div class="container mt-4">
-    <h2 class="mb-4">Homework Assignment</h2>
-    <!-- Homework Assignment Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Assign Homework</div>
-      <div class="card-body">
-        <form id="homeworkForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Subject</label>
-              <input type="text" class="form-control" id="homeworkSubject" placeholder="Subject" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Due Date</label>
-              <input type="date" class="form-control" id="homeworkDueDate" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Attach File</label>
-              <input type="file" class="form-control" id="homeworkFile">
-            </div>
-          </div>
-          <button class="btn btn-primary mt-3" type="submit">Assign Homework</button>
-        </form>
-      </div>
+  <!-- Homework Assignment Module -->
+<div class="container py-4">
+  <h2 class="mb-4"><i class="fa fa-book"></i> Homework Assignments</h2>
+  <!-- Assignment Filters & Actions -->
+  <div class="d-flex flex-wrap gap-2 mb-3">
+    <select id="filterSubject" class="form-select w-auto">
+      <option value="">All Subjects</option>
+    </select>
+    <select id="filterClass" class="form-select w-auto">
+      <option value="">All Classes</option>
+    </select>
+    <select id="filterStatus" class="form-select w-auto">
+      <option value="all">All</option>
+      <option value="submitted">Submitted</option>
+      <option value="not_submitted">Not Submitted</option>
+      <option value="late">Late</option>
+    </select>
+    <button class="btn btn-primary" id="createHomeworkBtn"><i class="fa fa-plus"></i> New Assignment</button>
+    <button class="btn btn-outline-secondary" id="bulkImportBtn"><i class="fa fa-upload"></i> Bulk Import</button>
+    <button class="btn btn-outline-info" id="analyticsBtn"><i class="fa fa-chart-bar"></i> Analytics</button>
+  </div>
+  <!-- Assignment List Table -->
+  <div class="card mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+      <span><i class="fa fa-list"></i> Assignments</span>
+      <span id="assignmentCount" class="badge bg-secondary"></span>
     </div>
-    <!-- Homework Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Homework List</div>
-      <div class="card-body">
-        <table class="table table-striped" id="homeworkTable">
-          <thead>
-            <tr>
-              <th>Subject</th>
-              <th>Due Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Populated by JS -->
-          </tbody>
-        </table>
+    <div class="card-body p-0">
+      <table class="table table-hover mb-0" id="homeworkTable">
+        <thead class="table-light">
+          <tr>
+            <th>Subject</th>
+            <th>Class</th>
+            <th>Title</th>
+            <th>Due</th>
+            <th>Difficulty</th>
+            <th>Status</th>
+            <th>Urgent</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Assignment Details & Submission Panel -->
+  <div id="assignmentDetail" style="display:none;"></div>
+  <!-- Grading & Feedback Panel -->
+  <div id="gradingPanel" style="display:none;"></div>
+  <!-- Analytics Dashboard Modal -->
+  <div class="modal fade" id="analyticsModal" tabindex="-1" aria-labelledby="analyticsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="analyticsModalLabel"><i class="fa fa-chart-bar"></i> Submission Analytics</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body" id="analyticsContent"></div>
       </div>
     </div>
   </div>
+  <!-- Create/Edit Homework Modal -->
+  <div class="modal fade" id="homeworkModal" tabindex="-1" aria-labelledby="homeworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="homeworkModalLabel"><i class="fa fa-plus"></i> Create/Edit Assignment</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="homeworkForm">
+            <div class="row g-3">
+              <div class="col-md-4">
+                <label class="form-label">Subject</label>
+                <select class="form-select" id="hwSubject" required></select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Class</label>
+                <select class="form-select" id="hwClass" required></select>
+              </div>
+              <div class="col-md-4">
+                <label class="form-label">Difficulty</label>
+                <select class="form-select" id="hwDifficulty">
+                  <option>Easy</option>
+                  <option>Medium</option>
+                  <option>Hard</option>
+                </select>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Title</label>
+                <input type="text" class="form-control" id="hwTitle" required>
+              </div>
+              <div class="col-md-6">
+                <label class="form-label">Due Date</label>
+                <input type="datetime-local" class="form-control" id="hwDue" required>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Instructions</label>
+                <textarea class="form-control" id="hwInstructions" rows="2" required></textarea>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Attach Files</label>
+                <input type="file" class="form-control" id="hwFiles" multiple>
+                <div class="form-text">Attach PDFs, images, audio, video, or import from cloud.</div>
+                <button type="button" class="btn btn-link p-0" id="cloudAttachBtn"><i class="fa fa-cloud"></i> Attach from Cloud</button>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Recurring</label>
+                <select class="form-select" id="hwRecurring">
+                  <option value="none">None</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                </select>
+              </div>
+              <div class="col-12">
+                <label class="form-label">Urgent</label>
+                <input type="checkbox" id="hwUrgent">
+              </div>
+              <div class="col-12">
+                <label class="form-label">AI-Suggested Topic</label>
+                <button type="button" class="btn btn-outline-info btn-sm" id="aiSuggestBtn">Suggest</button>
+                <span id="aiSuggestion" class="ms-2 text-success"></span>
+              </div>
+            </div>
+            <div class="mt-3 d-flex justify-content-end gap-2">
+              <button type="submit" class="btn btn-primary">Save Assignment</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Bulk Import Modal -->
+  <div class="modal fade" id="bulkImportModal" tabindex="-1" aria-labelledby="bulkImportModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="bulkImportModalLabel"><i class="fa fa-upload"></i> Bulk Import Homework</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <input type="file" class="form-control mb-2" id="bulkImportFile" accept=".csv,.xlsx">
+          <button class="btn btn-primary" id="importHomeworkBtn">Import</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- In-App Chat Modal -->
+  <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="chatModalLabel"><i class="fa fa-comments"></i> Assignment Chat</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="chatMessages" style="height:200px;overflow-y:auto;"></div>
+          <div class="input-group mt-2">
+            <input type="text" class="form-control" id="chatInput" placeholder="Type a message...">
+            <button class="btn btn-primary" id="sendChatBtn"><i class="fa fa-paper-plane"></i></button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- PDF Annotation Modal (stub) -->
+<div class="modal fade" id="pdfAnnotateModal" tabindex="-1" aria-labelledby="pdfAnnotateModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="pdfAnnotateModalLabel"><i class="fa fa-pen"></i> PDF Annotation</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="pdfAnnotateArea">[PDF Annotation Area - TODO]</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Group Assignment Modal (stub) -->
+<div class="modal fade" id="groupAssignModal" tabindex="-1" aria-labelledby="groupAssignModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="groupAssignModalLabel"><i class="fa fa-users"></i> Group Assignment</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="groupAssignArea">[Group Assignment Area - TODO]</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Peer Review Modal (stub) -->
+<div class="modal fade" id="peerReviewModal" tabindex="-1" aria-labelledby="peerReviewModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="peerReviewModalLabel"><i class="fa fa-user-check"></i> Peer Review</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="peerReviewArea">[Peer Review Area - TODO]</div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Homework Audit Log Modal (stub) -->
+<div class="modal fade" id="auditLogModal" tabindex="-1" aria-labelledby="auditLogModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="auditLogModalLabel"><i class="fa fa-history"></i> Homework Audit Log</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div id="auditLogArea">[Audit Log Area - TODO]</div>
+      </div>
+    </div>
+  </div>
+</div>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
 </body>

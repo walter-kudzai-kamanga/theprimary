@@ -24,7 +24,7 @@
           <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
           <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
           <li class="nav-item"><a class="nav-link" href="homework.html">Homework</a></li>
-          <li class="nav-item"><a class="nav-link" href="finance.html">Finance</a></li>
+          <li class="nav-item"><a class="nav-link active" href="finance.html">Finance</a></li>
           <li class="nav-item"><a class="nav-link" href="inventory.html">Inventory</a></li>
           <li class="nav-item"><a class="nav-link" href="transport.html">Transport</a></li>
           <li class="nav-item"><a class="nav-link" href="alerts.html">Alerts</a></li>
@@ -34,51 +34,225 @@
   </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Finance & Fees</h2>
-    <!-- Fee Structure Form (placeholder) -->
-    <div class="card mb-4 animate__animated animate__fadeIn">
-      <div class="card-header">Fee Structure</div>
-      <div class="card-body">
-        <form id="financeForm">
-          <div class="row g-3">
-            <div class="col-md-4">
-              <label class="form-label">Grade</label>
-              <input type="text" class="form-control" id="financeGrade" placeholder="Grade" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Term</label>
-              <input type="text" class="form-control" id="financeTerm" placeholder="Term" required>
-            </div>
-            <div class="col-md-4">
-              <label class="form-label">Fee Amount</label>
-              <input type="number" class="form-control" id="financeAmount" placeholder="Amount" required>
+    <!-- Tabs Navigation -->
+    <ul class="nav nav-tabs mb-3" id="financeTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">Payments</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="receipts-tab" data-bs-toggle="tab" data-bs-target="#receipts" type="button" role="tab">Receipts</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="reports-tab" data-bs-toggle="tab" data-bs-target="#reports" type="button" role="tab">Reports</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="wallet-tab" data-bs-toggle="tab" data-bs-target="#wallet" type="button" role="tab">DeucePay Wallet</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="arrears-tab" data-bs-toggle="tab" data-bs-target="#arrears" type="button" role="tab">Students in Arrears</button>
+      </li>
+    </ul>
+    <div class="tab-content" id="financeTabsContent">
+      <!-- Dashboard Tab -->
+      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="row mb-3">
+          <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Total Collected</h5>
+                <p class="card-text" id="totalCollected">$0</p>
+              </div>
             </div>
           </div>
-          <button class="btn btn-primary mt-3" type="submit">Save Structure</button>
-        </form>
+          <div class="col-md-3">
+            <div class="card text-white bg-secondary mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Outstanding</h5>
+                <p class="card-text" id="totalOutstanding">$0</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Overdue</h5>
+                <p class="card-text" id="totalOverdue">$0</p>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card text-white bg-info mb-3">
+              <div class="card-body">
+                <h5 class="card-title">Upcoming Payments</h5>
+                <p class="card-text" id="upcomingPayments">$0</p>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mb-4">
+          <div class="col-md-8">
+            <div class="card mb-3">
+              <div class="card-header">Fee Collection Trends</div>
+              <div class="card-body">
+                <canvas id="feeTrendsChart" height="100"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card mb-3">
+              <div class="card-header">Quick Actions</div>
+              <div class="card-body d-grid gap-2">
+                <button class="btn btn-outline-primary">Send Reminder</button>
+                <button class="btn btn-outline-secondary">Add Custom Charge</button>
+                <button class="btn btn-outline-success">Print Receipt</button>
+                <button class="btn btn-outline-info">Export Report</button>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <!-- Finance Table (placeholder) -->
-    <div class="card animate__animated animate__fadeInUp">
-      <div class="card-header">Finance Summary</div>
-      <div class="card-body">
-        <table class="table table-striped" id="financeTable">
+      <!-- Payments Tab -->
+      <div class="tab-pane fade" id="payments" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <input type="text" class="form-control d-inline-block w-auto" placeholder="Search payments...">
+            <select class="form-select d-inline-block w-auto ms-2">
+              <option>All Statuses</option>
+              <option>Paid</option>
+              <option>Pending</option>
+              <option>Failed</option>
+            </select>
+          </div>
+          <button class="btn btn-primary">+ New Payment</button>
+        </div>
+        <table class="table table-striped">
           <thead>
             <tr>
+              <th>Date</th>
+              <th>Student</th>
+              <th>Amount</th>
+              <th>Status</th>
+              <th>Method</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Payments data placeholder -->
+          </tbody>
+        </table>
+      </div>
+      <!-- Receipts Tab -->
+      <div class="tab-pane fade" id="receipts" role="tabpanel">
+        <div class="mb-3">
+          <input type="text" class="form-control w-25 d-inline-block" placeholder="Search receipts...">
+          <button class="btn btn-info ms-2">Export PDF</button>
+        </div>
+        <table class="table table-hover">
+          <thead>
+            <tr>
+              <th>Receipt #</th>
+              <th>Date</th>
+              <th>Student</th>
+              <th>Amount</th>
+              <th>QR/Hash</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Receipts data placeholder -->
+          </tbody>
+        </table>
+      </div>
+      <!-- Reports Tab -->
+      <div class="tab-pane fade" id="reports" role="tabpanel">
+        <div class="mb-3">
+          <button class="btn btn-outline-primary">+ New Custom Report</button>
+        </div>
+        <div class="card">
+          <div class="card-header">Custom Report Builder</div>
+          <div class="card-body">
+            <p>Drag and drop fields to create a custom report. (Placeholder UI)</p>
+            <!-- Custom report builder placeholder -->
+          </div>
+        </div>
+      </div>
+      <!-- DeucePay Wallet Tab -->
+      <div class="tab-pane fade" id="wallet" role="tabpanel">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Wallet Balance</div>
+              <div class="card-body">
+                <h4 id="walletBalance">$0.00</h4>
+                <button class="btn btn-success">Top Up</button>
+                <button class="btn btn-outline-secondary ms-2">Saved Cards</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card">
+              <div class="card-header">Recurring Payments</div>
+              <div class="card-body">
+                <p>No recurring payments set up. (Placeholder)</p>
+                <button class="btn btn-primary">Set Up Recurring</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Students in Arrears Tab -->
+      <div class="tab-pane fade" id="arrears" role="tabpanel">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <div>
+            <input type="text" class="form-control d-inline-block w-auto" placeholder="Search students...">
+            <select class="form-select d-inline-block w-auto ms-2">
+              <option>All Grades</option>
+              <option>Grade 1</option>
+              <option>Grade 2</option>
+              <!-- More grades -->
+            </select>
+            <input type="date" class="form-control d-inline-block w-auto ms-2" placeholder="From">
+            <input type="date" class="form-control d-inline-block w-auto ms-2" placeholder="To">
+          </div>
+          <button class="btn btn-danger">Send Bulk Reminder</button>
+        </div>
+        <table class="table table-bordered align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Student</th>
               <th>Grade</th>
-              <th>Term</th>
-              <th>Fee</th>
+              <th>Class</th>
+              <th>Amount Overdue</th>
+              <th>Days Overdue</th>
               <th>Status</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Populated by JS -->
+            <!-- Example row with risk indicator -->
+            <tr class="table-danger">
+              <td>Jane Doe</td>
+              <td>Grade 3</td>
+              <td>A</td>
+              <td>$500</td>
+              <td>45</td>
+              <td><span class="badge bg-danger">High Risk</span></td>
+              <td>
+                <button class="btn btn-sm btn-warning">Send Reminder</button>
+                <button class="btn btn-sm btn-info">View Details</button>
+              </td>
+            </tr>
+            <!-- More rows will be populated by JS -->
           </tbody>
         </table>
       </div>
     </div>
   </div>
   <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/chart.min.js"></script>
   <script src="assets/js/script.js"></script>
 </body>
 </html> 

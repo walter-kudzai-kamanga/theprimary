@@ -193,3 +193,123 @@ body.dark-mode .quick-actions .btn-secondary:hover {
 #studentDetailModal .modal-content {
   border-radius: 1rem;
 } 
+
+/* Attendance Register Styles */
+.sticky-col {
+  position: sticky;
+  left: 0;
+  background: #fff;
+  z-index: 2;
+}
+.attendance-table-scroll {
+  overflow-x: auto;
+  white-space: nowrap;
+}
+.status-badge {
+  min-width: 70px;
+  display: inline-block;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 20px;
+  padding: 0.25em 0.75em;
+}
+.badge-present { background: #6f42c1; color: #fff; } /* purple */
+.badge-absent { background: #dc3545; color: #fff; }
+.badge-late { background: #fd7e14; color: #fff; }
+.badge-excused { background: #0d6efd; color: #fff; }
+.badge-unmarked { background: #adb5bd; color: #fff; }
+.calendar-placeholder, .analytics-placeholder, .auditlog-placeholder {
+  min-height: 180px;
+  background: #f8f9fa;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #888;
+  font-size: 1.1em;
+  margin-bottom: 1.5rem;
+}
+.sticky-action-bar {
+  position: sticky;
+  top: 70px;
+  z-index: 10;
+  background: #fff;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid #eee;
+}
+@media (max-width: 768px) {
+  .sticky-action-bar {
+    top: 56px;
+  }
+  .attendance-table-scroll {
+    min-width: 100vw;
+  }
+} 
+
+/* Finance Module Custom Styles */
+
+.nav-tabs .nav-link.active {
+  background-color: #6f42c1;
+  color: #fff;
+  border-color: #6f42c1 #6f42c1 #fff;
+}
+.nav-tabs .nav-link {
+  color: #6f42c1;
+}
+
+.card.bg-primary, .card.bg-secondary, .card.bg-danger, .card.bg-info {
+  border: none;
+}
+
+.card-title {
+  font-weight: 600;
+}
+
+.table-danger {
+  background-color: #f8d7da !important;
+}
+
+.badge.bg-danger {
+  background-color: #dc3545 !important;
+}
+
+.btn-outline-primary {
+  border-color: #6f42c1;
+  color: #6f42c1;
+}
+.btn-outline-primary:hover {
+  background-color: #6f42c1;
+  color: #fff;
+}
+
+.btn-outline-secondary {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.btn-outline-info {
+  border-color: #6610f2;
+  color: #6610f2;
+}
+.btn-outline-info:hover {
+  background-color: #6610f2;
+  color: #fff;
+}
+
+@media (max-width: 768px) {
+  .nav-tabs .nav-link {
+    font-size: 0.95rem;
+    padding: 0.5rem 0.7rem;
+  }
+  .card-title {
+    font-size: 1rem;
+  }
+  .table th, .table td {
+    font-size: 0.95rem;
+  }
+} 

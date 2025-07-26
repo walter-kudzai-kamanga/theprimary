@@ -34,7 +34,60 @@
   </nav>
   <div class="container mt-4">
     <h2 class="mb-4">Alerts & Incident Reporting</h2>
-    <!-- Incident Reporting Form (placeholder) -->
+    <!-- Dashboard Summary Cards & Charts -->
+    <div class="row mb-4">
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Total Incidents</h5>
+            <h2 id="alertsTotal">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Open</h5>
+            <h2 id="alertsOpen">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Resolved</h5>
+            <h2 id="alertsResolved">0</h2>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-3 mb-3">
+        <div class="card dashboard-card text-center">
+          <div class="card-body">
+            <h5>Anonymous</h5>
+            <h2 id="alertsAnonymous">0</h2>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row mb-4">
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h6>Incidents by Category</h6>
+            <canvas id="alertsCategoryChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-6 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h6>Trends Over Time</h6>
+            <canvas id="alertsTrendChart" height="120"></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Incident Reporting Form -->
     <div class="card mb-4 animate__animated animate__fadeIn">
       <div class="card-header">Log Incident</div>
       <div class="card-body">
@@ -46,22 +99,44 @@
                 <option>Discipline</option>
                 <option>Safety</option>
                 <option>Maintenance</option>
+                <option>Bullying</option>
+                <option>Other</option>
               </select>
             </div>
             <div class="col-md-8">
               <label class="form-label">Description</label>
-              <input type="text" class="form-control" id="alertDescription" placeholder="Describe the incident" required>
+              <div class="input-group">
+                <input type="text" class="form-control" id="alertDescription" placeholder="Describe the incident" required>
+                <button class="btn btn-outline-secondary" type="button" id="voiceToTextBtn"><i class="fa fa-microphone"></i></button>
+              </div>
             </div>
             <div class="col-md-4">
-              <label class="form-label">Attach File</label>
-              <input type="file" class="form-control" id="alertFile">
+              <label class="form-label">Attachments</label>
+              <input type="file" class="form-control" id="alertFile" multiple>
+            </div>
+            <div class="col-md-2">
+              <label class="form-label">Priority</label>
+              <select class="form-select" id="alertPriority">
+                <option>Low</option>
+                <option>Medium</option>
+                <option>High</option>
+              </select>
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="alertAnonymous">
+                <label class="form-check-label" for="alertAnonymous">Anonymous</label>
+              </div>
+            </div>
+            <div class="col-md-4 d-flex align-items-end">
+              <a href="#" id="policyLink" class="ms-2">Policy/Quick Guide</a>
             </div>
           </div>
           <button class="btn btn-primary mt-3" type="submit">Log Incident</button>
         </form>
       </div>
     </div>
-    <!-- Alerts Table (placeholder) -->
+    <!-- Alerts Table -->
     <div class="card animate__animated animate__fadeInUp">
       <div class="card-header">Alerts & Incidents</div>
       <div class="card-body">
@@ -70,7 +145,11 @@
             <tr>
               <th>Category</th>
               <th>Description</th>
+              <th>Priority</th>
               <th>Status</th>
+              <th>Anonymous</th>
+              <th>Assigned</th>
+              <th>Date</th>
               <th>Actions</th>
             </tr>
           </thead>
@@ -78,6 +157,87 @@
             <!-- Populated by JS -->
           </tbody>
         </table>
+      </div>
+    </div>
+    <!-- Modals -->
+    <!-- Incident Details Modal -->
+    <div class="modal fade" id="incidentDetailsModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Incident Details</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body" id="incidentDetailsBody">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Assign/Follow-Up Modal -->
+    <div class="modal fade" id="assignModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Assign/Follow-Up</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <form id="assignForm">
+              <div class="mb-3">
+                <label class="form-label">Assign To</label>
+                <input type="text" class="form-control" id="assignTo">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Due Date</label>
+                <input type="date" class="form-control" id="assignDue">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Resolution Steps</label>
+                <textarea class="form-control" id="assignSteps"></textarea>
+              </div>
+              <button class="btn btn-primary" type="submit">Assign</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Escalation Modal -->
+    <div class="modal fade" id="escalationModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Escalation</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body" id="escalationBody">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Notification Settings Modal -->
+    <div class="modal fade" id="notificationModal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Notification Settings</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <form id="notificationForm">
+              <div class="mb-3">
+                <label class="form-label">Notify</label>
+                <select class="form-select" id="notifyWho" multiple>
+                  <option>Principal</option>
+                  <option>Security</option>
+                  <option>Maintenance</option>
+                  <option>Guardians</option>
+                </select>
+              </div>
+              <button class="btn btn-primary" type="submit">Save</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Analytics Dashboard Modal -->
+    <div class="modal fade" id="analyticsModal" tabindex="-1">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header"><h5 class="modal-title">Analytics Dashboard</h5><button type="button" class="btn-close" data-bs-dismiss="modal"></button></div>
+          <div class="modal-body">
+            <canvas id="alertsAnalyticsChart" height="200"></canvas>
+          </div>
+        </div>
       </div>
     </div>
   </div>

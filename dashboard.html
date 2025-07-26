@@ -46,6 +46,15 @@
         <div id="lastUpdated" class="text-muted small">Last updated: <span id="lastUpdatedTime">--:--</span></div>
       </div>
     </div>
+    <!-- Add to Quick Actions Bar or below Welcome -->
+    <div class="d-flex flex-wrap gap-2 my-2">
+      <button id="viewVersionHistoryBtn" class="btn btn-outline-secondary mb-2">
+        <i class="fa fa-history"></i> Version History
+      </button>
+      <button id="exportReportBtn" class="btn btn-outline-success mb-2">
+        <i class="fa fa-file-export"></i> Export Report
+      </button>
+    </div>
     <!-- Quick Actions Bar -->
     <div class="row mb-4">
       <div class="col">
@@ -199,5 +208,32 @@
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/chart.min.js"></script>
   <script src="assets/js/script.js"></script>
+
+  <!-- Add before </body> -->
+  <div class="modal fade" id="versionHistoryModal" tabindex="-1" aria-labelledby="versionHistoryModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="versionHistoryModalLabel">
+            <i class="fa fa-history"></i> Version History
+          </h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="versionHistoryList" class="list-group">
+            <!-- Version list will be rendered here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button id="revertVersionBtn" class="btn btn-warning">
+            <i class="fa fa-undo"></i> Revert to Selected Version
+          </button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 </body>
 </html> 

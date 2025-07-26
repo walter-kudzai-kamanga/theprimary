@@ -772,6 +772,1498 @@ document.addEventListener('DOMContentLoaded', function() {
     updateQRCode();
     renderStudentList();
   });
+
+  // === STAFF & HR MODULE DUMMY DATA ===
+  if (document.getElementById('staffTable')) {
+    // Dummy data arrays
+    let staffList = [
+      { name: 'Alice Johnson', role: 'Teacher', subject: 'Math', schedule: 'Mon-Fri 8am-4pm' },
+      { name: 'Brian Lee', role: 'Admin', subject: '', schedule: 'Mon-Fri 9am-5pm' },
+      { name: 'Cynthia Smith', role: 'Teacher', subject: 'English', schedule: 'Mon-Fri 8am-4pm' }
+    ];
+    let payrollList = [
+      { staff: 'Alice Johnson', grade: 'A', allowances: 200, tax: 150, pension: 100, net: 1750 },
+      { staff: 'Brian Lee', grade: 'B', allowances: 100, tax: 120, pension: 80, net: 1420 },
+      { staff: 'Cynthia Smith', grade: 'A', allowances: 180, tax: 140, pension: 90, net: 1700 }
+    ];
+    let attendanceList = [
+      { date: '2024-06-01', checkin: '08:01', checkout: '16:00', location: 'On-site', status: 'Present' },
+      { date: '2024-06-02', checkin: '08:05', checkout: '16:02', location: 'On-site', status: 'Present' },
+      { date: '2024-06-03', checkin: '', checkout: '', location: '', status: 'Absent' }
+    ];
+    let leaveList = [
+      { type: 'Sick Leave', from: '2024-06-10', to: '2024-06-12', status: 'Approved' },
+      { type: 'Annual Leave', from: '2024-07-01', to: '2024-07-10', status: 'Pending' }
+    ];
+
+    // Track edit state for staff
+    let staffEditIndex = null;
+
+    // Render Staff Table
+    function renderStaffTable() {
+      const tbody = document.querySelector('#staffTable tbody');
+      tbody.innerHTML = staffList.map((s, i) => `
+        <tr>
+          <td>${s.name}</td>
+          <td>${s.role}</td>
+          <td>${s.subject}</td>
+          <td>${s.schedule}</td>
+          <td><button class="btn btn-sm btn-warning edit-staff" data-index="${i}">Edit</button> <button class="btn btn-sm btn-danger delete-staff" data-index="${i}">Delete</button></td>
+        </tr>
+      `).join('');
+    }
+
+    // Render Payroll Table
+    function renderPayrollTable() {
+      if (document.querySelector('#payroll tbody')) {
+        const tbody = document.querySelector('#payroll tbody');
+        tbody.innerHTML = payrollList.map(p => `
+          <tr>
+            <td>${p.staff}</td>
+            <td>${p.grade}</td>
+            <td>${p.allowances}</td>
+            <td>${p.tax}</td>
+            <td>${p.pension}</td>
+            <td>${p.net}</td>
+            <td><button class="btn btn-sm btn-info">Payslip</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Render Attendance Table
+    function renderAttendanceTable() {
+      if (document.querySelector('#attendance tbody')) {
+        const tbody = document.querySelector('#attendance tbody');
+        tbody.innerHTML = attendanceList.map(a => `
+          <tr>
+            <td>${a.date}</td>
+            <td>${a.checkin}</td>
+            <td>${a.checkout}</td>
+            <td>${a.location}</td>
+            <td>${a.status}</td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Render Leave Table
+    function renderLeaveTable() {
+      if (document.querySelector('#leave tbody')) {
+        const tbody = document.querySelector('#leave tbody');
+        tbody.innerHTML = leaveList.map((l, i) => `
+          <tr>
+            <td>${l.type}</td>
+            <td>${l.from}</td>
+            <td>${l.to}</td>
+            <td>${l.status}</td>
+            <td><button class="btn btn-sm btn-danger delete-leave" data-index="${i}">Delete</button></td>
+          </tr>
+        `).join('');
+      }
+    }
+
+    // Initial render
+    renderStaffTable();
+    renderPayrollTable();
+    renderAttendanceTable();
+    renderLeaveTable();
+
+    // Re-render tables on tab show
+    document.querySelectorAll('.sidebar .nav-link').forEach(link => {
+      link.addEventListener('shown.bs.tab', function(e) {
+        renderStaffTable();
+        renderPayrollTable();
+        renderAttendanceTable();
+        renderLeaveTable();
+      });
+    });
+
+    // Add/Edit Staff
+    const staffForm = document.getElementById('staffForm');
+    // Add reset button if not present
+    if (!document.getElementById('resetStaffForm')) {
+      const resetBtn = document.createElement('button');
+      resetBtn.type = 'button';
+      resetBtn.className = 'btn btn-secondary ms-2';
+      resetBtn.id = 'resetStaffForm';
+      resetBtn.textContent = 'Reset';
+      staffForm.appendChild(resetBtn);
+      resetBtn.addEventListener('click', function() {
+        staffForm.reset();
+        staffEditIndex = null;
+      });
+    }
+    staffForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('staffName').value;
+      const role = document.getElementById('staffRole').value;
+      const subject = document.getElementById('staffSubject').value;
+      const schedule = document.getElementById('staffSchedule').value;
+      if (staffEditIndex !== null) {
+        staffList[staffEditIndex] = { name, role, subject, schedule };
+        staffEditIndex = null;
+      } else {
+        staffList.push({ name, role, subject, schedule });
+      }
+      renderStaffTable();
+      this.reset();
+    });
+    document.querySelector('#staffTable tbody').addEventListener('click', function(e) {
+      const idx = e.target.dataset.index;
+      if (e.target.classList.contains('delete-staff')) {
+        staffList.splice(idx, 1);
+        renderStaffTable();
+      } else if (e.target.classList.contains('edit-staff')) {
+        // Populate form for editing
+        const s = staffList[idx];
+        document.getElementById('staffName').value = s.name;
+        document.getElementById('staffRole').value = s.role;
+        document.getElementById('staffSubject').value = s.subject;
+        document.getElementById('staffSchedule').value = s.schedule;
+        staffEditIndex = parseInt(idx, 10);
+      }
+    });
+
+    // Add Leave
+    if (document.getElementById('leaveForm')) {
+      document.getElementById('leaveForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const type = this.querySelector('select').value;
+        const dates = this.querySelectorAll('input[type="date"]');
+        const from = dates[0].value;
+        const to = dates[1].value;
+        leaveList.push({ type, from, to, status: 'Pending' });
+        renderLeaveTable();
+        this.reset();
+      });
+      document.querySelector('#leave tbody').addEventListener('click', function(e) {
+        if (e.target.classList.contains('delete-leave')) {
+          const idx = e.target.dataset.index;
+          leaveList.splice(idx, 1);
+          renderLeaveTable();
+        }
+      });
+    }
+  }
+
+  // --- Attendance Page JS Mockup ---
+
+  document.addEventListener('DOMContentLoaded', function() {
+    // Notification/Alert Area
+    const notificationArea = document.getElementById('notificationArea');
+    function showNotification(msg, type = 'info') {
+      notificationArea.innerHTML = `<div class="alert alert-${type} alert-dismissible fade show" role="alert">${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>`;
+    }
+
+    // Filter controls (dummy handlers)
+    document.getElementById('filterClass').addEventListener('change', () => showNotification('Class filter applied'));
+    document.getElementById('filterDate').addEventListener('change', () => showNotification('Date filter applied'));
+    document.getElementById('filterSession').addEventListener('change', () => showNotification('Session filter applied'));
+    document.getElementById('filterGender').addEventListener('change', () => showNotification('Gender filter applied'));
+    document.getElementById('searchStudent').addEventListener('input', () => showNotification('Search applied'));
+
+    // Bulk actions (dummy handlers)
+    document.getElementById('markAllPresent').addEventListener('click', () => showNotification('All marked present', 'success'));
+    document.getElementById('markAllAbsent').addEventListener('click', () => showNotification('All marked absent', 'danger'));
+    document.getElementById('markAllLate').addEventListener('click', () => showNotification('All marked late', 'warning'));
+    document.getElementById('bulkActions').addEventListener('click', () => showNotification('Bulk actions menu (to be implemented)'));
+
+    // Export buttons (dummy handlers)
+    document.getElementById('btnExportPDF').addEventListener('click', () => showNotification('Export to PDF (to be implemented)'));
+    document.getElementById('btnExportCSV').addEventListener('click', () => showNotification('Export to CSV (to be implemented)'));
+
+    // Analytics, Calendar, Audit Log (dummy handlers)
+    document.getElementById('openAnalytics').addEventListener('click', () => showNotification('Analytics dashboard (to be implemented)'));
+    document.getElementById('openCalendar').addEventListener('click', () => showNotification('Calendar view (to be implemented)'));
+    document.getElementById('openAuditLog').addEventListener('click', () => showNotification('Audit log (to be implemented)'));
+
+    // Leave/Excuse Modal (dummy handler)
+    const leaveForm = document.getElementById('leaveForm');
+    if (leaveForm) {
+      leaveForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        showNotification('Leave/Excuse submitted (to be implemented)', 'info');
+        const leaveModal = bootstrap.Modal.getOrCreateInstance(document.getElementById('leaveModal'));
+        leaveModal.hide();
+        leaveForm.reset();
+      });
+    }
+
+    // --- Placeholders for dynamic features ---
+    // TODO: Load attendance data via AJAX/fetch
+    // TODO: Render analytics dashboard (Chart.js)
+    // TODO: Render calendar/timeline (FullCalendar or similar)
+    // TODO: Render audit/history log
+    // TODO: Role-based UI logic
+    // TODO: Offline mode support
+  });
+
+  // --- Lesson Planning Module JS Scaffold ---
+  // This file handles all dynamic features for lessons.html
+
+  // ========== AI Plan Drafting & Smart Suggestions ==========
+  document.getElementById('aiDraftBtn')?.addEventListener('click', function() {
+    // TODO: Integrate AI plan drafting (call backend/AI API)
+    document.getElementById('aiSuggestionResult').textContent = 'AI draft feature coming soon!';
+  });
+
+  // ========== Curriculum Mapping & Auto-Suggest ==========
+  document.getElementById('lessonSubject')?.addEventListener('input', function(e) {
+    // TODO: Auto-suggest standards/objectives based on subject/topic
+    document.getElementById('suggestedObjectives').textContent = 'Suggested: [Sample Objective]';
+  });
+
+  // ========== Template Library ==========
+  document.getElementById('saveTemplateBtn')?.addEventListener('click', function(e) {
+    e.preventDefault();
+    // TODO: Save current form as template (localStorage or backend)
+    alert('Template saved (stub)!');
+  });
+  document.getElementById('lessonTemplate')?.addEventListener('change', function(e) {
+    // TODO: Load selected template into form
+    alert('Template loaded (stub)!');
+  });
+
+  // ========== Calendar View (Drag & Drop, Sync) ==========
+  document.getElementById('syncCalendarBtn')?.addEventListener('click', function() {
+    // TODO: Sync with academic calendar (fetch events/holidays)
+    alert('Calendar sync feature coming soon!');
+  });
+  // TODO: Implement drag & drop for #calendarView (use a calendar library or custom logic)
+
+  // ========== Lesson Plan CRUD ==========
+  document.getElementById('lessonForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // TODO: Save lesson plan (to backend or localStorage)
+    alert('Lesson plan saved (stub)!');
+    // TODO: Refresh lessons table
+  });
+
+  // ========== Collaborative Planning & Comments ==========
+  document.getElementById('collabCommentForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // TODO: Add comment to collaborative thread (backend or localStorage)
+    const input = document.getElementById('collabCommentInput');
+    if (input.value.trim()) {
+      const commentDiv = document.createElement('div');
+      commentDiv.textContent = input.value;
+      document.getElementById('collabComments').appendChild(commentDiv);
+      input.value = '';
+    }
+  });
+
+  // ========== Interactive Content & Resource Embeds ==========
+  document.getElementById('embedResourceBtn')?.addEventListener('click', function() {
+    const modal = new bootstrap.Modal(document.getElementById('embedResourceModal'));
+    modal.show();
+  });
+  document.getElementById('addEmbedBtn')?.addEventListener('click', function() {
+    const url = document.getElementById('embedResourceUrl').value;
+    if (url) {
+      // TODO: Validate and embed resource (iframe or link)
+      const embedDiv = document.createElement('div');
+      embedDiv.innerHTML = `<a href="${url}" target="_blank">${url}</a>`;
+      document.getElementById('embeddedResources').appendChild(embedDiv);
+      document.getElementById('embedResourceUrl').value = '';
+      bootstrap.Modal.getInstance(document.getElementById('embedResourceModal')).hide();
+    }
+  });
+
+  // ========== Resource Tagging & Search ==========
+  document.getElementById('searchMaterialsBtn')?.addEventListener('click', function() {
+    const modal = new bootstrap.Modal(document.getElementById('searchMaterialsModal'));
+    modal.show();
+  });
+  document.getElementById('searchMaterialsInput')?.addEventListener('input', function(e) {
+    // TODO: Implement fast in-system search for materials
+    document.getElementById('searchMaterialsResults').textContent = 'Search results coming soon!';
+  });
+
+  // ========== Progress & Analytics ==========
+  // TODO: Render coverage and time-on-topic charts (use Chart.js or similar)
+  document.getElementById('coverageChart').textContent = 'Coverage chart coming soon!';
+  document.getElementById('timeOnTopicChart').textContent = 'Time-on-topic chart coming soon!';
+  // TODO: Show alerts for under-covered areas
+
+  document.getElementById('coverageAlerts').textContent = '';
+
+  // ========== Evidence of Delivery ==========
+  document.getElementById('evidenceForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // TODO: Upload evidence files (photos, work, etc.)
+    alert('Evidence uploaded (stub)!');
+  });
+
+  // ========== Approval, Feedback, Version History ==========
+  document.getElementById('feedbackForm')?.addEventListener('submit', function(e) {
+    e.preventDefault();
+    // TODO: Submit feedback (to backend or localStorage)
+    const feedback = document.getElementById('feedbackInput').value;
+    if (feedback.trim()) {
+      const feedbackDiv = document.createElement('div');
+      feedbackDiv.textContent = feedback;
+      document.getElementById('feedbackList').appendChild(feedbackDiv);
+      document.getElementById('feedbackInput').value = '';
+    }
+  });
+  document.getElementById('viewVersionHistoryBtn')?.addEventListener('click', function() {
+    // TODO: Show version history modal or section
+    alert('Version history feature coming soon!');
+  });
+  document.getElementById('revertVersionBtn')?.addEventListener('click', function() {
+    // TODO: Revert to previous version
+    alert('Revert feature coming soon!');
+  });
+
+  // ========== Dashboard & Reports ==========
+  document.getElementById('exportReportBtn')?.addEventListener('click', function() {
+    // TODO: Export dashboard/report to PDF or Excel
+    alert('Export feature coming soon!');
+  });
+})
+  // ========== Smart Suggestions (AI Resource Suggestions) ==========
+  // TODO: Implement AI-assisted resource suggestions based on topic
+
+  // ========== Gap Detection (AI) ==========
+  // TODO: Highlight topics skipped or insufficiently covered
+
+  // ========== Utility Functions ==========
+  // Add any utility/helper functions here
+
+  // --- End Lesson Planning Module JS Scaffold --- 
+
+// --- Homework Module Full Implementation ---
+// DEMO: User roles (change as needed)
+const DEMO_USER = { id: 1, name: 'Jordan Smith', role: 'Teacher', class: 'Class A', subjects: ['Math', 'English'] };
+
+// Data Models
+let homeworkAssignments = JSON.parse(localStorage.getItem('homeworkAssignments') || '[]');
+let homeworkSubmissions = JSON.parse(localStorage.getItem('homeworkSubmissions') || '[]');
+let homeworkAuditLog = JSON.parse(localStorage.getItem('homeworkAuditLog') || '[]');
+let users = JSON.parse(localStorage.getItem('users') || '[]'); // For role-based access
+
+// Utility: Save all
+function saveHomeworkData() {
+  localStorage.setItem('homeworkAssignments', JSON.stringify(homeworkAssignments));
+  localStorage.setItem('homeworkSubmissions', JSON.stringify(homeworkSubmissions));
+  localStorage.setItem('homeworkAuditLog', JSON.stringify(homeworkAuditLog));
+}
+
+// --- Assignment CRUD ---
+function renderHomeworkTable() {
+  const tbody = document.querySelector('#homeworkTable tbody');
+  const filterSubject = document.getElementById('filterSubject').value;
+  const filterClass = document.getElementById('filterClass').value;
+  const filterStatus = document.getElementById('filterStatus').value;
+  let filtered = homeworkAssignments.filter(hw => {
+    let match = true;
+    if (filterSubject && hw.subject !== filterSubject) match = false;
+    if (filterClass && hw.class !== filterClass) match = false;
+    return match;
+  });
+  // Status filter
+  if (filterStatus !== 'all') {
+    filtered = filtered.filter(hw => {
+      const subs = homeworkSubmissions.filter(s => s.assignmentId === hw.id);
+      if (filterStatus === 'submitted') return subs.length > 0;
+      if (filterStatus === 'not_submitted') return subs.length === 0;
+      if (filterStatus === 'late') return subs.some(s => new Date(s.submittedAt) > new Date(hw.due));
+      return true;
+    });
+  }
+  document.getElementById('assignmentCount').textContent = filtered.length;
+  tbody.innerHTML = filtered.map(hw => `
+    <tr>
+      <td>${hw.subject}</td>
+      <td>${hw.class}</td>
+      <td>${hw.title}</td>
+      <td>${new Date(hw.due).toLocaleString()}</td>
+      <td><span class="badge bg-${hw.difficulty === 'Easy' ? 'success' : hw.difficulty === 'Medium' ? 'warning' : 'danger'}">${hw.difficulty}</span></td>
+      <td>${getAssignmentStatus(hw)}</td>
+      <td>${hw.urgent ? '<span class="badge bg-danger">Urgent</span>' : ''}</td>
+      <td>
+        <button class="btn btn-sm btn-info me-1" onclick="openAssignmentDetail('${hw.id}')">View</button>
+        ${DEMO_USER.role === 'Teacher' ? `<button class="btn btn-sm btn-warning me-1" onclick="openHomeworkModal('${hw.id}')">Edit</button><button class="btn btn-sm btn-danger" onclick="deleteAssignment('${hw.id}')">Delete</button>` : ''}
+      </td>
+    </tr>
+  `).join('') || '<tr><td colspan="8" class="text-center">No assignments found.</td></tr>';
+}
+function getAssignmentStatus(hw) {
+  const subs = homeworkSubmissions.filter(s => s.assignmentId === hw.id);
+  if (!subs.length) return '<span class="badge bg-secondary">Not Submitted</span>';
+  if (subs.some(s => new Date(s.submittedAt) > new Date(hw.due))) return '<span class="badge bg-danger">Late</span>';
+  return '<span class="badge bg-success">Submitted</span>';
+}
+function openHomeworkModal(editId = null) {
+  const modal = new bootstrap.Modal(document.getElementById('homeworkModal'));
+  const form = document.getElementById('homeworkForm');
+  form.reset();
+  document.getElementById('aiSuggestion').textContent = '';
+  if (editId) {
+    const hw = homeworkAssignments.find(h => h.id === editId);
+    document.getElementById('hwSubject').value = hw.subject;
+    document.getElementById('hwClass').value = hw.class;
+    document.getElementById('hwDifficulty').value = hw.difficulty;
+    document.getElementById('hwTitle').value = hw.title;
+    document.getElementById('hwDue').value = hw.due.slice(0,16);
+    document.getElementById('hwInstructions').value = hw.instructions;
+    document.getElementById('hwRecurring').value = hw.recurring;
+    document.getElementById('hwUrgent').checked = hw.urgent;
+    form.dataset.editId = editId;
+  } else {
+    form.dataset.editId = '';
+  }
+  modal.show();
+}
+function handleHomeworkFormSubmit(e) {
+  e.preventDefault();
+  const form = e.target;
+  const editId = form.dataset.editId;
+  const hw = {
+    id: editId || 'hw_' + Date.now(),
+    subject: document.getElementById('hwSubject').value,
+    class: document.getElementById('hwClass').value,
+    difficulty: document.getElementById('hwDifficulty').value,
+    title: document.getElementById('hwTitle').value,
+    due: document.getElementById('hwDue').value,
+    instructions: document.getElementById('hwInstructions').value,
+    files: [], // TODO: handle file uploads
+    recurring: document.getElementById('hwRecurring').value,
+    urgent: document.getElementById('hwUrgent').checked,
+    createdBy: DEMO_USER.name,
+    createdAt: new Date().toISOString(),
+    aiTopic: document.getElementById('aiSuggestion').textContent || '',
+    audit: [{ action: editId ? 'Updated' : 'Created', user: DEMO_USER.name, date: new Date().toLocaleString() }]
+  };
+  if (editId) {
+    const idx = homeworkAssignments.findIndex(h => h.id === editId);
+    homeworkAssignments[idx] = hw;
+  } else {
+    homeworkAssignments.push(hw);
+  }
+  saveHomeworkData();
+  renderHomeworkTable();
+  bootstrap.Modal.getInstance(document.getElementById('homeworkModal')).hide();
+}
+function deleteAssignment(id) {
+  if (confirm('Delete this assignment?')) {
+    homeworkAssignments = homeworkAssignments.filter(h => h.id !== id);
+    homeworkSubmissions = homeworkSubmissions.filter(s => s.assignmentId !== id);
+    saveHomeworkData();
+    renderHomeworkTable();
+  }
+}
+
+// --- Submission & Multiple Attempts ---
+window.openAssignmentDetail = function(assignmentId) {
+  const hw = homeworkAssignments.find(h => h.id === assignmentId);
+  const detail = document.getElementById('assignmentDetail');
+  detail.style.display = 'block';
+  let html = `<h4>${hw.title} <span class="badge bg-${hw.difficulty === 'Easy' ? 'success' : hw.difficulty === 'Medium' ? 'warning' : 'danger'}">${hw.difficulty}</span> ${hw.urgent ? '<span class="badge bg-danger">Urgent</span>' : ''}</h4>`;
+  html += `<div><b>Subject:</b> ${hw.subject} | <b>Class:</b> ${hw.class} | <b>Due:</b> ${new Date(hw.due).toLocaleString()}</div>`;
+  html += `<div class="mt-2"><b>Instructions:</b> ${hw.instructions}</div>`;
+  html += `<div class="mt-2"><b>AI Topic:</b> ${hw.aiTopic || 'N/A'}</div>`;
+  html += `<div class="mt-2"><b>Files:</b> ${hw.files && hw.files.length ? hw.files.map(f => `<a href="#">${f.name}</a>`).join(', ') : 'None'}</div>`;
+  // Submission panel
+  if (DEMO_USER.role === 'Student') {
+    const mySubs = homeworkSubmissions.filter(s => s.assignmentId === assignmentId && s.studentId === DEMO_USER.id);
+    html += `<div class="mt-3"><b>Your Submissions:</b> (${mySubs.length} / 3 attempts allowed)`;
+    mySubs.forEach((s, i) => {
+      html += `<div class="border p-2 my-1"><b>Attempt ${i+1}:</b> ${s.text ? `<div>${s.text}</div>` : ''} <div><b>Status:</b> ${s.status}</div> <div><b>Submitted:</b> ${new Date(s.submittedAt).toLocaleString()}</div></div>`;
+    });
+    if (mySubs.length < 3 && new Date(hw.due) > new Date()) {
+      html += `<form id="submissionForm" class="mt-2"><textarea class="form-control mb-2" id="submissionText" placeholder="Write your answer..."></textarea><button class="btn btn-success" type="submit">Submit</button></form>`;
+    }
+    html += '</div>';
+  }
+  // Teacher grading panel
+  if (DEMO_USER.role === 'Teacher') {
+    const subs = homeworkSubmissions.filter(s => s.assignmentId === assignmentId);
+    html += `<div class="mt-4"><b>Submissions:</b> <ul class="list-group">`;
+    subs.forEach(s => {
+      html += `<li class="list-group-item d-flex justify-content-between align-items-center">${s.studentName} - <span>${s.status}</span> <button class="btn btn-sm btn-primary" onclick="openGradingPanel('${s.id}')">Grade</button></li>`;
+    });
+    html += '</ul></div>';
+  }
+  // Chat
+  html += `<div class="mt-4"><button class="btn btn-outline-info" onclick="openChatModal('${assignmentId}')"><i class="fa fa-comments"></i> Open Chat</button></div>`;
+  detail.innerHTML = html;
+  // Submission form handler
+  const subForm = document.getElementById('submissionForm');
+  if (subForm) {
+    subForm.onsubmit = function(e) {
+      e.preventDefault();
+      const text = document.getElementById('submissionText').value;
+      // Plagiarism check demo
+      if (homeworkSubmissions.some(s => s.assignmentId === assignmentId && s.text === text)) {
+        alert('Plagiarism detected!');
+        return;
+      }
+      homeworkSubmissions.push({
+        id: 'sub_' + Date.now(),
+        assignmentId,
+        studentId: DEMO_USER.id,
+        studentName: DEMO_USER.name,
+        text,
+        status: new Date() > new Date(hw.due) ? 'Late' : 'Submitted',
+        submittedAt: new Date().toISOString(),
+        files: [] // TODO: handle file uploads
+      });
+      saveHomeworkData();
+      openAssignmentDetail(assignmentId);
+    };
+  }
+};
+window.deleteAssignment = deleteAssignment;
+
+// --- Grading & Feedback ---
+window.openGradingPanel = function(submissionId) {
+  const panel = document.getElementById('gradingPanel');
+  panel.style.display = 'block';
+  const sub = homeworkSubmissions.find(s => s.id === submissionId);
+  panel.innerHTML = `<h5>Grading: ${sub.studentName}</h5>
+    <div><b>Submission:</b> ${sub.text}</div>
+    <form id="gradeForm" class="mt-2">
+      <label>Marks:</label> <input type="number" class="form-control mb-2" id="gradeMarks" value="${sub.marks || ''}" max="100" min="0">
+      <label>Feedback:</label> <textarea class="form-control mb-2" id="gradeFeedback">${sub.feedback || ''}</textarea>
+      <button class="btn btn-success" type="submit">Save</button>
+      <button class="btn btn-secondary ms-2" type="button" onclick="document.getElementById('gradingPanel').style.display='none'">Close</button>
+      <button class="btn btn-outline-info ms-2" type="button" onclick="openPdfAnnotateModal()">PDF Annotate</button>
+    </form>`;
+  document.getElementById('gradeForm').onsubmit = function(e) {
+    e.preventDefault();
+    sub.marks = document.getElementById('gradeMarks').value;
+    sub.feedback = document.getElementById('gradeFeedback').value;
+    saveHomeworkData();
+    panel.style.display = 'none';
+    alert('Grade saved!');
+  };
+};
+
+// --- Analytics Dashboard ---
+function openAnalyticsModal() {
+  const modal = new bootstrap.Modal(document.getElementById('analyticsModal'));
+  const content = document.getElementById('analyticsContent');
+  // Demo: submission rates by assignment
+  let html = '<h6>Submission Rates</h6><ul class="list-group mb-3">';
+  homeworkAssignments.forEach(hw => {
+    const total = users.filter(u => u.role === 'Student' && u.class === hw.class).length || 10;
+    const submitted = homeworkSubmissions.filter(s => s.assignmentId === hw.id).length;
+    html += `<li class="list-group-item">${hw.title} (${hw.class}) - ${submitted}/${total} submitted</li>`;
+  });
+  html += '</ul>';
+  // Parent engagement demo
+  html += '<h6>Parent Engagement (Demo)</h6><div>Parent views: <span class="badge bg-info">N/A</span></div>';
+  content.innerHTML = html;
+  modal.show();
+}
+
+// --- In-App Chat ---
+window.openChatModal = function(assignmentId) {
+  const modal = new bootstrap.Modal(document.getElementById('chatModal'));
+  const chatMessages = document.getElementById('chatMessages');
+  chatMessages.innerHTML = '';
+  // Demo: no persistent chat
+  modal.show();
+  document.getElementById('sendChatBtn').onclick = function() {
+    const input = document.getElementById('chatInput');
+    if (input.value.trim()) {
+      chatMessages.innerHTML += `<div><b>${DEMO_USER.name}:</b> ${input.value}</div>`;
+      input.value = '';
+    }
+  };
+};
+
+// --- Advanced Features Stubs ---
+window.openPdfAnnotateModal = function() {
+  const modal = new bootstrap.Modal(document.getElementById('pdfAnnotateModal'));
+  document.getElementById('pdfAnnotateArea').innerHTML = '[PDF Annotation Area - TODO]';
+  modal.show();
+};
+window.openGroupAssignModal = function() {
+  const modal = new bootstrap.Modal(document.getElementById('groupAssignModal'));
+  document.getElementById('groupAssignArea').innerHTML = '[Group Assignment Area - TODO]';
+  modal.show();
+};
+window.openPeerReviewModal = function() {
+  const modal = new bootstrap.Modal(document.getElementById('peerReviewModal'));
+  document.getElementById('peerReviewArea').innerHTML = '[Peer Review Area - TODO]';
+  modal.show();
+};
+window.openAuditLogModal = function() {
+  const modal = new bootstrap.Modal(document.getElementById('auditLogModal'));
+  document.getElementById('auditLogArea').innerHTML = '[Audit Log Area - TODO]';
+  modal.show();
+};
+
+// --- Bulk Import (Demo) ---
+document.getElementById('bulkImportBtn')?.addEventListener('click', () => {
+  new bootstrap.Modal(document.getElementById('bulkImportModal')).show();
+});
+document.getElementById('importHomeworkBtn')?.addEventListener('click', () => {
+  // Demo: add a fake assignment
+  homeworkAssignments.push({
+    id: 'hw_' + Date.now(),
+    subject: 'Science',
+    class: 'Class B',
+    difficulty: 'Medium',
+    title: 'Imported Assignment',
+    due: new Date(Date.now() + 86400000).toISOString().slice(0,16),
+    instructions: 'Imported via bulk upload.',
+    files: [],
+    recurring: 'none',
+    urgent: false,
+    createdBy: DEMO_USER.name,
+    createdAt: new Date().toISOString(),
+    aiTopic: '',
+    audit: [{ action: 'Imported', user: DEMO_USER.name, date: new Date().toLocaleString() }]
+  });
+  saveHomeworkData();
+  renderHomeworkTable();
+  bootstrap.Modal.getInstance(document.getElementById('bulkImportModal')).hide();
 });
 
-// Optional: Add dark mode CSS in style.css for .dark-mode body, cards, etc. 
+// --- AI Suggestion (Demo) ---
+document.getElementById('aiSuggestBtn')?.addEventListener('click', () => {
+  const topics = ['Fractions Practice', 'Essay: My Favorite Book', 'Lab: Plant Growth', 'Oral: Introduce Yourself', 'Math Drill: Multiplication'];
+  document.getElementById('aiSuggestion').textContent = topics[Math.floor(Math.random() * topics.length)];
+});
+
+// --- Filters ---
+document.getElementById('filterSubject')?.addEventListener('change', renderHomeworkTable);
+document.getElementById('filterClass')?.addEventListener('change', renderHomeworkTable);
+document.getElementById('filterStatus')?.addEventListener('change', renderHomeworkTable);
+
+// --- Assignment Modal Save ---
+document.getElementById('homeworkForm')?.addEventListener('submit', handleHomeworkFormSubmit);
+
+document.addEventListener('DOMContentLoaded', function() {
+  // Populate subject/class filters (demo)
+  const subjects = ['Math', 'English', 'Science', 'History'];
+  const classes = ['Class A', 'Class B', 'Class C'];
+  subjects.forEach(s => {
+    document.getElementById('filterSubject').innerHTML += `<option value="${s}">${s}</option>`;
+    document.getElementById('hwSubject').innerHTML += `<option value="${s}">${s}</option>`;
+  });
+  classes.forEach(c => {
+    document.getElementById('filterClass').innerHTML += `<option value="${c}">${c}</option>`;
+    document.getElementById('hwClass').innerHTML += `<option value="${c}">${c}</option>`;
+  });
+  renderHomeworkTable();
+});
+// --- End Homework Module Full Implementation ---
+
+// --- Version History & Revert Implementation ---
+
+// Demo: Store dashboard versions in localStorage under 'dashboardVersions'
+function saveDashboardVersion(data) {
+  let versions = JSON.parse(localStorage.getItem('dashboardVersions') || '[]');
+  const timestamp = new Date().toLocaleString();
+  versions.unshift({ timestamp, data: { ...data } });
+  // Keep only last 10 versions
+  versions = versions.slice(0, 10);
+  localStorage.setItem('dashboardVersions', JSON.stringify(versions));
+}
+
+// Example: Save a version every time dashboardData changes (for demo)
+if (typeof dashboardData !== 'undefined') {
+  saveDashboardVersion(dashboardData);
+}
+
+// --- Version History Modal Logic ---
+const versionHistoryModal = document.getElementById('versionHistoryModal');
+const versionHistoryList = document.getElementById('versionHistoryList');
+let selectedVersionIndex = null;
+
+function renderVersionHistory() {
+  const versions = JSON.parse(localStorage.getItem('dashboardVersions') || '[]');
+  if (!versions.length) {
+    versionHistoryList.innerHTML = '<div class="text-muted">No version history found.</div>';
+    return;
+  }
+  versionHistoryList.innerHTML = versions.map((v, i) => `
+    <div class="list-group-item d-flex align-items-center">
+      <input type="radio" name="versionSelect" value="${i}" class="form-check-input me-2" ${i === 0 ? 'checked' : ''}>
+      <span><b>${v.timestamp}</b> - Students: ${v.data.total_students ?? '-'} | Staff: ${v.data.total_staff ?? '-'}</span>
+    </div>
+  `).join('');
+  selectedVersionIndex = 0;
+}
+
+// Open version history modal
+if (document.getElementById('viewVersionHistoryBtn')) {
+  document.getElementById('viewVersionHistoryBtn').addEventListener('click', function() {
+    renderVersionHistory();
+    const modal = new bootstrap.Modal(versionHistoryModal);
+    modal.show();
+  });
+}
+
+// Track selected version
+if (versionHistoryList) {
+  versionHistoryList.addEventListener('change', function(e) {
+    if (e.target.name === 'versionSelect') {
+      selectedVersionIndex = parseInt(e.target.value, 10);
+    }
+  });
+}
+
+// --- Revert Version Logic ---
+if (document.getElementById('revertVersionBtn')) {
+  document.getElementById('revertVersionBtn').addEventListener('click', function() {
+    const versions = JSON.parse(localStorage.getItem('dashboardVersions') || '[]');
+    if (selectedVersionIndex === null || !versions[selectedVersionIndex]) {
+      alert('Please select a version to revert to.');
+      return;
+    }
+    if (confirm('Are you sure you want to revert to this version? This will overwrite current dashboard data.')) {
+      // For demo: update dashboardData and re-render
+      Object.assign(dashboardData, versions[selectedVersionIndex].data);
+      updateDashboardCards();
+      // Save as new version
+      saveDashboardVersion(dashboardData);
+      alert('Dashboard reverted to selected version!');
+      // Close modal
+      bootstrap.Modal.getInstance(versionHistoryModal).hide();
+    }
+  });
+}
+
+// --- Export Dashboard/Report Logic ---
+if (document.getElementById('exportReportBtn')) {
+  document.getElementById('exportReportBtn').addEventListener('click', function() {
+    // For demo: export dashboardData as CSV
+    const data = dashboardData;
+    const csvRows = [
+      ['Field', 'Value'],
+      ['Total Students', data.total_students],
+      ['Total Staff', data.total_staff],
+      ['Total Classes', data.total_classes],
+      ['Active Lessons', data.active_lessons],
+      ['Last Updated', data.last_updated]
+    ];
+    const csv = csvRows.map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'dashboard_report.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+
+// --- End Version History, Revert, Export Implementation --- 
+
+// Finance Module JS
+
+document.addEventListener('DOMContentLoaded', function () {
+  // Dashboard sample data
+  document.getElementById('totalCollected').textContent = '$25,000';
+  document.getElementById('totalOutstanding').textContent = '$5,000';
+  document.getElementById('totalOverdue').textContent = '$2,000';
+  document.getElementById('upcomingPayments').textContent = '$1,500';
+
+  // Fee Trends Chart (Chart.js)
+  if (window.Chart && document.getElementById('feeTrendsChart')) {
+    new Chart(document.getElementById('feeTrendsChart').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        datasets: [{
+          label: 'Collected',
+          data: [4000, 5000, 3500, 6000, 3500, 5000],
+          borderColor: '#6f42c1',
+          backgroundColor: 'rgba(111,66,193,0.1)',
+          tension: 0.4,
+          fill: true
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { display: false }
+        },
+        scales: {
+          y: { beginAtZero: true }
+        }
+      }
+    });
+  }
+
+  // Students in Arrears sample row (already in HTML as example)
+  // Add more rows dynamically if needed in the future
+}); 
+
+// === INVENTORY MANAGEMENT MODULE ENHANCEMENTS ===
+document.addEventListener('DOMContentLoaded', function () {
+  if (!document.getElementById('inventoryTable')) return; // Only run on inventory.html
+
+  // --- Demo Data ---
+  let inventory = JSON.parse(localStorage.getItem('inventory') || '[]');
+  let auditTrail = JSON.parse(localStorage.getItem('inventoryAuditTrail') || '[]');
+  let categories = ['Books', 'Desks', 'Laptops', 'Lab Equipment', 'Projectors'];
+  let locations = ['Main Library', 'Science Lab', 'Room 101', 'Room 202', 'Admin Office'];
+  let staff = ['Teacher A', 'Teacher B', 'Admin', 'Lab Tech', 'IT Support'];
+
+  // --- Utility Functions ---
+  function saveInventory() {
+    localStorage.setItem('inventory', JSON.stringify(inventory));
+    localStorage.setItem('inventoryAuditTrail', JSON.stringify(auditTrail));
+  }
+  function showToast(msg, type = 'success') {
+    alert(msg); // Replace with Bootstrap toast if desired
+  }
+
+  // --- Populate Dropdowns ---
+  function populateDropdown(id, arr) {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    sel.innerHTML = arr.map(v => `<option>${v}</option>`).join('');
+  }
+  populateDropdown('inventoryCategory', categories);
+  populateDropdown('inventoryLocation', locations);
+  populateDropdown('inventoryAssignedTo', staff);
+  populateDropdown('transferAsset', inventory.map(i => i.name));
+  populateDropdown('transferFrom', locations);
+  populateDropdown('transferTo', locations);
+
+  // --- Dashboard Cards ---
+  function updateDashboard() {
+    document.getElementById('invTotalAssets').textContent = inventory.length;
+    document.getElementById('invInUse').textContent = inventory.filter(i => i.status === 'In Use').length;
+    document.getElementById('invUnderRepair').textContent = inventory.filter(i => i.status === 'Under Repair').length;
+    document.getElementById('invLowStock').textContent = inventory.filter(i => i.quantity < 5).length;
+  }
+
+  // --- Charts ---
+  function renderCharts() {
+    if (window.Chart) {
+      // Category Distribution
+      const catCounts = {};
+      inventory.forEach(i => { catCounts[i.category] = (catCounts[i.category] || 0) + 1; });
+      new Chart(document.getElementById('invCategoryChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catCounts),
+          datasets: [{ data: Object.values(catCounts), backgroundColor: ['#6f42c1', '#fd7e14', '#198754', '#dc3545', '#0d6efd'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+      // Depreciation
+      const depLabels = inventory.map(i => i.name);
+      const depData = inventory.map(i => i.depreciation || 0);
+      new Chart(document.getElementById('invDepreciationChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: depLabels,
+          datasets: [{ label: 'Depreciation (%)', data: depData, backgroundColor: '#b39ddb' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+  }
+
+  // --- Render Inventory Table ---
+  function renderInventoryTable() {
+    const tbody = document.getElementById('inventoryTable').querySelector('tbody');
+    tbody.innerHTML = inventory.map((item, idx) => `
+      <tr>
+        <td>${item.name}</td>
+        <td>${item.category}</td>
+        <td>${item.tags || ''}</td>
+        <td>${item.quantity}</td>
+        <td>${item.location || ''}</td>
+        <td>${item.assignedTo || ''}</td>
+        <td><span class="badge bg-${item.status === 'In Use' ? 'success' : item.status === 'Under Repair' ? 'warning' : item.status === 'Retired' ? 'secondary' : item.status === 'Lost' ? 'danger' : 'info'}">${item.status}</span></td>
+        <td>${item.purchaseDate || ''}</td>
+        <td>${item.supplier || ''}</td>
+        <td>${item.warranty || ''}</td>
+        <td>${item.depreciation || ''}</td>
+        <td>${item.barcode || ''}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" onclick="editInventoryItem(${idx})">Edit</button>
+          <button class="btn btn-sm btn-danger me-1" onclick="deleteInventoryItem(${idx})">Delete</button>
+          <button class="btn btn-sm btn-secondary" onclick="showAuditTrail(${idx})">Audit</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="13" class="text-center">No assets found.</td></tr>';
+  }
+  window.editInventoryItem = function(idx) {
+    const item = inventory[idx];
+    document.getElementById('inventoryName').value = item.name;
+    document.getElementById('inventoryCategory').value = item.category;
+    document.getElementById('inventoryTags').value = item.tags || '';
+    document.getElementById('inventoryQuantity').value = item.quantity;
+    document.getElementById('inventoryLocation').value = item.location || '';
+    document.getElementById('inventoryAssignedTo').value = item.assignedTo || '';
+    document.getElementById('inventoryStatus').value = item.status;
+    document.getElementById('inventoryPurchaseDate').value = item.purchaseDate || '';
+    document.getElementById('inventorySupplier').value = item.supplier || '';
+    document.getElementById('inventoryWarranty').value = item.warranty || '';
+    document.getElementById('inventoryDepreciation').value = item.depreciation || '';
+    document.getElementById('inventoryBarcode').value = item.barcode || '';
+    // Attachments not handled in demo
+    document.getElementById('inventoryForm').dataset.editIdx = idx;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  window.deleteInventoryItem = function(idx) {
+    if (confirm('Delete this asset?')) {
+      auditTrail.push({ action: 'Deleted', item: inventory[idx].name, user: 'Admin', date: new Date().toLocaleString() });
+      inventory.splice(idx, 1);
+      saveInventory();
+      updateDashboard();
+      renderInventoryTable();
+      renderCharts();
+      showToast('Asset deleted!', 'danger');
+    }
+  };
+  window.showAuditTrail = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('auditTrailModal'));
+    const item = inventory[idx];
+    const logs = auditTrail.filter(a => a.item === item.name);
+    document.getElementById('auditTrailBody').innerHTML = logs.length ? logs.map(l => `<div>${l.date}: <b>${l.action}</b> by ${l.user}</div>`).join('') : '<div class="text-muted">No changes yet.</div>';
+    modal.show();
+  };
+
+  // --- Form Submission ---
+  document.getElementById('inventoryForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = this.dataset.editIdx;
+    const item = {
+      name: document.getElementById('inventoryName').value,
+      category: document.getElementById('inventoryCategory').value,
+      tags: document.getElementById('inventoryTags').value,
+      quantity: parseInt(document.getElementById('inventoryQuantity').value, 10),
+      location: document.getElementById('inventoryLocation').value,
+      assignedTo: document.getElementById('inventoryAssignedTo').value,
+      status: document.getElementById('inventoryStatus').value,
+      purchaseDate: document.getElementById('inventoryPurchaseDate').value,
+      supplier: document.getElementById('inventorySupplier').value,
+      warranty: document.getElementById('inventoryWarranty').value,
+      depreciation: document.getElementById('inventoryDepreciation').value,
+      barcode: document.getElementById('inventoryBarcode').value,
+      // Attachments not handled in demo
+    };
+    if (idx) {
+      auditTrail.push({ action: 'Updated', item: item.name, user: 'Admin', date: new Date().toLocaleString() });
+      inventory[idx] = item;
+      delete this.dataset.editIdx;
+      showToast('Asset updated!', 'success');
+    } else {
+      auditTrail.push({ action: 'Created', item: item.name, user: 'Admin', date: new Date().toLocaleString() });
+      inventory.push(item);
+      showToast('Asset added!', 'success');
+    }
+    saveInventory();
+    updateDashboard();
+    renderInventoryTable();
+    renderCharts();
+    this.reset();
+  });
+
+  // --- Bulk Import/Export ---
+  document.getElementById('bulkImportBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('bulkImportExportModal')).show();
+  });
+  document.getElementById('bulkExportBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('bulkImportExportModal')).show();
+  });
+  document.getElementById('exportInventoryBtn').addEventListener('click', function() {
+    const csv = [
+      ['Name','Category','Tags','Quantity','Location','Assigned To','Status','Purchase Date','Supplier','Warranty','Depreciation','Barcode'],
+      ...inventory.map(i => [i.name,i.category,i.tags,i.quantity,i.location,i.assignedTo,i.status,i.purchaseDate,i.supplier,i.warranty,i.depreciation,i.barcode])
+    ].map(row => row.join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'inventory.csv';
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+  document.getElementById('importInventoryBtn').addEventListener('click', function() {
+    const file = document.getElementById('bulkImportFile').files[0];
+    if (!file) return showToast('No file selected', 'danger');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      const lines = e.target.result.split('\n').slice(1); // skip header
+      lines.forEach(line => {
+        const [name,category,tags,quantity,location,assignedTo,status,purchaseDate,supplier,warranty,depreciation,barcode] = line.split(',');
+        if (name) inventory.push({ name, category, tags, quantity: parseInt(quantity,10), location, assignedTo, status, purchaseDate, supplier, warranty, depreciation, barcode });
+      });
+      saveInventory();
+      updateDashboard();
+      renderInventoryTable();
+      renderCharts();
+      showToast('Import complete!', 'success');
+    };
+    reader.readAsText(file);
+  });
+
+  // --- Stock Transfer ---
+  document.getElementById('transferStockBtn').addEventListener('click', function() {
+    populateDropdown('transferAsset', inventory.map(i => i.name));
+    new bootstrap.Modal(document.getElementById('stockTransferModal')).show();
+  });
+  document.getElementById('stockTransferForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const assetName = document.getElementById('transferAsset').value;
+    const from = document.getElementById('transferFrom').value;
+    const to = document.getElementById('transferTo').value;
+    const qty = parseInt(document.getElementById('transferQuantity').value, 10);
+    const reason = document.getElementById('transferReason').value;
+    const asset = inventory.find(i => i.name === assetName && i.location === from);
+    if (!asset || asset.quantity < qty) return showToast('Not enough stock at source', 'danger');
+    asset.quantity -= qty;
+    let destAsset = inventory.find(i => i.name === assetName && i.location === to);
+    if (destAsset) destAsset.quantity += qty;
+    else inventory.push({ ...asset, location: to, quantity: qty });
+    auditTrail.push({ action: `Transferred ${qty} from ${from} to ${to} (${reason})`, item: assetName, user: 'Admin', date: new Date().toLocaleString() });
+    saveInventory();
+    updateDashboard();
+    renderInventoryTable();
+    renderCharts();
+    showToast('Stock transferred!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('stockTransferModal')).hide();
+  });
+
+  // --- Audit Trail ---
+  document.getElementById('viewAuditTrailBtn').addEventListener('click', function() {
+    const modal = new bootstrap.Modal(document.getElementById('auditTrailModal'));
+    const logs = auditTrail;
+    document.getElementById('auditTrailBody').innerHTML = logs.length ? logs.map(l => `<div>${l.date}: <b>${l.action}</b> on <b>${l.item}</b> by ${l.user}</div>`).join('') : '<div class="text-muted">No changes yet.</div>';
+    modal.show();
+  });
+
+  // --- QR/Barcode Scanner (Placeholder) ---
+  document.getElementById('scanBarcodeBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('barcodeScannerModal')).show();
+  });
+  document.getElementById('generateBarcodeBtn').addEventListener('click', function() {
+    document.getElementById('inventoryBarcode').value = 'QR-' + Math.random().toString(36).substr(2, 8).toUpperCase();
+  });
+
+  // --- Initial Render ---
+  updateDashboard();
+  renderInventoryTable();
+  renderCharts();
+}); 
+
+// === ALERTS & INCIDENT REPORTING MODULE ENHANCEMENTS ===
+document.addEventListener('DOMContentLoaded', function () {
+  if (!document.getElementById('alertsTable')) return; // Only run on alerts.html
+
+  // --- Demo Data ---
+  let alerts = JSON.parse(localStorage.getItem('alerts') || '[]');
+  let assignList = JSON.parse(localStorage.getItem('alertsAssignList') || '[]');
+  let escalationList = JSON.parse(localStorage.getItem('alertsEscalationList') || '[]');
+  let notificationSettings = JSON.parse(localStorage.getItem('alertsNotificationSettings') || '[]');
+  let staff = ['Principal', 'Security', 'Maintenance', 'Guardians'];
+
+  // --- Utility Functions ---
+  function saveAlerts() {
+    localStorage.setItem('alerts', JSON.stringify(alerts));
+    localStorage.setItem('alertsAssignList', JSON.stringify(assignList));
+    localStorage.setItem('alertsEscalationList', JSON.stringify(escalationList));
+    localStorage.setItem('alertsNotificationSettings', JSON.stringify(notificationSettings));
+  }
+  function showToast(msg, type = 'success') {
+    alert(msg); // Replace with Bootstrap toast if desired
+  }
+
+  // --- Dashboard Cards ---
+  function updateAlertsDashboard() {
+    document.getElementById('alertsTotal').textContent = alerts.length;
+    document.getElementById('alertsOpen').textContent = alerts.filter(a => a.status === 'Open').length;
+    document.getElementById('alertsResolved').textContent = alerts.filter(a => a.status === 'Resolved').length;
+    document.getElementById('alertsAnonymous').textContent = alerts.filter(a => a.anonymous).length;
+  }
+
+  // --- Charts ---
+  function renderAlertsCharts() {
+    if (window.Chart) {
+      // Category Distribution
+      const catCounts = {};
+      alerts.forEach(a => { catCounts[a.category] = (catCounts[a.category] || 0) + 1; });
+      new Chart(document.getElementById('alertsCategoryChart').getContext('2d'), {
+        type: 'doughnut',
+        data: {
+          labels: Object.keys(catCounts),
+          datasets: [{ data: Object.values(catCounts), backgroundColor: ['#6f42c1', '#fd7e14', '#198754', '#dc3545', '#0d6efd'] }]
+        },
+        options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+      });
+      // Trends Over Time
+      const dates = {};
+      alerts.forEach(a => {
+        const d = a.date ? a.date.split('T')[0] : 'Unknown';
+        dates[d] = (dates[d] || 0) + 1;
+      });
+      new Chart(document.getElementById('alertsTrendChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: Object.keys(dates),
+          datasets: [{ label: 'Incidents', data: Object.values(dates), borderColor: '#6f42c1', backgroundColor: 'rgba(111,66,193,0.1)', fill: true }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+  }
+
+  // --- Render Alerts Table ---
+  function renderAlertsTable() {
+    const tbody = document.getElementById('alertsTable').querySelector('tbody');
+    tbody.innerHTML = alerts.map((a, idx) => `
+      <tr>
+        <td>${a.category}</td>
+        <td>${a.description}</td>
+        <td><span class="badge bg-${a.priority === 'High' ? 'danger' : a.priority === 'Medium' ? 'warning' : 'secondary'}">${a.priority}</span></td>
+        <td><span class="badge bg-${a.status === 'Open' ? 'warning' : a.status === 'Resolved' ? 'success' : a.status === 'Escalated' ? 'danger' : 'secondary'}">${a.status}</span></td>
+        <td>${a.anonymous ? '<span class="badge bg-info">Yes</span>' : 'No'}</td>
+        <td>${a.assignedTo || ''}</td>
+        <td>${a.date ? new Date(a.date).toLocaleString() : ''}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" onclick="viewIncidentDetails(${idx})">View</button>
+          <button class="btn btn-sm btn-warning me-1" onclick="openAssignModal(${idx})">Assign</button>
+          <button class="btn btn-sm btn-danger me-1" onclick="openEscalationModal(${idx})">Escalate</button>
+          <button class="btn btn-sm btn-success" onclick="resolveIncident(${idx})">Resolve</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="8" class="text-center">No incidents found.</td></tr>';
+  }
+  window.viewIncidentDetails = function(idx) {
+    const a = alerts[idx];
+    const modal = new bootstrap.Modal(document.getElementById('incidentDetailsModal'));
+    document.getElementById('incidentDetailsBody').innerHTML = `
+      <div><b>Category:</b> ${a.category}</div>
+      <div><b>Description:</b> ${a.description}</div>
+      <div><b>Priority:</b> ${a.priority}</div>
+      <div><b>Status:</b> ${a.status}</div>
+      <div><b>Anonymous:</b> ${a.anonymous ? 'Yes' : 'No'}</div>
+      <div><b>Assigned To:</b> ${a.assignedTo || ''}</div>
+      <div><b>Date:</b> ${a.date ? new Date(a.date).toLocaleString() : ''}</div>
+      <div><b>Attachments:</b> ${a.attachments ? a.attachments.map(f => `<a href="#" download>${f}</a>`).join(', ') : 'None'}</div>
+    `;
+    modal.show();
+  };
+  window.openAssignModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('assignModal'));
+    document.getElementById('assignForm').dataset.idx = idx;
+    modal.show();
+  };
+  window.openEscalationModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('escalationModal'));
+    document.getElementById('escalationBody').innerHTML = `<div>Escalate incident: <b>${alerts[idx].description}</b>?</div><button class='btn btn-danger mt-2' onclick='confirmEscalate(${idx})'>Confirm Escalate</button>`;
+    modal.show();
+  };
+  window.confirmEscalate = function(idx) {
+    alerts[idx].status = 'Escalated';
+    escalationList.push({ ...alerts[idx], escalatedAt: new Date().toISOString() });
+    saveAlerts();
+    updateAlertsDashboard();
+    renderAlertsTable();
+    showToast('Incident escalated!', 'danger');
+    bootstrap.Modal.getInstance(document.getElementById('escalationModal')).hide();
+  };
+  window.resolveIncident = function(idx) {
+    alerts[idx].status = 'Resolved';
+    saveAlerts();
+    updateAlertsDashboard();
+    renderAlertsTable();
+    showToast('Incident resolved!', 'success');
+  };
+
+  // --- Incident Form Submission ---
+  document.getElementById('alertsForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const attachments = Array.from(document.getElementById('alertFile').files).map(f => f.name);
+    const alert = {
+      category: document.getElementById('alertCategory').value,
+      description: document.getElementById('alertDescription').value,
+      priority: document.getElementById('alertPriority').value,
+      status: 'Open',
+      anonymous: document.getElementById('alertAnonymous').checked,
+      assignedTo: '',
+      date: new Date().toISOString(),
+      attachments,
+    };
+    alerts.push(alert);
+    saveAlerts();
+    updateAlertsDashboard();
+    renderAlertsTable();
+    renderAlertsCharts();
+    this.reset();
+    showToast('Incident logged!', 'success');
+  });
+
+  // --- Assign/Follow-Up Modal ---
+  document.getElementById('assignForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = this.dataset.idx;
+    alerts[idx].assignedTo = document.getElementById('assignTo').value;
+    alerts[idx].due = document.getElementById('assignDue').value;
+    alerts[idx].steps = document.getElementById('assignSteps').value;
+    assignList.push({ ...alerts[idx], assignedAt: new Date().toISOString() });
+    saveAlerts();
+    updateAlertsDashboard();
+    renderAlertsTable();
+    showToast('Incident assigned!', 'info');
+    bootstrap.Modal.getInstance(document.getElementById('assignModal')).hide();
+  });
+
+  // --- Notification Settings Modal ---
+  document.getElementById('notificationForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    notificationSettings = Array.from(document.getElementById('notifyWho').selectedOptions).map(o => o.value);
+    saveAlerts();
+    showToast('Notification settings saved!', 'success');
+    bootstrap.Modal.getInstance(document.getElementById('notificationModal')).hide();
+  });
+
+  // --- Analytics Dashboard Modal ---
+  document.getElementById('analyticsModal').addEventListener('show.bs.modal', function() {
+    if (window.Chart) {
+      const catCounts = {};
+      alerts.forEach(a => { catCounts[a.category] = (catCounts[a.category] || 0) + 1; });
+      new Chart(document.getElementById('alertsAnalyticsChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: Object.keys(catCounts),
+          datasets: [{ label: 'Incidents', data: Object.values(catCounts), backgroundColor: '#6f42c1' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+  });
+
+  // --- Voice-to-Text (Demo/Placeholder) ---
+  document.getElementById('voiceToTextBtn').addEventListener('click', function() {
+    document.getElementById('alertDescription').value += ' [Voice input simulated]';
+  });
+
+  // --- Policy/Quick Guide Link ---
+  document.getElementById('policyLink').addEventListener('click', function(e) {
+    e.preventDefault();
+    showToast('Policy/Quick Guide: Follow school protocol for this incident type.', 'info');
+  });
+
+  // --- Initial Render ---
+  updateAlertsDashboard();
+  renderAlertsTable();
+  renderAlertsCharts();
+});
+
+// === FLEET/TRANSPORT MODULE ENHANCEMENTS ===
+document.addEventListener('DOMContentLoaded', function () {
+  if (!document.getElementById('transportTable')) return; // Only run on transport.html
+
+  // --- Demo Data ---
+  let fleet = JSON.parse(localStorage.getItem('fleet') || '[]');
+  let fuelLogs = JSON.parse(localStorage.getItem('fleetFuelLogs') || '[]');
+  let incidentLogs = JSON.parse(localStorage.getItem('fleetIncidentLogs') || '[]');
+  let attendanceLogs = JSON.parse(localStorage.getItem('fleetAttendanceLogs') || '[]');
+  let rfidLogs = JSON.parse(localStorage.getItem('fleetRFIDLogs') || '[]');
+  let drivers = ['John Doe', 'Jane Smith', 'Alex Brown', 'Maria Lee'];
+
+  // --- Utility Functions ---
+  function saveFleet() {
+    localStorage.setItem('fleet', JSON.stringify(fleet));
+    localStorage.setItem('fleetFuelLogs', JSON.stringify(fuelLogs));
+    localStorage.setItem('fleetIncidentLogs', JSON.stringify(incidentLogs));
+    localStorage.setItem('fleetAttendanceLogs', JSON.stringify(attendanceLogs));
+    localStorage.setItem('fleetRFIDLogs', JSON.stringify(rfidLogs));
+  }
+  function showToast(msg, type = 'success') {
+    alert(msg); // Replace with Bootstrap toast if desired
+  }
+
+  // --- Dashboard Cards ---
+  function updateFleetDashboard() {
+    document.getElementById('fleetTotal').textContent = fleet.length;
+    document.getElementById('fleetActive').textContent = fleet.filter(b => b.status === 'Active').length;
+    document.getElementById('fleetDrivers').textContent = new Set(fleet.map(b => b.driver)).size;
+    document.getElementById('fleetExpiry').textContent = fleet.filter(b => isExpiringSoon(b.licenseExpiry) || isExpiringSoon(b.insuranceExpiry)).length;
+  }
+  function isExpiringSoon(dateStr) {
+    if (!dateStr) return false;
+    const d = new Date(dateStr);
+    const now = new Date();
+    return (d - now) < 1000*60*60*24*30 && d > now;
+  }
+
+  // --- Charts ---
+  function renderFleetCharts() {
+    if (window.Chart) {
+      // Utilization
+      const utilLabels = fleet.map(b => b.busNumber);
+      const utilData = fleet.map(b => b.utilization || Math.floor(Math.random()*100));
+      new Chart(document.getElementById('fleetUtilizationChart').getContext('2d'), {
+        type: 'bar',
+        data: {
+          labels: utilLabels,
+          datasets: [{ label: 'Utilization (%)', data: utilData, backgroundColor: '#6f42c1' }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+      // Fuel
+      const fuelLabels = fleet.map(b => b.busNumber);
+      const fuelData = fleet.map(b => b.fuelEfficiency || Math.floor(Math.random()*10+5));
+      new Chart(document.getElementById('fleetFuelChart').getContext('2d'), {
+        type: 'line',
+        data: {
+          labels: fuelLabels,
+          datasets: [{ label: 'Fuel Efficiency (km/l)', data: fuelData, borderColor: '#fd7e14', backgroundColor: 'rgba(253,126,20,0.1)', fill: true }]
+        },
+        options: { responsive: true, plugins: { legend: { display: false } } }
+      });
+    }
+  }
+
+  // --- Render Fleet Table ---
+  function renderFleetTable() {
+    const tbody = document.getElementById('transportTable').querySelector('tbody');
+    tbody.innerHTML = fleet.map((b, idx) => `
+      <tr>
+        <td>${b.busNumber}</td>
+        <td>${b.driver}</td>
+        <td>${b.route}</td>
+        <td><span class="badge bg-${b.status === 'Active' ? 'success' : b.status === 'Maintenance' ? 'warning' : 'secondary'}">${b.status}</span></td>
+        <td>${b.licenseExpiry || ''}</td>
+        <td>${b.insuranceExpiry || ''}</td>
+        <td>${b.fuelEfficiency || ''}</td>
+        <td>
+          <button class="btn btn-sm btn-info me-1" onclick="editFleetItem(${idx})">Edit</button>
+          <button class="btn btn-sm btn-danger me-1" onclick="deleteFleetItem(${idx})">Delete</button>
+          <button class="btn btn-sm btn-secondary me-1" onclick="openMapModal(${idx})">Map</button>
+          <button class="btn btn-sm btn-warning me-1" onclick="openAttendanceModal(${idx})">Attendance</button>
+          <button class="btn btn-sm btn-success me-1" onclick="openRFIDModal(${idx})">RFID</button>
+          <button class="btn btn-sm btn-primary me-1" onclick="openFuelLogModal(${idx})">Fuel</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="openSOSModal(${idx})">SOS</button>
+        </td>
+      </tr>
+    `).join('') || '<tr><td colspan="8" class="text-center">No fleet records found.</td></tr>';
+  }
+  window.editFleetItem = function(idx) {
+    const b = fleet[idx];
+    document.getElementById('busNumber').value = b.busNumber;
+    document.getElementById('driverName').value = b.driver;
+    document.getElementById('route').value = b.route;
+    document.getElementById('busCapacity').value = b.capacity || '';
+    document.getElementById('licenseExpiry').value = b.licenseExpiry || '';
+    document.getElementById('insuranceExpiry').value = b.insuranceExpiry || '';
+    document.getElementById('emergencyContact').value = b.emergencyContact || '';
+    document.getElementById('gpsDeviceId').value = b.gpsDeviceId || '';
+    document.getElementById('vehicleStatus').value = b.status;
+    // Attachments not handled in demo
+    document.getElementById('transportForm').dataset.editIdx = idx;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  window.deleteFleetItem = function(idx) {
+    if (confirm('Delete this bus?')) {
+      fleet.splice(idx, 1);
+      saveFleet();
+      updateFleetDashboard();
+      renderFleetTable();
+      renderFleetCharts();
+      showToast('Bus deleted!', 'danger');
+    }
+  };
+  window.openMapModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('mapModal'));
+    document.getElementById('mapModalBody').innerHTML = '[Map for ' + fleet[idx].busNumber + ' - Demo]';
+    modal.show();
+  };
+  window.openAttendanceModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('attendanceModal'));
+    document.getElementById('attendanceModalBody').innerHTML = '[Attendance log for ' + fleet[idx].driver + ' - Demo]';
+    modal.show();
+  };
+  window.openRFIDModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('rfidModal'));
+    document.getElementById('rfidModalBody').innerHTML = '[RFID log for ' + fleet[idx].busNumber + ' - Demo]';
+    modal.show();
+  };
+  window.openFuelLogModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('fuelLogModal'));
+    document.getElementById('fuelLogModalBody').innerHTML = '[Fuel log for ' + fleet[idx].busNumber + ' - Demo]';
+    modal.show();
+  };
+  window.openSOSModal = function(idx) {
+    const modal = new bootstrap.Modal(document.getElementById('sosModal'));
+    document.getElementById('sosModalBody').innerHTML = '[SOS for ' + fleet[idx].busNumber + ' - Demo]';
+    modal.show();
+  };
+
+  // --- Form Submission ---
+  document.getElementById('transportForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const idx = this.dataset.editIdx;
+    const bus = {
+      busNumber: document.getElementById('busNumber').value,
+      driver: document.getElementById('driverName').value,
+      route: document.getElementById('route').value,
+      capacity: document.getElementById('busCapacity').value,
+      licenseExpiry: document.getElementById('licenseExpiry').value,
+      insuranceExpiry: document.getElementById('insuranceExpiry').value,
+      emergencyContact: document.getElementById('emergencyContact').value,
+      gpsDeviceId: document.getElementById('gpsDeviceId').value,
+      status: document.getElementById('vehicleStatus').value,
+      // Attachments not handled in demo
+      fuelEfficiency: Math.floor(Math.random()*10+5), // Demo
+      utilization: Math.floor(Math.random()*100), // Demo
+    };
+    if (idx) {
+      fleet[idx] = bus;
+      delete this.dataset.editIdx;
+      showToast('Bus updated!', 'success');
+    } else {
+      fleet.push(bus);
+      showToast('Bus registered!', 'success');
+    }
+    saveFleet();
+    updateFleetDashboard();
+    renderFleetTable();
+    renderFleetCharts();
+    this.reset();
+  });
+
+  // --- Route Optimization (Demo) ---
+  document.getElementById('optimizeRouteBtn').addEventListener('click', function() {
+    showToast('Route optimization suggested: [Demo route]', 'info');
+  });
+
+  // --- Add Fuel Log (Demo) ---
+  document.getElementById('addFuelLogBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('fuelLogModal')).show();
+  });
+
+  // --- Add Incident Log (Demo) ---
+  document.getElementById('addIncidentBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('incidentLogModal')).show();
+  });
+
+  // --- SOS (Demo) ---
+  document.getElementById('sosBtn').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('sosModal')).show();
+  });
+
+  // --- Expiry Reminder (Demo) ---
+  document.getElementById('licenseExpiry').addEventListener('change', function() {
+    if (isExpiringSoon(this.value)) showToast('License expiring soon!', 'warning');
+  });
+  document.getElementById('insuranceExpiry').addEventListener('change', function() {
+    if (isExpiringSoon(this.value)) showToast('Insurance expiring soon!', 'warning');
+  });
+
+  // --- Utilization Report (Demo) ---
+  document.getElementById('fleetMap').addEventListener('click', function() {
+    new bootstrap.Modal(document.getElementById('utilizationModal')).show();
+  });
+
+  // --- Initial Render ---
+  updateFleetDashboard();
+  renderFleetTable();
+  renderFleetCharts();
+});
