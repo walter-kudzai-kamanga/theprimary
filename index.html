@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Welcome | Kamanga Primary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .hero-bg {
+      background: url('https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
+      min-height: 60vh;
+      color: #fff;
+      position: relative;
+    }
+    .hero-bg::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 1;
+    }
+    .hero-content {
+      position: relative;
+      z-index: 2;
+    }
+    .feature-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 1rem 1rem 0 0;
+    }
+    .login-cta-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      display: inline-block;
+      padding: 2rem 2.5rem 2rem 2.5rem;
+      margin-top: 2rem;
+      min-width: 320px;
+      max-width: 400px;
+    }
+    .video-section {
+      background: #f8f9fa;
+      padding: 3rem 0 2rem 0;
+    }
+    .video-title {
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+    }
+    .responsive-iframe {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%;
+      height: 0;
+      overflow: hidden;
+      border-radius: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    }
+    .responsive-iframe iframe {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      border: 0;
+    }
+  </style>
+</head>
+<body>
+  <!-- Hero Section -->
+  <section class="hero-bg d-flex align-items-center justify-content-center animate__animated animate__fadeIn" style="min-height:60vh;">
+    <div class="container hero-content text-center">
+      <h1 class="display-3 fw-bold mb-3">Welcome to <span class="text-primary">Kamanga Primary</span></h1>
+      <h3 class="mb-3">Empowering Young Minds for a Brighter Future</h3>
+      <p class="lead mb-4">A modern, innovative school management system for the digital age.<br>Empowering students, teachers, and parents to achieve excellence together.</p>
+      <div class="d-flex justify-content-center">
+        <div class="login-cta-card animate__animated animate__fadeInUp animate__delay-1s">
+          <h5 class="mb-3 text-primary">Staff & Student Portal</h5>
+          <button class="btn btn-lg btn-primary px-5 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
+          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access your dashboard, assignments, and more.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Video Section -->
+  <section class="video-section">
+    <div class="container">
+      <h2 class="text-center video-title animate__animated animate__fadeInDown">Discover Kamanga Primary in Action</h2>
+      <div class="row g-4 justify-content-center">
+        <div class="col-md-6 animate__animated animate__fadeInLeft">
+          <div class="responsive-iframe">
+            <iframe src="https://www.youtube.com/embed/7piJIYVj2GA" title="Classroom Learning" allowfullscreen></iframe>
+          </div>
+          <p class="mt-2 text-center">A glimpse into our vibrant classrooms</p>
+        </div>
+        <div class="col-md-6 animate__animated animate__fadeInRight">
+          <div class="responsive-iframe">
+            <iframe src="https://www.youtube.com/embed/2V-20Qe4M8Y" title="School Activities" allowfullscreen></iframe>
+          </div>
+          <p class="mt-2 text-center">Engaging activities and holistic development</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="container py-5">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card h-100 shadow animate__animated animate__fadeInUp">
+          <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" class="feature-img" alt="Dashboard">
+          <div class="card-body">
+            <h5 class="card-title">Smart Dashboard</h5>
+            <p class="card-text">Real-time overview of students, staff, classes, lessons, and alerts. Stay on top of everything at a glance.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow animate__animated animate__fadeInUp animate__delay-1s">
+          <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=600&q=80" class="feature-img" alt="Student Management">
+          <div class="card-body">
+            <h5 class="card-title">Student & Staff Management</h5>
+            <p class="card-text">Easily manage student and staff records, attendance, documents, and more with intuitive tools.</p>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card h-100 shadow animate__animated animate__fadeInUp animate__delay-2s">
+          <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=600&q=80" class="feature-img" alt="Communication">
+          <div class="card-body">
+            <h5 class="card-title">Communication & Analytics</h5>
+            <p class="card-text">Send alerts, track performance, and generate reports. Foster collaboration between school, students, and parents.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="container py-5">
+    <div class="row align-items-center">
+      <div class="col-md-6 animate__animated animate__fadeInLeft">
+        <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=600&q=80" class="img-fluid rounded shadow" alt="About Kamanga Primary">
+      </div>
+      <div class="col-md-6 animate__animated animate__fadeInRight">
+        <h2 class="fw-bold mb-3">Why Choose Kamanga Primary?</h2>
+        <ul class="list-unstyled lead">
+          <li>✔️ Safe, nurturing, and inclusive environment</li>
+          <li>✔️ Experienced and passionate teachers</li>
+          <li>✔️ Modern classrooms and digital resources</li>
+          <li>✔️ Strong community and parental involvement</li>
+          <li>✔️ Focus on academic excellence and holistic growth</li>
+        </ul>
+        <p class="mt-3">At Kamanga Primary, we believe every child deserves the best start in life. Our commitment is to inspire, educate, and empower every learner to reach their full potential.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Login Modal -->
+  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="loginModalLabel">Login to Kamanga Primary</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="loginForm">
+            <div class="mb-3">
+              <label for="loginEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="loginEmail" placeholder="Enter email" required>
+            </div>
+            <div class="mb-3">
+              <label for="loginPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="loginPassword" placeholder="Enter password" required>
+            </div>
+            <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-primary w-100">Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-4 bg-light mt-5">
+    <small>&copy; 2024 Kamanga Primary. All rights reserved.</small>
+  </footer>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/script.js"></script>
+  <script>
+    // Simple demo login logic for modal
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const email = document.getElementById('loginEmail').value.trim();
+      const password = document.getElementById('loginPassword').value;
+      const errorDiv = document.getElementById('loginError');
+      if(email === '' || password === '') {
+        errorDiv.textContent = 'Please enter both email and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      if(email === 'admin@school.com' && password === 'admin123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        window.location.href = 'dashboard.html';
+      } else {
+        errorDiv.textContent = 'Invalid email or password.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Staff & HR | SchoolMS</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <div class="container-fluid">
+      <a class="navbar-brand" href="dashboard.html">SchoolMS</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+          <li class="nav-item"><a class="nav-link" href="students.html">Students</a></li>
+          <li class="nav-item"><a class="nav-link" href="staff.html">Staff & HR</a></li>
+          <li class="nav-item"><a class="nav-link" href="attendance.html">Attendance</a></li>
+          <li class="nav-item"><a class="nav-link" href="lessons.html">Lessons</a></li>
+          <li class="nav-item"><a class="nav-link" href="tests.html">Tests</a></li>
+          <li class="nav-item"><a class="nav-link" href="homework.html">Homework</a></li>
+          <li class="nav-item"><a class="nav-link" href="finance.html">Finance</a></li>
+          <li class="nav-item"><a class="nav-link" href="inventory.html">Inventory</a></li>
+          <li class="nav-item"><a class="nav-link" href="transport.html">Transport</a></li>
+          <li class="nav-item"><a class="nav-link" href="alerts.html">Alerts</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+  <div class="container mt-4">
+    <h2 class="mb-4">Staff & HR</h2>
+    <!-- Add/Edit Staff Form (placeholder) -->
+    <div class="card mb-4 animate__animated animate__fadeIn">
+      <div class="card-header">Add/Edit Staff</div>
+      <div class="card-body">
+        <form id="staffForm">
+          <div class="row g-3">
+            <div class="col-md-4">
+              <label class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="staffName" placeholder="Staff Name" required>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Role</label>
+              <select class="form-select" id="staffRole" required>
+                <option value="">-- Select --</option>
+                <option>Teacher</option>
+                <option>Admin</option>
+                <!-- Add more roles as needed -->
+              </select>
+            </div>
+            <div class="col-md-4">
+              <label class="form-label">Subject</label>
+              <input type="text" class="form-control" id="staffSubject" placeholder="Subject">
+            </div>
+          </div>
+          <button class="btn btn-primary mt-3" type="submit">Save Staff</button>
+        </form>
+      </div>
+    </div>
+    <!-- Staff List Table (placeholder) -->
+    <div class="card animate__animated animate__fadeInUp">
+      <div class="card-header">Staff List</div>
+      <div class="card-body">
+        <table class="table table-striped" id="staffTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Role</th>
+              <th>Subject</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Populated by JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/js/script.js"></script>
+</body>
+</html> 

@@ -1,0 +1,124 @@
+/* style.css - Custom styles for SchoolMS */
+:root {
+  --main-purple: #6f42c1;
+  --main-grey: #6c757d;
+  --light-grey: #f8f9fa;
+  --card-bg: #fff;
+  --card-shadow: 0 8px 24px rgba(111,66,193,0.08);
+}
+
+body {
+  background: var(--light-grey);
+  color: var(--main-grey);
+}
+
+.card {
+  border-radius: 1rem;
+  background: var(--card-bg);
+  box-shadow: var(--card-shadow);
+  border: none;
+}
+
+.dashboard-card {
+  transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer;
+  background: linear-gradient(135deg, var(--main-purple) 60%, #b39ddb 100%);
+  color: #fff;
+  box-shadow: 0 8px 24px rgba(111,66,193,0.15);
+}
+.dashboard-card h5, .dashboard-card h2, .dashboard-card i {
+  color: #fff;
+}
+.dashboard-card:hover {
+  transform: scale(1.05) translateY(-5px);
+  box-shadow: 0 12px 32px rgba(111,66,193,0.25);
+}
+
+.module-btn {
+  min-width: 180px;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s, transform 0.2s;
+  border: 2px solid var(--main-purple);
+  color: var(--main-purple);
+  background: #fff;
+}
+.module-btn:hover {
+  background: var(--main-purple);
+  color: #fff;
+  transform: scale(1.07);
+}
+
+.quick-actions .btn-primary {
+  background: var(--main-purple);
+  border-color: var(--main-purple);
+}
+.quick-actions .btn-primary:hover {
+  background: #512b7e;
+  border-color: #512b7e;
+}
+.quick-actions .btn-secondary {
+  background: var(--main-grey);
+  border-color: var(--main-grey);
+}
+.quick-actions .btn-secondary:hover {
+  background: #343a40;
+  border-color: #343a40;
+}
+
+/* Alerts & Activity Feed */
+.alert {
+  border-radius: 0.75rem;
+}
+
+.list-group-item {
+  border: none;
+  background: transparent;
+}
+
+.table th, .table td {
+  vertical-align: middle;
+}
+
+/* Dark Mode */
+body.dark-mode {
+  background: #232136;
+  color: #e0e0e0;
+}
+body.dark-mode .card,
+body.dark-mode .dashboard-card {
+  background: #2d2a4a;
+  color: #e0e0e0;
+  box-shadow: 0 8px 24px rgba(111,66,193,0.18);
+}
+body.dark-mode .dashboard-card h5,
+body.dark-mode .dashboard-card h2,
+body.dark-mode .dashboard-card i {
+  color: #fff;
+}
+body.dark-mode .module-btn {
+  background: #2d2a4a;
+  color: #b39ddb;
+  border-color: #b39ddb;
+}
+body.dark-mode .module-btn:hover {
+  background: var(--main-purple);
+  color: #fff;
+}
+body.dark-mode .quick-actions .btn-primary {
+  background: #b39ddb;
+  color: #232136;
+  border-color: #b39ddb;
+}
+body.dark-mode .quick-actions .btn-primary:hover {
+  background: var(--main-purple);
+  color: #fff;
+}
+body.dark-mode .quick-actions .btn-secondary {
+  background: #6c757d;
+  color: #fff;
+  border-color: #6c757d;
+}
+body.dark-mode .quick-actions .btn-secondary:hover {
+  background: #343a40;
+  color: #fff;
+} 
