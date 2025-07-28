@@ -2,257 +2,737 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Homework Assignment | Kamanga Primary</title>
+  <title>Smart Homework Platform | Kamanga Primary</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <style>
+    .platform-header {
+      background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+      color: white;
+      padding: 2rem 0;
+    }
+    .dashboard-card {
+      transition: transform 0.2s;
+      border: none;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dashboard-card:hover {
+      transform: translateY(-5px);
+    }
+    .status-pending { border-left: 4px solid #ffc107; }
+    .status-in-progress { border-left: 4px solid #17a2b8; }
+    .status-submitted { border-left: 4px solid #28a745; }
+    .status-graded { border-left: 4px solid #6f42c1; }
+    .status-urgent { border-left: 4px solid #dc3545; }
+    .kanban-column {
+      min-height: 500px;
+      background: #f8f9fa;
+      border-radius: 0.5rem;
+      padding: 1rem;
+    }
+    .homework-item {
+      background: white;
+      border-radius: 0.5rem;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .homework-item:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+    .progress-ring-circle {
+      transition: stroke-dashoffset 0.35s;
+      transform-origin: 50% 50%;
+    }
+    .focus-mode {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 9999;
+      display: none;
+    }
+    .focus-content {
+      background: white;
+      border-radius: 1rem;
+      padding: 2rem;
+      max-width: 800px;
+      margin: 2rem auto;
+      max-height: 80vh;
+      overflow-y: auto;
+    }
+    .timer-display {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    .gamification-badge {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.5rem;
+      margin: 0 auto;
+    }
+    .badge-gold { background: linear-gradient(45deg, #ffd700, #ffed4e); }
+    .badge-silver { background: linear-gradient(45deg, #c0c0c0, #e5e5e5); }
+    .badge-bronze { background: linear-gradient(45deg, #cd7f32, #daa520); }
+    .chat-bubble {
+      background: #e3f2fd;
+      border-radius: 1rem;
+      padding: 0.75rem;
+      margin-bottom: 0.5rem;
+    }
+    .chat-bubble.own {
+      background: #e8f5e8;
+      margin-left: 2rem;
+    }
+    .file-preview {
+      max-width: 200px;
+      max-height: 200px;
+      border-radius: 0.5rem;
+      margin: 0.5rem;
+    }
+    .voice-recorder {
+      background: #f8f9fa;
+      border-radius: 1rem;
+      padding: 1rem;
+      text-align: center;
+    }
+    .recording-indicator {
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #dc3545;
+      display: inline-block;
+      animation: pulse 1s infinite;
+    }
+    @keyframes pulse {
+      0% { opacity: 1; }
+      50% { opacity: 0.5; }
+      100% { opacity: 1; }
+    }
+    .calendar-view {
+      background: white;
+      border-radius: 1rem;
+      padding: 1rem;
+    }
+    .calendar-day {
+      min-height: 80px;
+      border: 1px solid #dee2e6;
+      padding: 0.5rem;
+      position: relative;
+    }
+    .calendar-day.has-homework {
+      background: #e3f2fd;
+    }
+    .calendar-day.today {
+      background: #fff3cd;
+      border-color: #ffc107;
+    }
+    .ai-suggestion {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 1rem;
+      padding: 1rem;
+      margin: 1rem 0;
+    }
+  </style>
 </head>
 <body>
   <!-- Platform Header -->
-  <header class="bg-info text-white py-3">
+  <header class="platform-header">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-8">
-          <h1 class="mb-2">Homework Platform</h1>
-          <p class="mb-0">Welcome, Student! Access and submit your homework assignments.</p>
+        <div class="col-md-6">
+          <h1 class="mb-2">Smart Homework Platform</h1>
+          <p class="mb-0">Welcome, Student! Manage your assignments with AI assistance.</p>
         </div>
-        <div class="col-md-4 text-end">
-          <button class="btn btn-light" onclick="logout()">Logout</button>
+        <div class="col-md-6 text-end">
+          <div class="d-flex justify-content-end align-items-center gap-3">
+            <div class="text-center">
+              <div class="gamification-badge badge-gold">
+                <i class="fas fa-star"></i>
+              </div>
+              <small>1250 pts</small>
+            </div>
+            <button class="btn btn-light" onclick="toggleFocusMode()">
+              <i class="fas fa-crosshairs"></i> Focus Mode
+            </button>
+            <button class="btn btn-outline-light" onclick="logout()">Logout</button>
+          </div>
         </div>
       </div>
     </div>
   </header>
-  <!-- Homework Assignment Module -->
-<div class="container py-4">
-  <h2 class="mb-4"><i class="fa fa-book"></i> Homework Assignments</h2>
-  <!-- Assignment Filters & Actions -->
-  <div class="d-flex flex-wrap gap-2 mb-3">
-    <select id="filterSubject" class="form-select w-auto">
-      <option value="">All Subjects</option>
-    </select>
-    <select id="filterClass" class="form-select w-auto">
-      <option value="">All Classes</option>
-    </select>
-    <select id="filterStatus" class="form-select w-auto">
-      <option value="all">All</option>
-      <option value="submitted">Submitted</option>
-      <option value="not_submitted">Not Submitted</option>
-      <option value="late">Late</option>
-    </select>
-    <button class="btn btn-primary" id="createHomeworkBtn"><i class="fa fa-plus"></i> New Assignment</button>
-    <button class="btn btn-outline-secondary" id="bulkImportBtn"><i class="fa fa-upload"></i> Bulk Import</button>
-    <button class="btn btn-outline-info" id="analyticsBtn"><i class="fa fa-chart-bar"></i> Analytics</button>
-  </div>
-  <!-- Assignment List Table -->
-  <div class="card mb-4">
-    <div class="card-header d-flex justify-content-between align-items-center">
-      <span><i class="fa fa-list"></i> Assignments</span>
-      <span id="assignmentCount" class="badge bg-secondary"></span>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-hover mb-0" id="homeworkTable">
-        <thead class="table-light">
-          <tr>
-            <th>Subject</th>
-            <th>Class</th>
-            <th>Title</th>
-            <th>Due</th>
-            <th>Difficulty</th>
-            <th>Status</th>
-            <th>Urgent</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </div>
-  <!-- Assignment Details & Submission Panel -->
-  <div id="assignmentDetail" style="display:none;"></div>
-  <!-- Grading & Feedback Panel -->
-  <div id="gradingPanel" style="display:none;"></div>
-  <!-- Analytics Dashboard Modal -->
-  <div class="modal fade" id="analyticsModal" tabindex="-1" aria-labelledby="analyticsModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="analyticsModalLabel"><i class="fa fa-chart-bar"></i> Submission Analytics</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body" id="analyticsContent"></div>
-      </div>
-    </div>
-  </div>
-  <!-- Create/Edit Homework Modal -->
-  <div class="modal fade" id="homeworkModal" tabindex="-1" aria-labelledby="homeworkModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-lg">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="homeworkModalLabel"><i class="fa fa-plus"></i> Create/Edit Assignment</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <form id="homeworkForm">
-            <div class="row g-3">
-              <div class="col-md-4">
-                <label class="form-label">Subject</label>
-                <select class="form-select" id="hwSubject" required></select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Class</label>
-                <select class="form-select" id="hwClass" required></select>
-              </div>
-              <div class="col-md-4">
-                <label class="form-label">Difficulty</label>
-                <select class="form-select" id="hwDifficulty">
-                  <option>Easy</option>
-                  <option>Medium</option>
-                  <option>Hard</option>
-                </select>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Title</label>
-                <input type="text" class="form-control" id="hwTitle" required>
-              </div>
-              <div class="col-md-6">
-                <label class="form-label">Due Date</label>
-                <input type="datetime-local" class="form-control" id="hwDue" required>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Instructions</label>
-                <textarea class="form-control" id="hwInstructions" rows="2" required></textarea>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Attach Files</label>
-                <input type="file" class="form-control" id="hwFiles" multiple>
-                <div class="form-text">Attach PDFs, images, audio, video, or import from cloud.</div>
-                <button type="button" class="btn btn-link p-0" id="cloudAttachBtn"><i class="fa fa-cloud"></i> Attach from Cloud</button>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Recurring</label>
-                <select class="form-select" id="hwRecurring">
-                  <option value="none">None</option>
-                  <option value="weekly">Weekly</option>
-                  <option value="monthly">Monthly</option>
-                </select>
-              </div>
-              <div class="col-12">
-                <label class="form-label">Urgent</label>
-                <input type="checkbox" id="hwUrgent">
-              </div>
-              <div class="col-12">
-                <label class="form-label">AI-Suggested Topic</label>
-                <button type="button" class="btn btn-outline-info btn-sm" id="aiSuggestBtn">Suggest</button>
-                <span id="aiSuggestion" class="ms-2 text-success"></span>
+
+  <!-- Main Content -->
+  <div class="container py-4">
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="homeworkTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">
+          <i class="fas fa-tachometer-alt"></i> Smart Dashboard
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="kanban-tab" data-bs-toggle="tab" data-bs-target="#kanban" type="button" role="tab">
+          <i class="fas fa-columns"></i> Kanban View
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="calendar-tab" data-bs-toggle="tab" data-bs-target="#calendar" type="button" role="tab">
+          <i class="fas fa-calendar-alt"></i> Calendar
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="progress-tab" data-bs-toggle="tab" data-bs-target="#progress" type="button" role="tab">
+          <i class="fas fa-chart-line"></i> Progress
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="collaboration-tab" data-bs-toggle="tab" data-bs-target="#collaboration" type="button" role="tab">
+          <i class="fas fa-users"></i> Collaboration
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="homeworkTabContent">
+      <!-- Smart Dashboard Tab -->
+      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="row g-4">
+          <!-- Quick Stats -->
+          <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+              <div class="card-body">
+                <div class="progress-ring mb-3">
+                  <svg width="80" height="80">
+                    <circle cx="40" cy="40" r="35" stroke="#e9ecef" stroke-width="5" fill="none"/>
+                    <circle cx="40" cy="40" r="35" stroke="#28a745" stroke-width="5" fill="none" 
+                            stroke-dasharray="220" stroke-dashoffset="66" class="progress-ring-circle"/>
+                  </svg>
+                </div>
+                <h5>Weekly Progress</h5>
+                <h3 class="text-success">70%</h3>
+                <small class="text-muted">7 of 10 completed</small>
               </div>
             </div>
-            <div class="mt-3 d-flex justify-content-end gap-2">
-              <button type="submit" class="btn btn-primary">Save Assignment</button>
-              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+              <div class="card-body">
+                <i class="fas fa-clock fa-2x text-warning mb-3"></i>
+                <h5>Time Focused</h5>
+                <h3 class="text-warning">12.5h</h3>
+                <small class="text-muted">This week</small>
+              </div>
             </div>
-          </form>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+              <div class="card-body">
+                <i class="fas fa-trophy fa-2x text-primary mb-3"></i>
+                <h5>Streak</h5>
+                <h3 class="text-primary">15 days</h3>
+                <small class="text-muted">Current streak</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="card dashboard-card text-center">
+              <div class="card-body">
+                <i class="fas fa-star fa-2x text-warning mb-3"></i>
+                <h5>Average Grade</h5>
+                <h3 class="text-info">A-</h3>
+                <small class="text-muted">Last month</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Urgent Tasks -->
+          <div class="col-md-8">
+            <div class="card dashboard-card">
+              <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-danger"></i> Urgent Tasks</h5>
+                <button class="btn btn-sm btn-outline-primary" onclick="viewAllTasks()">View All</button>
+              </div>
+              <div class="card-body">
+                <div class="homework-item status-urgent" onclick="openHomework('math-essay')">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">Mathematics Essay</h6>
+                      <p class="mb-1 text-muted">Write a 500-word essay on algebraic concepts</p>
+                      <small class="text-danger"><i class="fas fa-clock"></i> Due in 2 hours</small>
+                    </div>
+                    <span class="badge bg-danger">Urgent</span>
+                  </div>
+                </div>
+                <div class="homework-item status-pending" onclick="openHomework('science-lab')">
+                  <div class="d-flex justify-content-between align-items-start">
+                    <div>
+                      <h6 class="mb-1">Science Lab Report</h6>
+                      <p class="mb-1 text-muted">Complete the chemistry experiment report</p>
+                      <small class="text-warning"><i class="fas fa-clock"></i> Due tomorrow</small>
+                    </div>
+                    <span class="badge bg-warning">Pending</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- AI Assistant -->
+          <div class="col-md-4">
+            <div class="ai-suggestion">
+              <h6><i class="fas fa-robot"></i> AI Homework Assistant</h6>
+              <p class="mb-2">Need help with your math essay? I can suggest:</p>
+              <ul class="mb-3">
+                <li>Key algebraic concepts to include</li>
+                <li>Essay structure tips</li>
+                <li>Grammar and style improvements</li>
+              </ul>
+              <button class="btn btn-light btn-sm" onclick="getAIAssistance()">
+                <i class="fas fa-magic"></i> Get AI Help
+              </button>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- Bulk Import Modal -->
-  <div class="modal fade" id="bulkImportModal" tabindex="-1" aria-labelledby="bulkImportModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="bulkImportModalLabel"><i class="fa fa-upload"></i> Bulk Import Homework</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <input type="file" class="form-control mb-2" id="bulkImportFile" accept=".csv,.xlsx">
-          <button class="btn btn-primary" id="importHomeworkBtn">Import</button>
+
+      <!-- Kanban View Tab -->
+      <div class="tab-pane fade" id="kanban" role="tabpanel">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <div class="kanban-column">
+              <h6 class="text-center mb-3"><i class="fas fa-list"></i> Pending</h6>
+              <div class="homework-item status-pending" onclick="openHomework('english-essay')">
+                <h6>English Essay</h6>
+                <p class="small">Shakespeare analysis</p>
+                <small class="text-muted">Due: 3 days</small>
+              </div>
+              <div class="homework-item status-pending" onclick="openHomework('history-project')">
+                <h6>History Project</h6>
+                <p class="small">World War II timeline</p>
+                <small class="text-muted">Due: 1 week</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="kanban-column">
+              <h6 class="text-center mb-3"><i class="fas fa-play"></i> In Progress</h6>
+              <div class="homework-item status-in-progress" onclick="openHomework('math-essay')">
+                <h6>Mathematics Essay</h6>
+                <p class="small">Algebraic concepts</p>
+                <small class="text-danger">Due: 2 hours</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="kanban-column">
+              <h6 class="text-center mb-3"><i class="fas fa-check"></i> Submitted</h6>
+              <div class="homework-item status-submitted" onclick="openHomework('science-lab')">
+                <h6>Science Lab Report</h6>
+                <p class="small">Chemistry experiment</p>
+                <small class="text-success">Submitted: 2 hours ago</small>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="kanban-column">
+              <h6 class="text-center mb-3"><i class="fas fa-star"></i> Graded</h6>
+              <div class="homework-item status-graded" onclick="openHomework('geography-quiz')">
+                <h6>Geography Quiz</h6>
+                <p class="small">World capitals</p>
+                <small class="text-primary">Grade: A (95%)</small>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <!-- In-App Chat Modal -->
-  <div class="modal fade" id="chatModal" tabindex="-1" aria-labelledby="chatModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="chatModalLabel"><i class="fa fa-comments"></i> Assignment Chat</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      <!-- Calendar Tab -->
+      <div class="tab-pane fade" id="calendar" role="tabpanel">
+        <div class="calendar-view">
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h5>January 2024</h5>
+            <div>
+              <button class="btn btn-sm btn-outline-primary" onclick="syncCalendar()">
+                <i class="fas fa-sync"></i> Sync Calendar
+              </button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-md-3">
+              <div class="calendar-day has-homework">
+                <strong>15</strong>
+                <div class="small text-primary">Math Essay Due</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="calendar-day today">
+                <strong>16</strong>
+                <div class="small text-warning">Today</div>
+                <div class="small text-primary">Science Lab Due</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="calendar-day">
+                <strong>17</strong>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="calendar-day has-homework">
+                <strong>18</strong>
+                <div class="small text-primary">English Essay Due</div>
+              </div>
+            </div>
+          </div>
         </div>
-        <div class="modal-body">
-          <div id="chatMessages" style="height:200px;overflow-y:auto;"></div>
-          <div class="input-group mt-2">
-            <input type="text" class="form-control" id="chatInput" placeholder="Type a message...">
-            <button class="btn btn-primary" id="sendChatBtn"><i class="fa fa-paper-plane"></i></button>
+      </div>
+
+      <!-- Progress Tab -->
+      <div class="tab-pane fade" id="progress" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card dashboard-card">
+              <div class="card-header">
+                <h5><i class="fas fa-chart-bar"></i> Weekly Completion</h5>
+              </div>
+              <div class="card-body">
+                <canvas id="weeklyChart" width="400" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card dashboard-card">
+              <div class="card-header">
+                <h5><i class="fas fa-trophy"></i> Achievements</h5>
+              </div>
+              <div class="card-body">
+                <div class="row text-center">
+                  <div class="col-4">
+                    <div class="gamification-badge badge-gold mb-2">
+                      <i class="fas fa-fire"></i>
+                    </div>
+                    <small>15-day streak</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="gamification-badge badge-silver mb-2">
+                      <i class="fas fa-clock"></i>
+                    </div>
+                    <small>Time master</small>
+                  </div>
+                  <div class="col-4">
+                    <div class="gamification-badge badge-bronze mb-2">
+                      <i class="fas fa-star"></i>
+                    </div>
+                    <small>Top performer</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Collaboration Tab -->
+      <div class="tab-pane fade" id="collaboration" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-md-8">
+            <div class="card dashboard-card">
+              <div class="card-header">
+                <h5><i class="fas fa-users"></i> Group Projects</h5>
+              </div>
+              <div class="card-body">
+                <div class="homework-item" onclick="openGroupProject('history-project')">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6>World War II Timeline (Group Project)</h6>
+                      <p class="mb-1">Team: John, Sarah, Mike, You</p>
+                      <small class="text-muted">Due: 1 week</small>
+                    </div>
+                    <div class="text-end">
+                      <span class="badge bg-info">4 members</span>
+                      <br>
+                      <small class="text-success">2 files uploaded</small>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card dashboard-card">
+              <div class="card-header">
+                <h5><i class="fas fa-comments"></i> Recent Chat</h5>
+              </div>
+              <div class="card-body">
+                <div class="chat-bubble">
+                  <strong>John:</strong> I've uploaded the research notes
+                </div>
+                <div class="chat-bubble own">
+                  <strong>You:</strong> Great! I'll review them tonight
+                </div>
+                <div class="chat-bubble">
+                  <strong>Sarah:</strong> When should we meet to discuss?
+                </div>
+                <div class="input-group mt-3">
+                  <input type="text" class="form-control" placeholder="Type message...">
+                  <button class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-</div>
-<!-- PDF Annotation Modal (stub) -->
-<div class="modal fade" id="pdfAnnotateModal" tabindex="-1" aria-labelledby="pdfAnnotateModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-xl">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="pdfAnnotateModalLabel"><i class="fa fa-pen"></i> PDF Annotation</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="pdfAnnotateArea">[PDF Annotation Area - TODO]</div>
+
+  <!-- Homework Detail Modal -->
+  <div class="modal fade" id="homeworkModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="homeworkTitle">Homework Details</h5>
+          <div class="d-flex align-items-center gap-2">
+            <div class="timer-display" id="homeworkTimer">00:00:00</div>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-md-8">
+              <!-- Homework Content -->
+              <div id="homeworkContent">
+                <!-- Content will be loaded here -->
+              </div>
+              
+              <!-- Submission Area -->
+              <div class="card mt-4">
+                <div class="card-header">
+                  <h6><i class="fas fa-upload"></i> Submit Your Work</h6>
+                </div>
+                <div class="card-body">
+                  <!-- Text Answer -->
+                  <div class="mb-3">
+                    <label class="form-label">Written Answer</label>
+                    <textarea class="form-control" id="textAnswer" rows="6" placeholder="Type your answer here..."></textarea>
+                    <div class="form-text">Auto-saves every 30 seconds</div>
+                  </div>
+
+                  <!-- File Upload -->
+                  <div class="mb-3">
+                    <label class="form-label">Upload Files</label>
+                    <div class="drop-zone border rounded p-4 text-center" id="dropZone">
+                      <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-2"></i>
+                      <p>Drag & drop files here or click to browse</p>
+                      <input type="file" id="fileUpload" multiple accept=".pdf,.docx,.jpg,.png,.mp4,.mp3" style="display: none;">
+                      <button class="btn btn-outline-primary" onclick="document.getElementById('fileUpload').click()">
+                        Choose Files
+                      </button>
+                    </div>
+                    <div id="fileList" class="mt-2"></div>
+                  </div>
+
+                  <!-- Camera & Voice Recording -->
+                  <div class="row">
+                    <div class="col-md-6">
+                      <div class="voice-recorder">
+                        <h6><i class="fas fa-microphone"></i> Voice Note</h6>
+                        <button class="btn btn-outline-danger" id="recordBtn" onclick="toggleRecording()">
+                          <i class="fas fa-microphone"></i> Start Recording
+                        </button>
+                        <div id="recordingStatus" class="mt-2" style="display: none;">
+                          <div class="recording-indicator"></div>
+                          <span>Recording...</span>
+                        </div>
+                      </div>
+                    </div>
+                    <div class="col-md-6">
+                      <div class="text-center">
+                        <h6><i class="fas fa-camera"></i> Photo Submission</h6>
+                        <button class="btn btn-outline-primary" onclick="takePhoto()">
+                          <i class="fas fa-camera"></i> Take Photo
+                        </button>
+                        <div id="photoPreview" class="mt-2"></div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI Assistance -->
+                  <div class="ai-suggestion mt-3">
+                    <h6><i class="fas fa-robot"></i> AI Writing Assistant</h6>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-light btn-sm" onclick="checkGrammar()">
+                        <i class="fas fa-spell-check"></i> Grammar Check
+                      </button>
+                      <button class="btn btn-light btn-sm" onclick="improveWriting()">
+                        <i class="fas fa-magic"></i> Improve Writing
+                      </button>
+                      <button class="btn btn-light btn-sm" onclick="summarizeText()">
+                        <i class="fas fa-compress"></i> Summarize
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-4">
+              <!-- Homework Info -->
+              <div class="card">
+                <div class="card-header">
+                  <h6><i class="fas fa-info-circle"></i> Assignment Info</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <strong>Subject:</strong> <span id="homeworkSubject">Mathematics</span>
+                  </div>
+                  <div class="mb-3">
+                    <strong>Due Date:</strong> <span id="homeworkDueDate">Tomorrow, 3:00 PM</span>
+                  </div>
+                  <div class="mb-3">
+                    <strong>Points:</strong> <span id="homeworkPoints">25</span>
+                  </div>
+                  <div class="mb-3">
+                    <strong>Type:</strong> <span id="homeworkType">Individual</span>
+                  </div>
+                  <div class="mb-3">
+                    <strong>Time Spent:</strong> <span id="timeSpent">00:00:00</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Attachments -->
+              <div class="card mt-3">
+                <div class="card-header">
+                  <h6><i class="fas fa-paperclip"></i> Attachments</h6>
+                </div>
+                <div class="card-body">
+                  <div id="attachmentsList">
+                    <!-- Attachments will be loaded here -->
+                  </div>
+                </div>
+              </div>
+
+              <!-- Collaboration (if group project) -->
+              <div class="card mt-3" id="collaborationPanel" style="display: none;">
+                <div class="card-header">
+                  <h6><i class="fas fa-users"></i> Team Members</h6>
+                </div>
+                <div class="card-body">
+                  <div id="teamMembers">
+                    <!-- Team members will be loaded here -->
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="saveDraft()">
+            <i class="fas fa-save"></i> Save Draft
+          </button>
+          <button type="button" class="btn btn-primary" onclick="submitHomework()">
+            <i class="fas fa-paper-plane"></i> Submit Assignment
+          </button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-<!-- Group Assignment Modal (stub) -->
-<div class="modal fade" id="groupAssignModal" tabindex="-1" aria-labelledby="groupAssignModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="groupAssignModalLabel"><i class="fa fa-users"></i> Group Assignment</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+  <!-- Focus Mode Overlay -->
+  <div class="focus-mode" id="focusMode">
+    <div class="focus-content">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h4>Focus Mode</h4>
+        <button class="btn btn-outline-secondary" onclick="toggleFocusMode()">
+          <i class="fas fa-times"></i>
+        </button>
       </div>
-      <div class="modal-body">
-        <div id="groupAssignArea">[Group Assignment Area - TODO]</div>
+      <div class="timer-display text-center mb-3" id="focusTimer">25:00</div>
+      <div class="text-center mb-3">
+        <button class="btn btn-success me-2" onclick="startFocusSession()">Start Session</button>
+        <button class="btn btn-warning" onclick="pauseFocusSession()">Pause</button>
       </div>
-    </div>
-  </div>
-</div>
-<!-- Peer Review Modal (stub) -->
-<div class="modal fade" id="peerReviewModal" tabindex="-1" aria-labelledby="peerReviewModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="peerReviewModalLabel"><i class="fa fa-user-check"></i> Peer Review</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="peerReviewArea">[Peer Review Area - TODO]</div>
+      <div id="focusContent">
+        <!-- Current homework content will be shown here -->
       </div>
     </div>
   </div>
-</div>
-<!-- Homework Audit Log Modal (stub) -->
-<div class="modal fade" id="auditLogModal" tabindex="-1" aria-labelledby="auditLogModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="auditLogModalLabel"><i class="fa fa-history"></i> Homework Audit Log</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        <div id="auditLogArea">[Audit Log Area - TODO]</div>
-      </div>
-    </div>
-  </div>
-</div>
+
   <script src="assets/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/js/script.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script>
     // Check if user is logged in and is a student
     if (!localStorage.getItem('schoolms_logged_in') || localStorage.getItem('user_type') !== 'student') {
       window.location.href = 'index.html';
     }
+
+    let currentHomework = null;
+    let focusTimer = null;
+    let homeworkTimer = null;
+    let recording = false;
+    let mediaRecorder = null;
+    let recordedChunks = [];
+
+    // Sample homework data
+    const homeworkData = {
+      'math-essay': {
+        title: 'Mathematics Essay',
+        subject: 'Mathematics',
+        dueDate: 'Tomorrow, 3:00 PM',
+        points: 25,
+        type: 'Individual',
+        content: `
+          <h5>Assignment: Algebraic Concepts Essay</h5>
+          <p>Write a 500-word essay explaining the fundamental concepts of algebra and their real-world applications.</p>
+          <h6>Requirements:</h6>
+          <ul>
+            <li>Introduction to algebraic expressions</li>
+            <li>Solving linear equations</li>
+            <li>Real-world applications</li>
+            <li>Conclusion with personal insights</li>
+          </ul>
+          <h6>Resources:</h6>
+          <ul>
+            <li><a href="#" class="text-primary">Algebra Textbook Chapter 3</a></li>
+            <li><a href="#" class="text-primary">Online Calculator Tool</a></li>
+          </ul>
+        `
+      },
+      'science-lab': {
+        title: 'Science Lab Report',
+        subject: 'Science',
+        dueDate: 'Tomorrow, 9:00 AM',
+        points: 30,
+        type: 'Individual',
+        content: `
+          <h5>Lab Report: Chemical Reactions</h5>
+          <p>Complete the lab report for the chemical reactions experiment conducted in class.</p>
+          <h6>Include:</h6>
+          <ul>
+            <li>Hypothesis</li>
+            <li>Materials and methods</li>
+            <li>Results and observations</li>
+            <li>Analysis and conclusion</li>
+          </ul>
+        `
+      }
+    };
 
     function logout() {
       localStorage.removeItem('schoolms_logged_in');
@@ -260,6 +740,286 @@
       localStorage.removeItem('student_id');
       localStorage.removeItem('platform');
       window.location.href = 'index.html';
+    }
+
+    function openHomework(homeworkId) {
+      currentHomework = homeworkId;
+      const homework = homeworkData[homeworkId];
+      
+      if (!homework) {
+        alert('Homework not found!');
+        return;
+      }
+      
+      document.getElementById('homeworkTitle').textContent = homework.title;
+      document.getElementById('homeworkSubject').textContent = homework.subject;
+      document.getElementById('homeworkDueDate').textContent = homework.dueDate;
+      document.getElementById('homeworkPoints').textContent = homework.points;
+      document.getElementById('homeworkType').textContent = homework.type;
+      document.getElementById('homeworkContent').innerHTML = homework.content;
+      
+      // Show collaboration panel if it's a group project
+      if (homework.type === 'Group') {
+        document.getElementById('collaborationPanel').style.display = 'block';
+      } else {
+        document.getElementById('collaborationPanel').style.display = 'none';
+      }
+      
+      const modal = new bootstrap.Modal(document.getElementById('homeworkModal'));
+      modal.show();
+      
+      // Start homework timer
+      startHomeworkTimer();
+      
+      // Load saved draft
+      setTimeout(loadSavedDraft, 100);
+    }
+
+    function startHomeworkTimer() {
+      let seconds = 0;
+      homeworkTimer = setInterval(() => {
+        seconds++;
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        document.getElementById('homeworkTimer').textContent = 
+          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        document.getElementById('timeSpent').textContent = 
+          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function toggleFocusMode() {
+      const focusMode = document.getElementById('focusMode');
+      if (focusMode.style.display === 'none' || focusMode.style.display === '') {
+        focusMode.style.display = 'block';
+        document.getElementById('focusContent').innerHTML = 
+          currentHomework ? homeworkData[currentHomework].content : '<p>No homework selected</p>';
+      } else {
+        focusMode.style.display = 'none';
+      }
+    }
+
+    function startFocusSession() {
+      let timeLeft = 25 * 60; // 25 minutes
+      focusTimer = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('focusTimer').textContent = 
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(focusTimer);
+          alert('Focus session completed! Take a 5-minute break.');
+        }
+      }, 1000);
+    }
+
+    function pauseFocusSession() {
+      if (focusTimer) {
+        clearInterval(focusTimer);
+        focusTimer = null;
+      }
+    }
+
+    function toggleRecording() {
+      if (!recording) {
+        startRecording();
+      } else {
+        stopRecording();
+      }
+    }
+
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        mediaRecorder = new MediaRecorder(stream);
+        recordedChunks = [];
+        
+        mediaRecorder.ondataavailable = (event) => {
+          recordedChunks.push(event.data);
+        };
+        
+        mediaRecorder.onstop = () => {
+          const blob = new Blob(recordedChunks, { type: 'audio/webm' });
+          const url = URL.createObjectURL(blob);
+          const audio = document.createElement('audio');
+          audio.controls = true;
+          audio.src = url;
+          document.getElementById('fileList').appendChild(audio);
+        };
+        
+        mediaRecorder.start();
+        recording = true;
+        document.getElementById('recordBtn').innerHTML = '<i class="fas fa-stop"></i> Stop Recording';
+        document.getElementById('recordingStatus').style.display = 'block';
+      } catch (err) {
+        console.error('Error accessing microphone:', err);
+        alert('Could not access microphone');
+      }
+    }
+
+    function stopRecording() {
+      if (mediaRecorder && recording) {
+        mediaRecorder.stop();
+        recording = false;
+        document.getElementById('recordBtn').innerHTML = '<i class="fas fa-microphone"></i> Start Recording';
+        document.getElementById('recordingStatus').style.display = 'none';
+      }
+    }
+
+    function takePhoto() {
+      // Simulate camera functionality
+      const input = document.createElement('input');
+      input.type = 'file';
+      input.accept = 'image/*';
+      input.onchange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            const img = document.createElement('img');
+            img.src = e.target.result;
+            img.className = 'file-preview';
+            document.getElementById('photoPreview').innerHTML = '';
+            document.getElementById('photoPreview').appendChild(img);
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      input.click();
+    }
+
+    function getAIAssistance() {
+      alert('AI Assistant: Here are some suggestions for your math essay:\n\n1. Start with a clear definition of algebra\n2. Include examples of linear equations\n3. Discuss real-world applications like budgeting\n4. Conclude with the importance of algebra in modern life');
+    }
+
+    function checkGrammar() {
+      alert('Grammar check completed! No errors found.');
+    }
+
+    function improveWriting() {
+      alert('Writing suggestions:\n\n- Use more descriptive language\n- Add transitional phrases\n- Consider varying sentence structure');
+    }
+
+    function summarizeText() {
+      alert('Summary generated:\n\nYour essay effectively covers algebraic concepts with good examples. Consider adding more real-world applications.');
+    }
+
+    function saveDraft() {
+      alert('Draft saved successfully!');
+    }
+
+    function submitHomework() {
+      if (confirm('Are you sure you want to submit this homework? You won\'t be able to edit it after submission.')) {
+        alert('Homework submitted successfully!');
+        const modal = bootstrap.Modal.getInstance(document.getElementById('homeworkModal'));
+        modal.hide();
+        if (homeworkTimer) {
+          clearInterval(homeworkTimer);
+        }
+      }
+    }
+
+    function viewAllTasks() {
+      document.getElementById('kanban-tab').click();
+    }
+
+    function syncCalendar() {
+      alert('Calendar synced with Google Calendar!');
+    }
+
+    function openGroupProject(projectId) {
+      openHomework(projectId);
+    }
+
+    // Initialize charts
+    document.addEventListener('DOMContentLoaded', function() {
+      const ctx = document.getElementById('weeklyChart');
+      if (ctx) {
+        new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+            datasets: [{
+              label: 'Homework Completed',
+              data: [2, 3, 1, 4, 2, 1, 0],
+              backgroundColor: 'rgba(40, 167, 69, 0.8)'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true
+              }
+            }
+          }
+        });
+      }
+    });
+
+    // File upload handling
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileUpload = document.getElementById('fileUpload');
+      if (fileUpload) {
+        fileUpload.addEventListener('change', function(e) {
+          const files = e.target.files;
+          const fileList = document.getElementById('fileList');
+          
+          for (let file of files) {
+            const fileItem = document.createElement('div');
+            fileItem.className = 'd-flex align-items-center justify-content-between p-2 border rounded mb-2';
+            fileItem.innerHTML = `
+              <div>
+                <i class="fas fa-file"></i> ${file.name}
+              </div>
+              <button class="btn btn-sm btn-outline-danger" onclick="this.parentElement.remove()">
+                <i class="fas fa-times"></i>
+              </button>
+            `;
+            fileList.appendChild(fileItem);
+          }
+        });
+      }
+    });
+
+    // Auto-save functionality
+    setInterval(() => {
+      const textAnswer = document.getElementById('textAnswer');
+      if (textAnswer && textAnswer.value.trim() && currentHomework) {
+        localStorage.setItem('homework_draft_' + currentHomework, textAnswer.value);
+      }
+    }, 30000); // Auto-save every 30 seconds
+
+    // Load saved drafts when homework is opened
+    function loadSavedDraft() {
+      if (currentHomework) {
+        const savedDraft = localStorage.getItem('homework_draft_' + currentHomework);
+        const textAnswer = document.getElementById('textAnswer');
+        if (savedDraft && textAnswer) {
+          textAnswer.value = savedDraft;
+        }
+      }
+    }
+
+    // Add error handling for missing elements
+    function safeGetElement(id) {
+      const element = document.getElementById(id);
+      if (!element) {
+        console.warn(`Element with id '${id}' not found`);
+      }
+      return element;
+    }
+
+    // Enhanced error handling for timer functions
+    function updateTimerDisplay(elementId, timeString) {
+      const element = safeGetElement(elementId);
+      if (element) {
+        element.textContent = timeString;
+      }
     }
   </script>
 </body>
