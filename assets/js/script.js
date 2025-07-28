@@ -3,6 +3,7 @@
 document.addEventListener('DOMContentLoaded', function() {
   // --- Personalization ---
   //STU001 and student123
+  //techer@school.com  and teacher123
   const user = {
     name: 'Walter Kamanga',
     role: 'Administrator',

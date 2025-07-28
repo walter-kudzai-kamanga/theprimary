@@ -37,6 +37,722 @@
     .nav-pills .nav-link.active { background-color: #28a745; }
     .quick-stats { background: linear-gradient(135deg, #28a745, #20c997); color: white; border-radius: 10px; }
     .notification-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
+
+    /* ID Card Styles */
+    .id-card-container {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 600px;
+      border-radius: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .id-card-container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.3;
+    }
+
+    .id-card {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      border-radius: 15px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      overflow: hidden;
+      position: relative;
+      transition: all 0.3s ease;
+      transform-style: preserve-3d;
+    }
+
+    .id-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .id-card-header {
+      background: linear-gradient(135deg, #28a745, #20c997);
+      color: white;
+      padding: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .id-card-header::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: shimmer 3s infinite;
+    }
+
+    @keyframes shimmer {
+      0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+      100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+    }
+
+    .school-logo {
+      font-size: 2rem;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .school-info h4 {
+      margin: 0;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .school-info p {
+      margin: 0;
+      font-size: 0.8rem;
+      opacity: 0.9;
+    }
+
+    .card-type .badge {
+      font-size: 0.7rem;
+      padding: 5px 10px;
+    }
+
+    .id-card-body {
+      padding: 25px;
+      display: flex;
+      gap: 25px;
+    }
+
+    .student-photo-section {
+      flex-shrink: 0;
+    }
+
+    .photo-container {
+      position: relative;
+      width: 120px;
+      height: 150px;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .student-photo {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .photo-container:hover .student-photo {
+      transform: scale(1.05);
+    }
+
+    .photo-overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: linear-gradient(transparent, rgba(0, 0, 0, 0.7));
+      padding: 10px;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .photo-container:hover .photo-overlay {
+      opacity: 1;
+    }
+
+    .student-info-section {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .info-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .info-row:last-child {
+      border-bottom: none;
+    }
+
+    .info-row label {
+      font-weight: 600;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .info-row span {
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .id-card-footer {
+      padding: 20px 25px;
+      background: #f8f9fa;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-top: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .qr-section {
+      text-align: center;
+    }
+
+    .qr-code {
+      width: 60px;
+      height: 60px;
+      background: #000;
+      border-radius: 8px;
+      margin: 0 auto 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 0.8rem;
+    }
+
+    .validity-section {
+      text-align: right;
+    }
+
+    .validity-info {
+      margin-bottom: 5px;
+    }
+
+    .security-watermark {
+      font-size: 0.7rem;
+      color: #dc3545;
+      font-weight: bold;
+    }
+
+    /* Back View Styles */
+    .id-card-back .id-card-header {
+      background: linear-gradient(135deg, #6f42c1, #e83e8c);
+    }
+
+    .emergency-info {
+      flex: 1;
+    }
+
+    .school-contact {
+      flex: 1;
+      margin-left: 20px;
+    }
+
+    .school-contact h6 {
+      color: #495057;
+      margin-bottom: 10px;
+      font-weight: 600;
+    }
+
+    .contact-info div {
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: #6c757d;
+    }
+
+    .barcode-section {
+      text-align: center;
+    }
+
+    .barcode {
+      width: 120px;
+      height: 40px;
+      background: repeating-linear-gradient(
+        90deg,
+        #000 0px,
+        #000 2px,
+        transparent 2px,
+        transparent 4px
+      );
+      margin: 0 auto 5px;
+      border-radius: 4px;
+    }
+
+    .security-info {
+      text-align: right;
+    }
+
+    .verification-pin {
+      margin-top: 5px;
+    }
+
+    /* Student Details Panel */
+    .student-details-panel {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      height: fit-content;
+    }
+
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    }
+
+    .detail-row:last-child {
+      border-bottom: none;
+    }
+
+    .detail-row label {
+      font-weight: 600;
+      color: #6c757d;
+      font-size: 0.9rem;
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 15px;
+      padding: 10px;
+      background: rgba(255, 255, 255, 0.7);
+      border-radius: 8px;
+      border-left: 4px solid #28a745;
+    }
+
+    .status-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 15px;
+      color: white;
+      font-size: 1.1rem;
+    }
+
+    .status-icon.attendance { background: linear-gradient(45deg, #28a745, #20c997); }
+    .status-icon.fees { background: linear-gradient(45deg, #ffc107, #fd7e14); }
+    .status-icon.library { background: linear-gradient(45deg, #17a2b8, #6f42c1); }
+    .status-icon.transport { background: linear-gradient(45deg, #6c757d, #495057); }
+
+    .status-info {
+      flex: 1;
+    }
+
+    .status-info label {
+      display: block;
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 2px;
+    }
+
+    .status-info span {
+      font-weight: 500;
+      color: #495057;
+    }
+
+    .security-feature {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.9rem;
+    }
+
+    /* Scanner Styles */
+    .scanner-frame {
+      width: 250px;
+      height: 250px;
+      border: 2px solid #28a745;
+      border-radius: 10px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scanner-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .scanner-line {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: #28a745;
+      animation: scan 2s infinite;
+    }
+
+    @keyframes scan {
+      0% { top: 0; }
+      100% { top: 100%; }
+    }
+
+    .camera-frame {
+      width: 250px;
+      height: 250px;
+      border: 2px solid #28a745;
+      border-radius: 10px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background: #f8f9fa;
+    }
+
+    .camera-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .face-outline {
+      width: 120px;
+      height: 150px;
+      border: 2px dashed #28a745;
+      border-radius: 50%;
+      position: relative;
+    }
+
+    .face-outline::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80px;
+      height: 100px;
+      border: 1px dashed rgba(40, 167, 69, 0.5);
+      border-radius: 50%;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .id-card-body {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .student-photo-section {
+        margin-bottom: 20px;
+      }
+
+      .photo-container {
+        margin: 0 auto;
+      }
+
+      .id-card-footer {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+      }
+
+      .student-details-panel {
+        margin-top: 20px;
+      }
+    }
+
+    /* Animation Classes */
+    .fade-in {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .slide-in {
+      animation: slideIn 0.3s ease-out;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(0); }
+    }
+
+    /* Glass Morphism Effects */
+    .glass-effect {
+      background: rgba(255, 255, 255, 0.25);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    /* Hover Effects */
+    .btn-outline-primary:hover {
+      background: linear-gradient(45deg, #007bff, #6610f2);
+      border-color: transparent;
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+    }
+
+    .card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      transition: all 0.3s ease;
+    }
+
+    /* Neumorphic Design Elements */
+    .neumorphic {
+      background: #e0e5ec;
+      box-shadow: 
+        9px 9px 16px #a3b1c6,
+        -9px -9px 16px #ffffff;
+      border-radius: 15px;
+    }
+
+    .neumorphic-inset {
+      background: #e0e5ec;
+      box-shadow: 
+        inset 9px 9px 16px #a3b1c6,
+        inset -9px -9px 16px #ffffff;
+      border-radius: 15px;
+    }
+
+    /* Enhanced ID Card Effects */
+    .id-card {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .id-card::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: conic-gradient(from 0deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+      animation: rotate 10s linear infinite;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .id-card:hover::before {
+      opacity: 1;
+    }
+
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Glowing Effects */
+    .glow-effect {
+      position: relative;
+    }
+
+    .glow-effect::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: linear-gradient(45deg, #28a745, #20c997, #17a2b8, #6f42c1);
+      border-radius: inherit;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      filter: blur(10px);
+    }
+
+    .glow-effect:hover::after {
+      opacity: 0.3;
+    }
+
+    /* Floating Animation */
+    .float-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-10px); }
+    }
+
+    /* Particle Background */
+    .particle-bg {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .particle-bg::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+        radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+      animation: particleMove 20s ease-in-out infinite;
+    }
+
+    @keyframes particleMove {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(10px, -10px) rotate(90deg); }
+      50% { transform: translate(-5px, 10px) rotate(180deg); }
+      75% { transform: translate(-10px, -5px) rotate(270deg); }
+    }
+
+    /* Enhanced Button Styles */
+    .btn-modern {
+      background: linear-gradient(45deg, #667eea, #764ba2);
+      border: none;
+      color: white;
+      border-radius: 25px;
+      padding: 12px 30px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-modern::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .btn-modern:hover::before {
+      left: 100%;
+    }
+
+    .btn-modern:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    /* Status Indicators */
+    .status-indicator {
+      position: relative;
+      display: inline-block;
+    }
+
+    .status-indicator::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 8px;
+      height: 8px;
+      background: #28a745;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+      50% { transform: translate(-50%, -50%) scale(1.5); opacity: 0.5; }
+      100% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+    }
+
+    /* Card Flip Animation */
+    .card-flip {
+      perspective: 1000px;
+    }
+
+    .card-flip-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      text-align: center;
+      transition: transform 0.8s;
+      transform-style: preserve-3d;
+    }
+
+    .card-flip.flipped .card-flip-inner {
+      transform: rotateY(180deg);
+    }
+
+    .card-flip-front, .card-flip-back {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      backface-visibility: hidden;
+    }
+
+    .card-flip-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Enhanced Modal Styles */
+    .modal-xl .modal-content {
+      border: none;
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .modal-xl .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border-bottom: none;
+      padding: 25px 30px;
+    }
+
+    .modal-xl .modal-body {
+      padding: 0;
+    }
+
+    /* Responsive Enhancements */
+    @media (max-width: 768px) {
+      .id-card-container {
+        min-height: 400px;
+      }
+      
+      .id-card-body {
+        padding: 15px;
+      }
+      
+      .student-photo-section {
+        margin-bottom: 15px;
+      }
+      
+      .photo-container {
+        width: 100px;
+        height: 125px;
+      }
+    }
+
+    /* Dark Mode Support */
+    @media (prefers-color-scheme: dark) {
+      .id-card {
+        background: rgba(30, 30, 30, 0.95);
+        color: #ffffff;
+      }
+      
+      .student-details-panel {
+        background: rgba(30, 30, 30, 0.9);
+        color: #ffffff;
+      }
+    }
   </style>
 </head>
 <body>
@@ -773,6 +1489,348 @@
     </div>
   </div>
 
+  <!-- Student ID Card Modal -->
+  <div class="modal fade" id="studentIdModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header bg-gradient-primary text-white">
+          <h5 class="modal-title">
+            <i class="fas fa-id-card me-2"></i>Student ID Card
+          </h5>
+          <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body p-0">
+          <div class="container-fluid">
+            <div class="row">
+              <!-- ID Card Display -->
+              <div class="col-lg-8">
+                <div class="id-card-container p-4 particle-bg">
+                  <!-- Card Navigation -->
+                  <div class="d-flex justify-content-center mb-4">
+                    <div class="btn-group" role="group">
+                      <button class="btn btn-outline-primary active" id="frontViewBtn">
+                        <i class="fas fa-id-card me-2"></i>Front View
+                      </button>
+                      <button class="btn btn-outline-primary" id="backViewBtn">
+                        <i class="fas fa-id-card me-2"></i>Back View
+                      </button>
+                    </div>
+                  </div>
+
+                  <!-- ID Card Front View -->
+                  <div id="idCardFront" class="id-card-front">
+                    <div class="id-card glow-effect float-animation">
+                      <div class="id-card-header">
+                        <div class="school-logo">
+                          <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <div class="school-info">
+                          <h4>KAMANGA PRIMARY SCHOOL</h4>
+                          <p>Excellence in Education</p>
+                        </div>
+                        <div class="card-type">
+                          <span class="badge bg-success status-indicator">STUDENT ID</span>
+                        </div>
+                      </div>
+                      
+                      <div class="id-card-body">
+                        <div class="student-photo-section">
+                          <div class="photo-container">
+                            <img src="https://via.placeholder.com/120x150/28a745/ffffff?text=AJ" alt="Student Photo" id="idCardPhoto" class="student-photo">
+                            <div class="photo-overlay">
+                              <button class="btn btn-sm btn-light" onclick="changePhoto()">
+                                <i class="fas fa-camera"></i>
+                              </button>
+                            </div>
+                          </div>
+                        </div>
+                        
+                        <div class="student-info-section">
+                          <div class="info-row">
+                            <label>Full Name:</label>
+                            <span id="idCardName">Alice Johnson</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Student ID:</label>
+                            <span id="idCardStudentId" class="text-primary fw-bold">SCH-2025-000321</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Class:</label>
+                            <span id="idCardClass">Grade 8A</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Academic Year:</label>
+                            <span id="idCardYear">2024-2025</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Status:</label>
+                            <span class="badge bg-success" id="idCardStatus">Active</span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="id-card-footer">
+                        <div class="qr-section">
+                          <div id="idCardQR" class="qr-code"></div>
+                          <small class="text-muted">Scan for verification</small>
+                        </div>
+                        <div class="validity-section">
+                          <div class="validity-info">
+                            <small class="text-muted">Valid until:</small>
+                            <span class="fw-bold" id="idCardValidity">Dec 2025</span>
+                          </div>
+                          <div class="security-watermark">
+                            <small>SCHOOL PROPERTY</small>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- ID Card Back View -->
+                  <div id="idCardBack" class="id-card-back" style="display: none;">
+                    <div class="id-card glow-effect float-animation">
+                      <div class="id-card-header">
+                        <h4>EMERGENCY CONTACT</h4>
+                      </div>
+                      
+                      <div class="id-card-body">
+                        <div class="emergency-info">
+                          <div class="info-row">
+                            <label>Parent/Guardian:</label>
+                            <span id="emergencyContact">Mr. John Johnson</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Phone:</label>
+                            <span id="emergencyPhone">+260 955 123 456</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Address:</label>
+                            <span id="studentAddress">123 Main Street, Lusaka</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Blood Type:</label>
+                            <span id="bloodType">O+</span>
+                          </div>
+                          <div class="info-row">
+                            <label>Homeroom Teacher:</label>
+                            <span id="homeroomTeacher">Ms. Sarah Smith</span>
+                          </div>
+                        </div>
+                        
+                        <div class="school-contact">
+                          <h6>School Contact</h6>
+                          <div class="contact-info">
+                            <div><i class="fas fa-phone me-2"></i>+260 211 234 567</div>
+                            <div><i class="fas fa-envelope me-2"></i>info@kamangaprimary.edu.zm</div>
+                            <div><i class="fas fa-globe me-2"></i>www.kamangaprimary.edu.zm</div>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      <div class="id-card-footer">
+                        <div class="barcode-section">
+                          <div id="idCardBarcode" class="barcode"></div>
+                          <small class="text-muted">Library/Attendance</small>
+                        </div>
+                        <div class="security-info">
+                          <small class="text-danger">This card is school property</small>
+                          <div class="verification-pin">
+                            <small class="text-muted">Verification PIN:</small>
+                            <span class="fw-bold" id="verificationPin">2025</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Student Details Panel -->
+              <div class="col-lg-4">
+                <div class="student-details-panel">
+                  <!-- Quick Actions -->
+                  <div class="card mb-3">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="fas fa-tools me-2"></i>Quick Actions</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="d-grid gap-2">
+                        <button class="btn btn-modern" onclick="downloadIdCard()">
+                          <i class="fas fa-download me-2"></i>Download PDF
+                        </button>
+                        <button class="btn btn-modern" onclick="printIdCard()">
+                          <i class="fas fa-print me-2"></i>Print Card
+                        </button>
+                        <button class="btn btn-modern" onclick="showQRScanner()">
+                          <i class="fas fa-qrcode me-2"></i>QR Scanner
+                        </button>
+                        <button class="btn btn-modern" onclick="verifyFacial()">
+                          <i class="fas fa-camera me-2"></i>Facial Verification
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Student Details -->
+                  <div class="card mb-3">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="fas fa-user me-2"></i>Student Details</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="detail-row">
+                        <label>Gender:</label>
+                        <span id="studentGender">Female</span>
+                      </div>
+                      <div class="detail-row">
+                        <label>Date of Birth:</label>
+                        <span id="studentDOB">15 March 2010</span>
+                      </div>
+                      <div class="detail-row">
+                        <label>Admission Date:</label>
+                        <span id="admissionDate">January 2020</span>
+                      </div>
+                      <div class="detail-row">
+                        <label>National ID:</label>
+                        <span id="nationalId">1234567890</span>
+                      </div>
+                      <div class="detail-row">
+                        <label>House/Team:</label>
+                        <span id="studentHouse" class="badge bg-primary">Red House</span>
+                      </div>
+                      <div class="detail-row">
+                        <label>Academic Stream:</label>
+                        <span id="academicStream">Sciences</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Live Status -->
+                  <div class="card mb-3">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="fas fa-chart-line me-2"></i>Live Status</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="status-item">
+                        <div class="status-icon attendance">
+                          <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="status-info">
+                          <label>Last Attendance:</label>
+                          <span id="lastAttendance">Today, 8:15 AM</span>
+                        </div>
+                      </div>
+                      <div class="status-item">
+                        <div class="status-icon fees">
+                          <i class="fas fa-credit-card"></i>
+                        </div>
+                        <div class="status-info">
+                          <label>Fee Status:</label>
+                          <span id="feeStatus" class="text-warning">Owing $150</span>
+                        </div>
+                      </div>
+                      <div class="status-item">
+                        <div class="status-icon library">
+                          <i class="fas fa-book"></i>
+                        </div>
+                        <div class="status-info">
+                          <label>Library Books:</label>
+                          <span id="libraryBooks">2 books on loan</span>
+                        </div>
+                      </div>
+                      <div class="status-item">
+                        <div class="status-icon transport">
+                          <i class="fas fa-bus"></i>
+                        </div>
+                        <div class="status-info">
+                          <label>Bus Route:</label>
+                          <span id="busRoute">Route 5 - Central</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Security Features -->
+                  <div class="card">
+                    <div class="card-header">
+                      <h6 class="mb-0"><i class="fas fa-shield-alt me-2"></i>Security Features</h6>
+                    </div>
+                    <div class="card-body">
+                      <div class="security-feature">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Holographic watermark</span>
+                      </div>
+                      <div class="security-feature">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>QR code verification</span>
+                      </div>
+                      <div class="security-feature">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Barcode scanning</span>
+                      </div>
+                      <div class="security-feature">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Digital signature</span>
+                      </div>
+                      <div class="security-feature">
+                        <i class="fas fa-check-circle text-success me-2"></i>
+                        <span>Facial recognition ready</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- QR Scanner Modal -->
+  <div class="modal fade" id="qrScannerModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">QR Code Scanner</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div id="qrScannerContainer">
+            <div class="scanner-frame">
+              <div class="scanner-overlay">
+                <div class="scanner-line"></div>
+              </div>
+            </div>
+            <p class="text-muted mt-3">Position QR code within the frame</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Facial Verification Modal -->
+  <div class="modal fade" id="facialVerificationModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Facial Verification</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div id="cameraContainer">
+            <div class="camera-frame">
+              <div class="camera-overlay">
+                <div class="face-outline"></div>
+              </div>
+            </div>
+            <p class="text-muted mt-3">Look directly at the camera</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Notifications Modal -->
   <div class="modal fade" id="notificationsModal" tabindex="-1">
     <div class="modal-dialog">
@@ -790,6 +1848,7 @@
 
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script src="assets/js/script.js"></script>
   <script src="assets/js/student-portal.js"></script>
 </body>

@@ -12,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Initialize charts
     initializeCharts();
+    
+    // Initialize ID Card system
+    initializeIdCardSystem();
 });
 
 // Student data structure
@@ -23,7 +26,27 @@ let studentData = {
     gpa: 3.75,
     attendance: 95,
     pendingFees: 150,
-    assignmentsDue: 5
+    assignmentsDue: 5,
+    // ID Card specific data
+    studentId: 'SCH-2025-000321',
+    academicYear: '2024-2025',
+    validity: 'Dec 2025',
+    gender: 'Female',
+    dateOfBirth: '15 March 2010',
+    admissionDate: 'January 2020',
+    nationalId: '1234567890',
+    house: 'Red House',
+    academicStream: 'Sciences',
+    emergencyContact: 'Mr. John Johnson',
+    emergencyPhone: '+260 955 123 456',
+    address: '123 Main Street, Lusaka',
+    bloodType: 'O+',
+    homeroomTeacher: 'Ms. Sarah Smith',
+    verificationPin: '2025',
+    lastAttendance: 'Today, 8:15 AM',
+    feeStatus: 'Owing $150',
+    libraryBooks: '2 books on loan',
+    busRoute: 'Route 5 - Central'
 };
 
 // Academic results data
@@ -889,9 +912,310 @@ function logout() {
 
 // Load dashboard
 function loadDashboard() {
-    // Dashboard is loaded by default when the page loads
-    // Additional dashboard-specific functionality can be added here
+    // Load dashboard data
+    loadRecentActivities();
+    loadUpcomingEvents();
 }
+
+// ID Card System Functions
+function initializeIdCardSystem() {
+    // Setup ID card event listeners
+    setupIdCardEventListeners();
+    
+    // Generate QR code for ID card
+    generateIdCardQR();
+    
+    // Load student ID card data
+    loadIdCardData();
+}
+
+function setupIdCardEventListeners() {
+    // Front/Back view switching
+    document.getElementById('frontViewBtn').addEventListener('click', function() {
+        showIdCardFront();
+    });
+    
+    document.getElementById('backViewBtn').addEventListener('click', function() {
+        showIdCardBack();
+    });
+}
+
+function showIdCardFront() {
+    document.getElementById('idCardFront').style.display = 'block';
+    document.getElementById('idCardBack').style.display = 'none';
+    document.getElementById('frontViewBtn').classList.add('active');
+    document.getElementById('backViewBtn').classList.remove('active');
+    
+    // Add animation
+    document.getElementById('idCardFront').classList.add('fade-in');
+    setTimeout(() => {
+        document.getElementById('idCardFront').classList.remove('fade-in');
+    }, 500);
+}
+
+function showIdCardBack() {
+    document.getElementById('idCardFront').style.display = 'none';
+    document.getElementById('idCardBack').style.display = 'block';
+    document.getElementById('backViewBtn').classList.add('active');
+    document.getElementById('frontViewBtn').classList.remove('active');
+    
+    // Add animation
+    document.getElementById('idCardBack').classList.add('fade-in');
+    setTimeout(() => {
+        document.getElementById('idCardBack').classList.remove('fade-in');
+    }, 500);
+}
+
+function loadIdCardData() {
+    // Populate ID card with student data
+    document.getElementById('idCardName').textContent = studentData.name;
+    document.getElementById('idCardStudentId').textContent = studentData.studentId;
+    document.getElementById('idCardClass').textContent = studentData.class;
+    document.getElementById('idCardYear').textContent = studentData.academicYear;
+    document.getElementById('idCardValidity').textContent = studentData.validity;
+    document.getElementById('idCardPhoto').src = studentData.photo;
+    
+    // Back view data
+    document.getElementById('emergencyContact').textContent = studentData.emergencyContact;
+    document.getElementById('emergencyPhone').textContent = studentData.emergencyPhone;
+    document.getElementById('studentAddress').textContent = studentData.address;
+    document.getElementById('bloodType').textContent = studentData.bloodType;
+    document.getElementById('homeroomTeacher').textContent = studentData.homeroomTeacher;
+    document.getElementById('verificationPin').textContent = studentData.verificationPin;
+    
+    // Student details panel
+    document.getElementById('studentGender').textContent = studentData.gender;
+    document.getElementById('studentDOB').textContent = studentData.dateOfBirth;
+    document.getElementById('admissionDate').textContent = studentData.admissionDate;
+    document.getElementById('nationalId').textContent = studentData.nationalId;
+    document.getElementById('studentHouse').textContent = studentData.house;
+    document.getElementById('academicStream').textContent = studentData.academicStream;
+    
+    // Live status
+    document.getElementById('lastAttendance').textContent = studentData.lastAttendance;
+    document.getElementById('feeStatus').textContent = studentData.feeStatus;
+    document.getElementById('libraryBooks').textContent = studentData.libraryBooks;
+    document.getElementById('busRoute').textContent = studentData.busRoute;
+}
+
+function generateIdCardQR() {
+    const qrContainer = document.getElementById('idCardQR');
+    const qrData = JSON.stringify({
+        studentId: studentData.studentId,
+        name: studentData.name,
+        class: studentData.class,
+        timestamp: new Date().toISOString()
+    });
+    
+    // Clear container
+    qrContainer.innerHTML = '';
+    
+    // Generate QR code using QRCode library
+    QRCode.toCanvas(qrContainer, qrData, {
+        width: 60,
+        height: 60,
+        color: {
+            dark: '#000000',
+            light: '#FFFFFF'
+        },
+        margin: 1
+    }, function(error) {
+        if (error) {
+            // Fallback to simple pattern if QR generation fails
+            qrContainer.innerHTML = `
+                <div style="width: 100%; height: 100%; background: #000; display: grid; grid-template-columns: repeat(8, 1fr); grid-template-rows: repeat(8, 1fr); gap: 1px; padding: 2px;">
+                    ${generateQRPattern(qrData)}
+                </div>
+            `;
+        }
+    });
+}
+
+function generateQRPattern(data) {
+    // Simple QR pattern generation (for demo purposes)
+    // In real implementation, use a proper QR code library like qrcode.js
+    const pattern = [];
+    for (let i = 0; i < 64; i++) {
+        const isBlack = Math.random() > 0.5;
+        pattern.push(`<div style="background: ${isBlack ? '#000' : '#fff'}; border-radius: 1px;"></div>`);
+    }
+    return pattern.join('');
+}
+
+function downloadIdCard() {
+    showToast('Generating PDF...', 'info');
+    
+    // Simulate PDF generation
+    setTimeout(() => {
+        const link = document.createElement('a');
+        link.href = 'data:application/pdf;base64,JVBERi0xLjQKJcOkw7zDtsO...'; // Mock PDF data
+        link.download = `${studentData.name.replace(' ', '_')}_ID_Card.pdf`;
+        link.click();
+        showToast('ID Card downloaded successfully!', 'success');
+    }, 2000);
+}
+
+function printIdCard() {
+    showToast('Preparing for print...', 'info');
+    
+    // Create print window
+    const printWindow = window.open('', '_blank');
+    printWindow.document.write(`
+        <html>
+            <head>
+                <title>Student ID Card - ${studentData.name}</title>
+                <style>
+                    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+                    .print-card { 
+                        width: 85.6mm; height: 54mm; 
+                        border: 2px solid #000; 
+                        border-radius: 10px; 
+                        padding: 15px; 
+                        background: linear-gradient(135deg, #28a745, #20c997);
+                        color: white;
+                        position: relative;
+                    }
+                    .print-header { text-align: center; margin-bottom: 15px; }
+                    .print-body { display: flex; gap: 15px; }
+                    .print-photo { width: 80px; height: 100px; background: #fff; border-radius: 5px; }
+                    .print-info { flex: 1; }
+                    .print-row { margin-bottom: 8px; }
+                    .print-label { font-weight: bold; font-size: 12px; }
+                    .print-value { font-size: 14px; }
+                    .print-footer { text-align: center; margin-top: 15px; font-size: 10px; }
+                    @media print {
+                        body { margin: 0; }
+                        .print-card { box-shadow: none; }
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="print-card">
+                    <div class="print-header">
+                        <h3>KAMANGA PRIMARY SCHOOL</h3>
+                        <p>Student ID Card</p>
+                    </div>
+                    <div class="print-body">
+                        <div class="print-photo"></div>
+                        <div class="print-info">
+                            <div class="print-row">
+                                <span class="print-label">Name:</span>
+                                <span class="print-value">${studentData.name}</span>
+                            </div>
+                            <div class="print-row">
+                                <span class="print-label">ID:</span>
+                                <span class="print-value">${studentData.studentId}</span>
+                            </div>
+                            <div class="print-row">
+                                <span class="print-label">Class:</span>
+                                <span class="print-value">${studentData.class}</span>
+                            </div>
+                            <div class="print-row">
+                                <span class="print-label">Year:</span>
+                                <span class="print-value">${studentData.academicYear}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="print-footer">
+                        <p>Valid until: ${studentData.validity}</p>
+                        <p>SCHOOL PROPERTY</p>
+                    </div>
+                </div>
+            </body>
+        </html>
+    `);
+    printWindow.document.close();
+    printWindow.print();
+    
+    showToast('Print dialog opened!', 'success');
+}
+
+function showQRScanner() {
+    const modal = new bootstrap.Modal(document.getElementById('qrScannerModal'));
+    modal.show();
+    
+    // Simulate QR scanning
+    setTimeout(() => {
+        showToast('QR Code detected: Student verification successful!', 'success');
+        modal.hide();
+    }, 3000);
+}
+
+function verifyFacial() {
+    const modal = new bootstrap.Modal(document.getElementById('facialVerificationModal'));
+    modal.show();
+    
+    // Simulate facial verification
+    setTimeout(() => {
+        showToast('Facial verification successful! Identity confirmed.', 'success');
+        modal.hide();
+    }, 4000);
+}
+
+function changePhoto() {
+    // Create file input for photo upload
+    const input = document.createElement('input');
+    input.type = 'file';
+    input.accept = 'image/*';
+    input.onchange = function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('idCardPhoto').src = e.target.result;
+                showToast('Photo updated successfully!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+    input.click();
+}
+
+// Enhanced download document function to include ID card
+function downloadDocument(type) {
+    switch(type) {
+        case 'student-id':
+            // Show ID card modal instead of direct download
+            const modal = new bootstrap.Modal(document.getElementById('studentIdModal'));
+            modal.show();
+            break;
+        case 'report-card':
+            showToast('Downloading report card...', 'info');
+            setTimeout(() => showToast('Report card downloaded!', 'success'), 1500);
+            break;
+        case 'certificate':
+            showToast('Downloading certificate...', 'info');
+            setTimeout(() => showToast('Certificate downloaded!', 'success'), 1500);
+            break;
+        case 'transcript':
+            showToast('Downloading transcript...', 'info');
+            setTimeout(() => showToast('Transcript downloaded!', 'success'), 1500);
+            break;
+        default:
+            showToast('Document not found', 'error');
+    }
+}
+
+// Add ID card button to the academics section
+function addIdCardButton() {
+    const downloadSection = document.querySelector('#academics .card-body .d-grid');
+    if (downloadSection) {
+        const idCardButton = document.createElement('button');
+        idCardButton.className = 'btn btn-outline-primary';
+        idCardButton.onclick = function() {
+            const modal = new bootstrap.Modal(document.getElementById('studentIdModal'));
+            modal.show();
+        };
+        idCardButton.innerHTML = '<i class="fas fa-id-card me-2"></i>View ID Card';
+        downloadSection.appendChild(idCardButton);
+    }
+}
+
+// Initialize ID card button when academics section is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Add ID card button after a short delay to ensure DOM is ready
+    setTimeout(addIdCardButton, 1000);
+});
 
 // Export functions for global access
 window.downloadDocument = downloadDocument;
@@ -905,4 +1229,11 @@ window.viewScholarships = viewScholarships;
 window.showNotifications = showNotifications;
 window.showSection = showSection;
 window.logout = logout;
-window.selectPaymentMethod = selectPaymentMethod; 
+window.selectPaymentMethod = selectPaymentMethod;
+
+// Export ID Card functions
+window.downloadIdCard = downloadIdCard;
+window.printIdCard = printIdCard;
+window.showQRScanner = showQRScanner;
+window.verifyFacial = verifyFacial;
+window.changePhoto = changePhoto; 
