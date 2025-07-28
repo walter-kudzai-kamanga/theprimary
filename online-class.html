@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Online Class Platform | Kamanga Primary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="assets/css/animate.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    .platform-header {
+      background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
+      color: white;
+      padding: 2rem 0;
+    }
+    .assessment-card {
+      transition: transform 0.2s;
+      cursor: pointer;
+    }
+    .assessment-card:hover {
+      transform: translateY(-5px);
+    }
+    .live-class-card {
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+    }
+    .timer {
+      font-size: 1.5rem;
+      font-weight: bold;
+      color: #dc3545;
+    }
+    .question-container {
+      background: #f8f9fa;
+      border-radius: 1rem;
+      padding: 2rem;
+      margin-bottom: 1rem;
+    }
+    .option-btn {
+      width: 100%;
+      text-align: left;
+      margin-bottom: 0.5rem;
+      padding: 1rem;
+      border: 2px solid #dee2e6;
+      border-radius: 0.5rem;
+      background: white;
+      transition: all 0.2s;
+    }
+    .option-btn:hover {
+      border-color: #007bff;
+      background: #f8f9fa;
+    }
+    .option-btn.selected {
+      border-color: #007bff;
+      background: #e3f2fd;
+    }
+    .option-btn.correct {
+      border-color: #28a745;
+      background: #d4edda;
+    }
+    .option-btn.incorrect {
+      border-color: #dc3545;
+      background: #f8d7da;
+    }
+  </style>
+</head>
+<body>
+  <!-- Platform Header -->
+  <header class="platform-header">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-8">
+          <h1 class="mb-2">Online Class Platform</h1>
+          <p class="mb-0">Welcome, Student! Access your virtual classes and assessments.</p>
+        </div>
+        <div class="col-md-4 text-end">
+          <button class="btn btn-light" onclick="logout()">Logout</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="container py-4">
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-tabs mb-4" id="platformTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="tab" data-bs-target="#dashboard" type="button" role="tab">Dashboard</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="live-classes-tab" data-bs-toggle="tab" data-bs-target="#live-classes" type="button" role="tab">Live Classes</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="assessments-tab" data-bs-toggle="tab" data-bs-target="#assessments" type="button" role="tab">Assessments</button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="results-tab" data-bs-toggle="tab" data-bs-target="#results" type="button" role="tab">Results</button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="platformTabContent">
+      <!-- Dashboard Tab -->
+      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">Today's Schedule</h5>
+                <div class="list-group list-group-flush">
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-1">Mathematics</h6>
+                      <small class="text-muted">9:00 AM - 10:00 AM</small>
+                    </div>
+                    <span class="badge bg-success">Live Now</span>
+                  </div>
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-1">English</h6>
+                      <small class="text-muted">10:30 AM - 11:30 AM</small>
+                    </div>
+                    <span class="badge bg-warning">Upcoming</span>
+                  </div>
+                  <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <div>
+                      <h6 class="mb-1">Science Quiz</h6>
+                      <small class="text-muted">2:00 PM - 3:00 PM</small>
+                    </div>
+                    <span class="badge bg-info">Assessment</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">Quick Stats</h5>
+                <div class="row text-center">
+                  <div class="col-4">
+                    <h3 class="text-primary">5</h3>
+                    <small>Classes Today</small>
+                  </div>
+                  <div class="col-4">
+                    <h3 class="text-success">3</h3>
+                    <small>Completed</small>
+                  </div>
+                  <div class="col-4">
+                    <h3 class="text-warning">2</h3>
+                    <small>Pending</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Classes Tab -->
+      <div class="tab-pane fade" id="live-classes" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-md-6">
+            <div class="card live-class-card shadow">
+              <div class="card-body">
+                <h5 class="card-title">Mathematics - Live Now</h5>
+                <p class="card-text">Join your mathematics class with Mr. Johnson</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-light text-dark">45 students online</span>
+                  <button class="btn btn-light" onclick="joinClass('math')">Join Class</button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="card shadow">
+              <div class="card-body">
+                <h5 class="card-title">English - Starting Soon</h5>
+                <p class="card-text">English Literature with Ms. Smith</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-warning">Starts in 15 min</span>
+                  <button class="btn btn-outline-primary" onclick="setReminder('english')">Set Reminder</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Assessments Tab -->
+      <div class="tab-pane fade" id="assessments" role="tabpanel">
+        <div class="row g-4">
+          <div class="col-md-4">
+            <div class="card assessment-card shadow" onclick="startAssessment('science')">
+              <div class="card-body">
+                <h5 class="card-title">Science Quiz</h5>
+                <p class="card-text">Test your knowledge of basic science concepts</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-info">30 minutes</span>
+                  <span class="badge bg-success">Available</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card assessment-card shadow" onclick="startAssessment('math')">
+              <div class="card-body">
+                <h5 class="card-title">Mathematics Test</h5>
+                <p class="card-text">Algebra and geometry problems</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-info">45 minutes</span>
+                  <span class="badge bg-warning">In Progress</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="card assessment-card shadow" onclick="startAssessment('english')">
+              <div class="card-body">
+                <h5 class="card-title">English Grammar</h5>
+                <p class="card-text">Grammar and vocabulary assessment</p>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span class="badge bg-info">20 minutes</span>
+                  <span class="badge bg-secondary">Completed</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Tab -->
+      <div class="tab-pane fade" id="results" role="tabpanel">
+        <div class="card shadow">
+          <div class="card-body">
+            <h5 class="card-title">Assessment Results</h5>
+            <div class="table-responsive">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th>Assessment</th>
+                    <th>Date</th>
+                    <th>Score</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td>English Grammar</td>
+                    <td>2024-01-15</td>
+                    <td>85%</td>
+                    <td><span class="badge bg-success">Passed</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick="viewResult('english')">View</button></td>
+                  </tr>
+                  <tr>
+                    <td>Science Quiz</td>
+                    <td>2024-01-10</td>
+                    <td>92%</td>
+                    <td><span class="badge bg-success">Passed</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick="viewResult('science')">View</button></td>
+                  </tr>
+                  <tr>
+                    <td>Mathematics Test</td>
+                    <td>2024-01-08</td>
+                    <td>78%</td>
+                    <td><span class="badge bg-warning">Needs Improvement</span></td>
+                    <td><button class="btn btn-sm btn-outline-primary" onclick="viewResult('math')">View</button></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Assessment Modal -->
+  <div class="modal fade" id="assessmentModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="assessmentTitle">Assessment</h5>
+          <div class="timer" id="timer">30:00</div>
+        </div>
+        <div class="modal-body">
+          <div id="questionContainer">
+            <!-- Questions will be loaded here -->
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="previousQuestion()">Previous</button>
+          <span id="questionCounter">Question 1 of 10</span>
+          <button type="button" class="btn btn-primary" onclick="nextQuestion()">Next</button>
+          <button type="button" class="btn btn-success" onclick="submitAssessment()">Submit</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script>
+    // Check if user is logged in
+    if (!localStorage.getItem('schoolms_logged_in') || localStorage.getItem('user_type') !== 'student') {
+      window.location.href = 'index.html';
+    }
+
+    let currentQuestion = 0;
+    let answers = {};
+    let timer;
+    let timeLeft = 1800; // 30 minutes in seconds
+
+    // Sample assessment questions
+    const scienceQuestions = [
+      {
+        question: "What is the chemical symbol for water?",
+        options: ["H2O", "CO2", "O2", "N2"],
+        correct: 0
+      },
+      {
+        question: "Which planet is closest to the Sun?",
+        options: ["Venus", "Mars", "Mercury", "Earth"],
+        correct: 2
+      },
+      {
+        question: "What is the largest organ in the human body?",
+        options: ["Heart", "Brain", "Liver", "Skin"],
+        correct: 3
+      }
+    ];
+
+    function logout() {
+      localStorage.removeItem('schoolms_logged_in');
+      localStorage.removeItem('user_type');
+      localStorage.removeItem('student_id');
+      localStorage.removeItem('platform');
+      window.location.href = 'index.html';
+    }
+
+    function joinClass(className) {
+      alert(`Joining ${className} class...`);
+      // Here you would integrate with actual video conferencing platform
+    }
+
+    function setReminder(className) {
+      alert(`Reminder set for ${className} class`);
+    }
+
+    function startAssessment(type) {
+      const assessmentModal = new bootstrap.Modal(document.getElementById('assessmentModal'));
+      document.getElementById('assessmentTitle').textContent = `${type.charAt(0).toUpperCase() + type.slice(1)} Assessment`;
+      
+      // Load questions based on type
+      const questions = type === 'science' ? scienceQuestions : [];
+      loadQuestion(0, questions);
+      
+      // Start timer
+      startTimer();
+      
+      assessmentModal.show();
+    }
+
+    function loadQuestion(index, questions) {
+      if (index >= questions.length) return;
+      
+      const question = questions[index];
+      const container = document.getElementById('questionContainer');
+      
+      container.innerHTML = `
+        <div class="question-container">
+          <h5>Question ${index + 1}</h5>
+          <p class="mb-3">${question.question}</p>
+          <div class="options">
+            ${question.options.map((option, i) => `
+              <button class="option-btn ${answers[index] === i ? 'selected' : ''}" 
+                      onclick="selectOption(${i}, ${index})">
+                ${String.fromCharCode(65 + i)}. ${option}
+              </button>
+            `).join('')}
+          </div>
+        </div>
+      `;
+      
+      document.getElementById('questionCounter').textContent = `Question ${index + 1} of ${questions.length}`;
+      currentQuestion = index;
+    }
+
+    function selectOption(optionIndex, questionIndex) {
+      answers[questionIndex] = optionIndex;
+      
+      // Update button styles
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach((btn, i) => {
+        btn.classList.remove('selected');
+        if (i === optionIndex) {
+          btn.classList.add('selected');
+        }
+      });
+    }
+
+    function nextQuestion() {
+      const questions = scienceQuestions; // For demo, using science questions
+      if (currentQuestion < questions.length - 1) {
+        loadQuestion(currentQuestion + 1, questions);
+      }
+    }
+
+    function previousQuestion() {
+      if (currentQuestion > 0) {
+        loadQuestion(currentQuestion - 1, scienceQuestions);
+      }
+    }
+
+    function startTimer() {
+      timer = setInterval(() => {
+        timeLeft--;
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        document.getElementById('timer').textContent = 
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
+          clearInterval(timer);
+          submitAssessment();
+        }
+      }, 1000);
+    }
+
+    function submitAssessment() {
+      clearInterval(timer);
+      
+      // Calculate score
+      let correct = 0;
+      const questions = scienceQuestions;
+      questions.forEach((q, i) => {
+        if (answers[i] === q.correct) correct++;
+      });
+      
+      const score = Math.round((correct / questions.length) * 100);
+      
+      alert(`Assessment completed! Your score: ${score}%`);
+      
+      // Close modal
+      const assessmentModal = bootstrap.Modal.getInstance(document.getElementById('assessmentModal'));
+      assessmentModal.hide();
+      
+      // Reset
+      currentQuestion = 0;
+      answers = {};
+      timeLeft = 1800;
+    }
+
+    function viewResult(type) {
+      alert(`Viewing ${type} assessment results...`);
+    }
+  </script>
+</body>
+</html> 

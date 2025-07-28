@@ -76,9 +76,20 @@
       <p class="lead mb-4">A modern, innovative school management system for the digital age.<br>Empowering students, teachers, and parents to achieve excellence together.</p>
       <div class="d-flex justify-content-center">
         <div class="login-cta-card animate__animated animate__fadeInUp animate__delay-1s">
-          <h5 class="mb-3 text-primary">Staff & Student Portal</h5>
-          <button class="btn btn-lg btn-primary px-5 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#loginModal">Login</button>
-          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access your dashboard, assignments, and more.</p>
+          <h5 class="mb-3 text-primary">Staff Portal</h5>
+          <button class="btn btn-lg btn-primary px-5 py-2 fw-bold shadow mb-3" data-bs-toggle="modal" data-bs-target="#staffLoginModal">Staff Login</button>
+          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access school management dashboard and tools.</p>
+        </div>
+      </div>
+      <div class="d-flex justify-content-center mt-4">
+        <div class="login-cta-card animate__animated animate__fadeInUp animate__delay-2s">
+          <h5 class="mb-3 text-success">Student Platforms</h5>
+          <div class="d-grid gap-2">
+            <button class="btn btn-success px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#studentPortalModal">Student Portal</button>
+            <button class="btn btn-info px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#homeworkModal">Homework Platform</button>
+            <button class="btn btn-warning px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#onlineClassModal">Online Class Platform</button>
+          </div>
+          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access assignments, homework, and online assessments.</p>
         </div>
       </div>
     </div>
@@ -158,26 +169,104 @@
     </div>
   </section>
 
-  <!-- Login Modal -->
-  <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
+  <!-- Staff Login Modal -->
+  <div class="modal fade" id="staffLoginModal" tabindex="-1" aria-labelledby="staffLoginModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
         <div class="modal-header">
-          <h5 class="modal-title" id="loginModalLabel">Login to Kamanga Primary</h5>
+          <h5 class="modal-title" id="staffLoginModalLabel">Staff Login - Kamanga Primary</h5>
           <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
         </div>
         <div class="modal-body">
-          <form id="loginForm">
+          <form id="staffLoginForm">
             <div class="mb-3">
-              <label for="loginEmail" class="form-label">Email</label>
-              <input type="email" class="form-control" id="loginEmail" placeholder="Enter email" required>
+              <label for="staffEmail" class="form-label">Staff Email</label>
+              <input type="email" class="form-control" id="staffEmail" placeholder="Enter staff email" required>
             </div>
             <div class="mb-3">
-              <label for="loginPassword" class="form-label">Password</label>
-              <input type="password" class="form-control" id="loginPassword" placeholder="Enter password" required>
+              <label for="staffPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="staffPassword" placeholder="Enter password" required>
             </div>
-            <div id="loginError" class="alert alert-danger d-none" role="alert"></div>
-            <button type="submit" class="btn btn-primary w-100">Login</button>
+            <div id="staffLoginError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-primary w-100">Staff Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Student Portal Login Modal -->
+  <div class="modal fade" id="studentPortalModal" tabindex="-1" aria-labelledby="studentPortalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="studentPortalModalLabel">Student Portal Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="studentPortalForm">
+            <div class="mb-3">
+              <label for="studentPortalId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="studentPortalId" placeholder="Enter student ID" required>
+            </div>
+            <div class="mb-3">
+              <label for="studentPortalPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="studentPortalPassword" placeholder="Enter password" required>
+            </div>
+            <div id="studentPortalError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-success w-100">Access Student Portal</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Homework Platform Login Modal -->
+  <div class="modal fade" id="homeworkModal" tabindex="-1" aria-labelledby="homeworkModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="homeworkModalLabel">Homework Platform Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="homeworkForm">
+            <div class="mb-3">
+              <label for="homeworkStudentId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="homeworkStudentId" placeholder="Enter student ID" required>
+            </div>
+            <div class="mb-3">
+              <label for="homeworkPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="homeworkPassword" placeholder="Enter password" required>
+            </div>
+            <div id="homeworkError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-info w-100">Access Homework Platform</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Online Class Platform Login Modal -->
+  <div class="modal fade" id="onlineClassModal" tabindex="-1" aria-labelledby="onlineClassModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="onlineClassModalLabel">Online Class Platform Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="onlineClassForm">
+            <div class="mb-3">
+              <label for="onlineClassStudentId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="onlineClassStudentId" placeholder="Enter student ID" required>
+            </div>
+            <div class="mb-3">
+              <label for="onlineClassPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="onlineClassPassword" placeholder="Enter password" required>
+            </div>
+            <div id="onlineClassError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-warning w-100">Access Online Class Platform</button>
           </form>
         </div>
       </div>
@@ -191,24 +280,112 @@
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="assets/js/script.js"></script>
   <script>
-    // Simple demo login logic for modal
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
+    // Staff Login Logic
+    document.getElementById('staffLoginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value.trim();
-      const password = document.getElementById('loginPassword').value;
-      const errorDiv = document.getElementById('loginError');
+      const email = document.getElementById('staffEmail').value.trim();
+      const password = document.getElementById('staffPassword').value;
+      const errorDiv = document.getElementById('staffLoginError');
+      
       if(email === '' || password === '') {
         errorDiv.textContent = 'Please enter both email and password.';
         errorDiv.classList.remove('d-none');
         return;
       }
+      
       if(email === 'admin@school.com' && password === 'admin123') {
         localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'staff');
         window.location.href = 'dashboard.html';
       } else {
-        errorDiv.textContent = 'Invalid email or password.';
+        errorDiv.textContent = 'Invalid staff credentials.';
         errorDiv.classList.remove('d-none');
       }
+    });
+
+    // Student Portal Login Logic
+    document.getElementById('studentPortalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('studentPortalId').value.trim();
+      const password = document.getElementById('studentPortalPassword').value;
+      const errorDiv = document.getElementById('studentPortalError');
+      
+      if(studentId === '' || password === '') {
+        errorDiv.textContent = 'Please enter both student ID and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      if(studentId === 'STU001' && password === 'student123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'student');
+        localStorage.setItem('student_id', studentId);
+        window.location.href = 'students.html';
+      } else {
+        errorDiv.textContent = 'Invalid student credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Homework Platform Login Logic
+    document.getElementById('homeworkForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('homeworkStudentId').value.trim();
+      const password = document.getElementById('homeworkPassword').value;
+      const errorDiv = document.getElementById('homeworkError');
+      
+      if(studentId === '' || password === '') {
+        errorDiv.textContent = 'Please enter both student ID and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      if(studentId === 'STU001' && password === 'student123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'student');
+        localStorage.setItem('student_id', studentId);
+        localStorage.setItem('platform', 'homework');
+        window.location.href = 'homework.html';
+      } else {
+        errorDiv.textContent = 'Invalid student credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Online Class Platform Login Logic
+    document.getElementById('onlineClassForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('onlineClassStudentId').value.trim();
+      const password = document.getElementById('onlineClassPassword').value;
+      const errorDiv = document.getElementById('onlineClassError');
+      
+      if(studentId === '' || password === '') {
+        errorDiv.textContent = 'Please enter both student ID and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      if(studentId === 'STU001' && password === 'student123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'student');
+        localStorage.setItem('student_id', studentId);
+        localStorage.setItem('platform', 'online_class');
+        window.location.href = 'online-class.html';
+      } else {
+        errorDiv.textContent = 'Invalid student credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Clear error messages when modals are closed
+    document.querySelectorAll('.modal').forEach(modal => {
+      modal.addEventListener('hidden.bs.modal', function() {
+        const errorDivs = this.querySelectorAll('.alert-danger');
+        errorDivs.forEach(div => {
+          div.classList.add('d-none');
+          div.textContent = '';
+        });
+      });
     });
   </script>
 </body>
