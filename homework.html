@@ -25,7 +25,7 @@
     .status-pending { border-left: 4px solid #ffc107; }
     .status-in-progress { border-left: 4px solid #17a2b8; }
     .status-submitted { border-left: 4px solid #28a745; }
-    .status-graded { border-left: 4px solid #6f42c1; }
+    .status-graded { border-left: 4px solid #6c757d; }
     .status-urgent { border-left: 4px solid #dc3545; }
     .kanban-column {
       min-height: 500px;
@@ -143,7 +143,7 @@
       border-color: #ffc107;
     }
     .ai-suggestion {
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
       color: white;
       border-radius: 1rem;
       padding: 1rem;
@@ -244,9 +244,9 @@
           <div class="col-md-3">
             <div class="card dashboard-card text-center">
               <div class="card-body">
-                <i class="fas fa-trophy fa-2x text-primary mb-3"></i>
+                <i class="fas fa-trophy fa-2x text-secondary mb-3"></i>
                 <h5>Streak</h5>
-                <h3 class="text-primary">15 days</h3>
+                <h3 class="text-secondary">15 days</h3>
                 <small class="text-muted">Current streak</small>
               </div>
             </div>
@@ -267,7 +267,7 @@
             <div class="card dashboard-card">
               <div class="card-header d-flex justify-content-between align-items-center">
                 <h5 class="mb-0"><i class="fas fa-exclamation-triangle text-danger"></i> Urgent Tasks</h5>
-                <button class="btn btn-sm btn-outline-primary" onclick="viewAllTasks()">View All</button>
+                <button class="btn btn-sm btn-outline-secondary" onclick="viewAllTasks()">View All</button>
               </div>
               <div class="card-body">
                 <div class="homework-item status-urgent" onclick="openHomework('math-essay')">
@@ -356,7 +356,7 @@
               <div class="homework-item status-graded" onclick="openHomework('geography-quiz')">
                 <h6>Geography Quiz</h6>
                 <p class="small">World capitals</p>
-                <small class="text-primary">Grade: A (95%)</small>
+                <small class="text-secondary">Grade: A (95%)</small>
               </div>
             </div>
           </div>
@@ -369,7 +369,7 @@
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h5>January 2024</h5>
             <div>
-              <button class="btn btn-sm btn-outline-primary" onclick="syncCalendar()">
+              <button class="btn btn-sm btn-outline-secondary" onclick="syncCalendar()">
                 <i class="fas fa-sync"></i> Sync Calendar
               </button>
             </div>
@@ -378,14 +378,14 @@
             <div class="col-md-3">
               <div class="calendar-day has-homework">
                 <strong>15</strong>
-                <div class="small text-primary">Math Essay Due</div>
+                <div class="small text-secondary">Math Essay Due</div>
               </div>
             </div>
             <div class="col-md-3">
               <div class="calendar-day today">
                 <strong>16</strong>
                 <div class="small text-warning">Today</div>
-                <div class="small text-primary">Science Lab Due</div>
+                <div class="small text-secondary">Science Lab Due</div>
               </div>
             </div>
             <div class="col-md-3">
@@ -396,7 +396,7 @@
             <div class="col-md-3">
               <div class="calendar-day has-homework">
                 <strong>18</strong>
-                <div class="small text-primary">English Essay Due</div>
+                <div class="small text-secondary">English Essay Due</div>
               </div>
             </div>
           </div>
@@ -782,19 +782,24 @@
         const hours = Math.floor(seconds / 3600);
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
-        document.getElementById('homeworkTimer').textContent = 
-          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-        document.getElementById('timeSpent').textContent = 
-          `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        
+        updateTimerDisplay('homeworkTimer', timeString);
+        updateTimerDisplay('timeSpent', timeString);
       }, 1000);
     }
 
     function toggleFocusMode() {
-      const focusMode = document.getElementById('focusMode');
+      const focusMode = safeGetElement('focusMode');
+      const focusContent = safeGetElement('focusContent');
+      
+      if (!focusMode || !focusContent) return;
+      
       if (focusMode.style.display === 'none' || focusMode.style.display === '') {
         focusMode.style.display = 'block';
-        document.getElementById('focusContent').innerHTML = 
-          currentHomework ? homeworkData[currentHomework].content : '<p>No homework selected</p>';
+        focusContent.innerHTML = 
+          currentHomework && homeworkData[currentHomework] ? 
+          homeworkData[currentHomework].content : '<p>No homework selected</p>';
       } else {
         focusMode.style.display = 'none';
       }
@@ -806,8 +811,9 @@
         timeLeft--;
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        document.getElementById('focusTimer').textContent = 
-          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        const timeString = `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        updateTimerDisplay('focusTimer', timeString);
         
         if (timeLeft <= 0) {
           clearInterval(focusTimer);
@@ -915,9 +921,15 @@
       if (confirm('Are you sure you want to submit this homework? You won\'t be able to edit it after submission.')) {
         alert('Homework submitted successfully!');
         const modal = bootstrap.Modal.getInstance(document.getElementById('homeworkModal'));
-        modal.hide();
+        if (modal) {
+          modal.hide();
+        }
         if (homeworkTimer) {
           clearInterval(homeworkTimer);
+        }
+        // Clear saved draft after submission
+        if (currentHomework) {
+          localStorage.removeItem('homework_draft_' + currentHomework);
         }
       }
     }
@@ -988,7 +1000,7 @@
 
     // Auto-save functionality
     setInterval(() => {
-      const textAnswer = document.getElementById('textAnswer');
+      const textAnswer = safeGetElement('textAnswer');
       if (textAnswer && textAnswer.value.trim() && currentHomework) {
         localStorage.setItem('homework_draft_' + currentHomework, textAnswer.value);
       }
@@ -998,7 +1010,7 @@
     function loadSavedDraft() {
       if (currentHomework) {
         const savedDraft = localStorage.getItem('homework_draft_' + currentHomework);
-        const textAnswer = document.getElementById('textAnswer');
+        const textAnswer = safeGetElement('textAnswer');
         if (savedDraft && textAnswer) {
           textAnswer.value = savedDraft;
         }

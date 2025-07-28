@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     .platform-header {
       background: linear-gradient(135deg, #ffc107 0%, #ff8c00 100%);
@@ -60,6 +61,57 @@
     .option-btn.incorrect {
       border-color: #dc3545;
       background: #f8d7da;
+    }
+    .video-container {
+      background: #000;
+    }
+    .chat-messages {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .message {
+      margin-bottom: 1rem;
+      padding: 0.5rem;
+      border-radius: 0.5rem;
+    }
+    .message.own {
+      background: #e3f2fd;
+      margin-left: 2rem;
+    }
+    .message.other {
+      background: #f5f5f5;
+      margin-right: 2rem;
+    }
+    .message.system {
+      background: #fff3cd;
+      text-align: center;
+      font-style: italic;
+    }
+    .participant-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0.5rem 0;
+    }
+    .participant-info {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .hand-raised {
+      color: #ffc107;
+      animation: wave 1s infinite;
+    }
+    @keyframes wave {
+      0%, 100% { transform: rotate(0deg); }
+      25% { transform: rotate(10deg); }
+      75% { transform: rotate(-10deg); }
+    }
+    .modal-xl {
+      max-width: 95%;
+    }
+    .modal-fullscreen-lg-down {
+      height: 95vh;
     }
   </style>
 </head>
@@ -298,6 +350,106 @@
     </div>
   </div>
 
+  <!-- Live Class Modal -->
+  <div class="modal fade" id="liveClassModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="liveClassTitle">Mathematics Class - Live</h5>
+          <div class="d-flex align-items-center">
+            <span class="badge bg-success me-3" id="connectionStatus">Connected</span>
+            <span class="text-white me-3" id="classTimer">00:00</span>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+          </div>
+        </div>
+        <div class="modal-body p-0">
+          <div class="row g-0 h-100">
+            <!-- Video Area -->
+            <div class="col-lg-8 col-md-7">
+              <div class="video-container position-relative">
+                <div class="ratio ratio-16x9">
+                  <iframe id="teacherVideo" 
+                          src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&mute=1" 
+                          title="Teacher Video"
+                          frameborder="0" 
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                          allowfullscreen>
+                  </iframe>
+                </div>
+                <!-- Video Controls Overlay -->
+                <div class="video-controls position-absolute bottom-0 start-0 w-100 p-3" 
+                     style="background: linear-gradient(transparent, rgba(0,0,0,0.7));">
+                  <div class="d-flex justify-content-between align-items-center">
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-light" id="muteBtn" onclick="toggleMute()">
+                        <i class="fas fa-microphone"></i> Mute
+                      </button>
+                      <button class="btn btn-sm btn-light" id="videoBtn" onclick="toggleVideo()">
+                        <i class="fas fa-video"></i> Video
+                      </button>
+                    </div>
+                    <div class="d-flex gap-2">
+                      <button class="btn btn-sm btn-warning" id="raiseHandBtn" onclick="raiseHand()">
+                        <i class="fas fa-hand-paper"></i> Raise Hand
+                      </button>
+                      <button class="btn btn-sm btn-danger" onclick="leaveClass()">
+                        <i class="fas fa-phone-slash"></i> Leave Class
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Chat and Participants Area -->
+            <div class="col-lg-4 col-md-5">
+              <div class="h-100 d-flex flex-column">
+                <!-- Chat Tabs -->
+                <ul class="nav nav-tabs" id="chatTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="chat-tab" data-bs-toggle="tab" data-bs-target="#chat" type="button" role="tab">Chat</button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="participants-tab" data-bs-toggle="tab" data-bs-target="#participants" type="button" role="tab">Participants</button>
+                  </li>
+                </ul>
+                
+                <!-- Chat Tab Content -->
+                <div class="tab-content flex-grow-1" id="chatTabContent">
+                  <div class="tab-pane fade show active" id="chat" role="tabpanel">
+                    <div class="chat-container d-flex flex-column h-100">
+                      <div class="chat-messages flex-grow-1 p-3" id="chatMessages">
+                        <!-- Messages will be loaded here -->
+                      </div>
+                      <div class="chat-input p-3 border-top">
+                        <div class="input-group">
+                          <input type="text" class="form-control" id="messageInput" placeholder="Type your message...">
+                          <button class="btn btn-primary" onclick="sendMessage()">
+                            <i class="fas fa-paper-plane"></i>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Participants Tab Content -->
+                  <div class="tab-pane fade" id="participants" role="tabpanel">
+                    <div class="participants-list p-3">
+                      <h6 class="mb-3">Participants (45)</h6>
+                      <div class="list-group list-group-flush" id="participantsList">
+                        <!-- Participants will be loaded here -->
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script>
     // Check if user is logged in
@@ -309,6 +461,15 @@
     let answers = {};
     let timer;
     let timeLeft = 1800; // 30 minutes in seconds
+    
+    // Live class variables
+    let classTimer;
+    let classTimeElapsed = 0;
+    let isMuted = false;
+    let isVideoOn = false;
+    let isHandRaised = false;
+    let chatMessages = [];
+    let participants = [];
 
     // Sample assessment questions
     const scienceQuestions = [
@@ -338,8 +499,13 @@
     }
 
     function joinClass(className) {
-      alert(`Joining ${className} class...`);
-      // Here you would integrate with actual video conferencing platform
+      const liveClassModal = new bootstrap.Modal(document.getElementById('liveClassModal'));
+      document.getElementById('liveClassTitle').textContent = `${className.charAt(0).toUpperCase() + className.slice(1)} Class - Live`;
+      
+      // Initialize class
+      initializeClass(className);
+      
+      liveClassModal.show();
     }
 
     function setReminder(className) {
@@ -453,6 +619,192 @@
     function viewResult(type) {
       alert(`Viewing ${type} assessment results...`);
     }
+
+    // Live Class Functions
+    function initializeClass(className) {
+      // Start class timer
+      startClassTimer();
+      
+      // Initialize chat
+      initializeChat();
+      
+      // Initialize participants
+      initializeParticipants();
+      
+      // Add welcome message
+      addChatMessage('system', 'Welcome to the class! You can chat with your classmates and raise your hand to ask questions.');
+    }
+
+    function startClassTimer() {
+      classTimer = setInterval(() => {
+        classTimeElapsed++;
+        const minutes = Math.floor(classTimeElapsed / 60);
+        const seconds = classTimeElapsed % 60;
+        document.getElementById('classTimer').textContent = 
+          `${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+      }, 1000);
+    }
+
+    function initializeChat() {
+      chatMessages = [
+        { type: 'system', sender: 'System', message: 'Class started', time: new Date() },
+        { type: 'other', sender: 'Teacher', message: 'Good morning everyone! Today we will be learning about algebra.', time: new Date() },
+        { type: 'other', sender: 'Sarah', message: 'Good morning!', time: new Date() },
+        { type: 'other', sender: 'Mike', message: 'Hello!', time: new Date() }
+      ];
+      displayChatMessages();
+    }
+
+    function initializeParticipants() {
+      participants = [
+        { name: 'Teacher', role: 'teacher', handRaised: false, online: true },
+        { name: 'Sarah Johnson', role: 'student', handRaised: false, online: true },
+        { name: 'Mike Chen', role: 'student', handRaised: false, online: true },
+        { name: 'Emma Davis', role: 'student', handRaised: false, online: true },
+        { name: 'Alex Brown', role: 'student', handRaised: false, online: true }
+      ];
+      displayParticipants();
+    }
+
+    function displayChatMessages() {
+      const container = document.getElementById('chatMessages');
+      container.innerHTML = chatMessages.map(msg => `
+        <div class="message ${msg.type}">
+          <div class="d-flex justify-content-between">
+            <strong>${msg.sender}</strong>
+            <small class="text-muted">${formatTime(msg.time)}</small>
+          </div>
+          <div>${msg.message}</div>
+        </div>
+      `).join('');
+      container.scrollTop = container.scrollHeight;
+    }
+
+    function displayParticipants() {
+      const container = document.getElementById('participantsList');
+      container.innerHTML = participants.map(participant => `
+        <div class="participant-item">
+          <div class="participant-info">
+            <i class="fas fa-user ${participant.role === 'teacher' ? 'text-primary' : 'text-secondary'}"></i>
+            <span>${participant.name}</span>
+            ${participant.handRaised ? '<i class="fas fa-hand-paper hand-raised"></i>' : ''}
+          </div>
+          <span class="badge ${participant.online ? 'bg-success' : 'bg-secondary'}">${participant.role}</span>
+        </div>
+      `).join('');
+    }
+
+    function addChatMessage(type, sender, message) {
+      const newMessage = {
+        type: type,
+        sender: sender,
+        message: message,
+        time: new Date()
+      };
+      chatMessages.push(newMessage);
+      displayChatMessages();
+    }
+
+    function sendMessage() {
+      const input = document.getElementById('messageInput');
+      const message = input.value.trim();
+      
+      if (message) {
+        addChatMessage('own', 'You', message);
+        input.value = '';
+        
+        // Simulate response after 2 seconds
+        setTimeout(() => {
+          const responses = [
+            'Great question!',
+            'I agree with that.',
+            'Can you explain that further?',
+            'That makes sense!',
+            'Interesting point!'
+          ];
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          const randomStudent = participants[Math.floor(Math.random() * participants.length)];
+          if (randomStudent.role === 'student') {
+            addChatMessage('other', randomStudent.name, randomResponse);
+          }
+        }, 2000);
+      }
+    }
+
+    function toggleMute() {
+      isMuted = !isMuted;
+      const btn = document.getElementById('muteBtn');
+      if (isMuted) {
+        btn.innerHTML = '<i class="fas fa-microphone-slash"></i> Unmute';
+        btn.classList.remove('btn-light');
+        btn.classList.add('btn-danger');
+      } else {
+        btn.innerHTML = '<i class="fas fa-microphone"></i> Mute';
+        btn.classList.remove('btn-danger');
+        btn.classList.add('btn-light');
+      }
+    }
+
+    function toggleVideo() {
+      isVideoOn = !isVideoOn;
+      const btn = document.getElementById('videoBtn');
+      if (isVideoOn) {
+        btn.innerHTML = '<i class="fas fa-video-slash"></i> Stop Video';
+        btn.classList.remove('btn-light');
+        btn.classList.add('btn-warning');
+      } else {
+        btn.innerHTML = '<i class="fas fa-video"></i> Video';
+        btn.classList.remove('btn-warning');
+        btn.classList.add('btn-light');
+      }
+    }
+
+    function raiseHand() {
+      isHandRaised = !isHandRaised;
+      const btn = document.getElementById('raiseHandBtn');
+      
+      if (isHandRaised) {
+        btn.innerHTML = '<i class="fas fa-hand-paper"></i> Lower Hand';
+        btn.classList.remove('btn-warning');
+        btn.classList.add('btn-success');
+        addChatMessage('system', 'System', 'You raised your hand');
+      } else {
+        btn.innerHTML = '<i class="fas fa-hand-paper"></i> Raise Hand';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-warning');
+        addChatMessage('system', 'System', 'You lowered your hand');
+      }
+    }
+
+    function leaveClass() {
+      if (confirm('Are you sure you want to leave the class?')) {
+        clearInterval(classTimer);
+        const liveClassModal = bootstrap.Modal.getInstance(document.getElementById('liveClassModal'));
+        liveClassModal.hide();
+        
+        // Reset variables
+        classTimeElapsed = 0;
+        isMuted = false;
+        isVideoOn = false;
+        isHandRaised = false;
+      }
+    }
+
+    function formatTime(date) {
+      return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    }
+
+    // Handle Enter key in chat input
+    document.addEventListener('DOMContentLoaded', function() {
+      const messageInput = document.getElementById('messageInput');
+      if (messageInput) {
+        messageInput.addEventListener('keypress', function(e) {
+          if (e.key === 'Enter') {
+            sendMessage();
+          }
+        });
+      }
+    });
   </script>
 </body>
 </html> 

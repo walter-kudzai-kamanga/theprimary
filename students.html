@@ -2,25 +2,41 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Student Registration & Profile | Kamanga Primary</title>
+  <title>Student Portal | Kamanga Primary</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
   <style>
-    .profile-photo { width: 60px; height: 60px; object-fit: cover; border-radius: 50%; border: 2px solid #b39ddb; }
-    .drag-drop-area { border: 2px dashed #7c4dff; border-radius: 1rem; padding: 2rem; text-align: center; background: #faf7ff; cursor: pointer; transition: background 0.2s; }
-    .drag-drop-area.dragover { background: #ede7f6; }
-    .qr-code { margin: 0.5rem 0; }
-    .heatmap-cell { width: 32px; height: 32px; display: inline-block; margin: 2px; border-radius: 4px; text-align: center; line-height: 32px; color: #fff; font-weight: bold; }
-    .timeline { border-left: 3px solid #7c4dff; margin-left: 1rem; padding-left: 1.5rem; }
-    .timeline-event { margin-bottom: 1rem; }
-    .timeline-event .date { font-size: 0.9em; color: #888; }
-    .webcam-preview { width: 120px; height: 120px; border-radius: 50%; object-fit: cover; border: 2px solid #7c4dff; }
-    .subject-badge { margin: 0 2px 2px 0; }
-    .audit-log { font-size: 0.95em; }
-    .survey-link { color: #7c4dff; text-decoration: underline; cursor: pointer; }
+    .profile-photo { width: 80px; height: 80px; object-fit: cover; border-radius: 50%; border: 3px solid #28a745; }
+    .badge-custom { background: linear-gradient(45deg, #28a745, #20c997); color: white; }
+    .skill-badge { background: linear-gradient(45deg, #007bff, #6610f2); color: white; margin: 2px; }
+    .fee-card { border-left: 4px solid #28a745; }
+    .fee-overdue { border-left-color: #dc3545; }
+    .grade-a { color: #28a745; font-weight: bold; }
+    .grade-b { color: #17a2b8; font-weight: bold; }
+    .grade-c { color: #ffc107; font-weight: bold; }
+    .grade-d { color: #fd7e14; font-weight: bold; }
+    .grade-f { color: #dc3545; font-weight: bold; }
+    .timetable-slot { border: 1px solid #dee2e6; padding: 8px; margin: 2px; border-radius: 4px; background: #f8f9fa; }
+    .timetable-slot.current { background: #d4edda; border-color: #28a745; }
+    .portfolio-item { border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin-bottom: 15px; }
+    .survey-card { border-left: 4px solid #007bff; }
+    .payment-method { border: 2px solid #dee2e6; border-radius: 8px; padding: 15px; margin: 10px 0; cursor: pointer; }
+    .payment-method.selected { border-color: #28a745; background: #f8fff9; }
+    .progress-ring { transform: rotate(-90deg); }
+    .progress-ring-circle { transition: stroke-dasharray 0.35s; }
+    .document-card { border: 1px solid #dee2e6; border-radius: 8px; padding: 15px; margin: 10px 0; }
+    .document-card.expired { border-color: #dc3545; background: #fff5f5; }
+    .document-card.expiring { border-color: #ffc107; background: #fffbf0; }
+    .achievement-badge { width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 5px; }
+    .achievement-gold { background: linear-gradient(45deg, #ffd700, #ffed4e); }
+    .achievement-silver { background: linear-gradient(45deg, #c0c0c0, #e5e5e5); }
+    .achievement-bronze { background: linear-gradient(45deg, #cd7f32, #daa520); }
+    .nav-pills .nav-link.active { background-color: #28a745; }
+    .quick-stats { background: linear-gradient(135deg, #28a745, #20c997); color: white; border-radius: 10px; }
+    .notification-badge { position: absolute; top: -5px; right: -5px; background: #dc3545; color: white; border-radius: 50%; width: 20px; height: 20px; font-size: 12px; display: flex; align-items: center; justify-content: center; }
   </style>
 </head>
 <body>
@@ -28,220 +44,753 @@
   <header class="bg-success text-white py-3">
     <div class="container">
       <div class="row align-items-center">
-        <div class="col-md-8">
-          <h1 class="mb-2">Student Portal</h1>
-          <p class="mb-0">Welcome, Student! View your profile and academic information.</p>
+        <div class="col-md-6">
+          <h1 class="mb-2"><i class="fas fa-graduation-cap me-2"></i>Student Portal</h1>
+          <p class="mb-0">Welcome back, <span id="studentName">Student</span>!</p>
         </div>
-        <div class="col-md-4 text-end">
-          <button class="btn btn-light" onclick="logout()">Logout</button>
+        <div class="col-md-6 text-end">
+          <div class="d-flex align-items-center justify-content-end gap-3">
+            <div class="position-relative">
+              <button class="btn btn-light" onclick="showNotifications()">
+                <i class="fas fa-bell"></i>
+                <span class="notification-badge" id="notificationCount">3</span>
+              </button>
+            </div>
+            <div class="dropdown">
+              <button class="btn btn-light dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                <img src="https://via.placeholder.com/32x32/28a745/ffffff?text=S" class="rounded-circle me-2" id="headerPhoto">
+                <span id="headerStudentName">Student</span>
+              </button>
+              <ul class="dropdown-menu">
+                <li><a class="dropdown-item" href="#profile" onclick="showSection('profile')"><i class="fas fa-user me-2"></i>My Profile</a></li>
+                <li><a class="dropdown-item" href="#settings" onclick="showSection('settings')"><i class="fas fa-cog me-2"></i>Settings</a></li>
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" href="#" onclick="logout()"><i class="fas fa-sign-out-alt me-2"></i>Logout</a></li>
+              </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
   </header>
-  <div class="container mt-4 mb-5">
-    <h2 class="mb-4">Student Registration & Profile</h2>
-    <div class="row g-4">
-      <div class="col-lg-8">
-        <!-- Registration/Profile Form -->
-        <div class="card mb-4 animate__animated animate__fadeIn">
-          <div class="card-header">Student Details</div>
-          <div class="card-body">
-            <form id="studentForm" enctype="multipart/form-data">
-              <div class="row g-3">
-                <div class="col-md-6">
-                  <label class="form-label">Full Name</label>
-                  <input type="text" class="form-control" id="studentName" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">Date of Birth</label>
-                  <input type="date" class="form-control" id="studentDOB" required>
-                </div>
-                <div class="col-md-3">
-                  <label class="form-label">Gender</label>
-                  <select class="form-select" id="studentGender" required>
-                    <option value="">-- Select --</option>
-                    <option>Male</option>
-                    <option>Female</option>
-                    <option>Other</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Class</label>
-                  <select class="form-select" id="studentClass" required>
-                    <option value="">-- Select --</option>
-                    <option value="Grade 1">Grade 1</option>
-                    <option value="Grade 2">Grade 2</option>
-                    <option value="Grade 3">Grade 3</option>
-                  </select>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Registration Number</label>
-                  <input type="text" class="form-control" id="studentRegNo" readonly>
-                  <div class="qr-code" id="qrCode"></div>
-                </div>
-                <div class="col-md-4">
-                  <label class="form-label">Photo</label>
-                  <div class="d-flex align-items-center gap-2">
-                    <input type="file" class="form-control" id="studentPhoto" accept="image/*">
-                    <button type="button" class="btn btn-outline-secondary" id="webcamBtn"><i class="fa fa-camera"></i></button>
-                  </div>
-                  <video id="webcam" width="120" height="120" autoplay style="display:none;"></video>
-                  <img id="webcamPreview" class="webcam-preview mt-2" style="display:none;"/>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Guardian/Parent Information</label>
-                  <div class="row g-2">
-                    <div class="col-md-3"><input type="text" class="form-control" id="guardianName" placeholder="Name" required></div>
-                    <div class="col-md-2"><input type="text" class="form-control" id="guardianRelation" placeholder="Relation" required></div>
-                    <div class="col-md-3"><input type="text" class="form-control" id="guardianContact" placeholder="Contact" required></div>
-                    <div class="col-md-4"><input type="text" class="form-control" id="guardianOccupation" placeholder="Occupation"></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Health Records</label>
-                  <div class="row g-2">
-                    <div class="col-md-4"><input type="text" class="form-control" id="allergies" placeholder="Allergies"></div>
-                    <div class="col-md-4"><input type="text" class="form-control" id="immunizations" placeholder="Immunizations"></div>
-                    <div class="col-md-4"><input type="text" class="form-control" id="conditions" placeholder="Medical Conditions"></div>
-                  </div>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Subject Enrollment</label>
-                  <select class="form-select" id="subjectEnrollment" multiple>
-                    <option>Math</option>
-                    <option>English</option>
-                    <option>Science</option>
-                    <option>History</option>
-                    <option>Art</option>
-                  </select>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Individual Learning Plan (ILP)</label>
-                  <textarea class="form-control" id="ilp" rows="2" placeholder="Teacher-defined learning goals..."></textarea>
-                </div>
-                <div class="col-md-12">
-                  <label class="form-label">Portfolio Uploads</label>
-                  <div class="drag-drop-area" id="portfolioDrop">Drag & drop files here or click to upload</div>
-                  <input type="file" id="portfolioFiles" multiple style="display:none;">
-                  <div id="portfolioList" class="mt-2"></div>
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Birth Certificate (Expiry)</label>
-                  <input type="file" class="form-control" id="birthCert" accept="application/pdf,image/*">
-                  <input type="date" class="form-control mt-1" id="birthCertExpiry" placeholder="Expiry Date">
-                </div>
-                <div class="col-md-6">
-                  <label class="form-label">Passport (Expiry)</label>
-                  <input type="file" class="form-control" id="passport" accept="application/pdf,image/*">
-                  <input type="date" class="form-control mt-1" id="passportExpiry" placeholder="Expiry Date">
+
+  <div class="container-fluid mt-4">
+    <!-- Quick Stats Row -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="quick-stats p-3 text-center">
+          <h4 id="currentGrade">Grade A</h4>
+          <p class="mb-0">Current GPA</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="quick-stats p-3 text-center">
+          <h4 id="attendanceRate">95%</h4>
+          <p class="mb-0">Attendance</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="quick-stats p-3 text-center">
+          <h4 id="pendingFees">$150</h4>
+          <p class="mb-0">Pending Fees</p>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="quick-stats p-3 text-center">
+          <h4 id="assignmentsDue">5</h4>
+          <p class="mb-0">Due Assignments</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4" id="studentTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="dashboard-tab" data-bs-toggle="pill" data-bs-target="#dashboard" type="button">
+          <i class="fas fa-tachometer-alt me-2"></i>Dashboard
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="academics-tab" data-bs-toggle="pill" data-bs-target="#academics" type="button">
+          <i class="fas fa-book me-2"></i>Academics
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="fees-tab" data-bs-toggle="pill" data-bs-target="#fees" type="button">
+          <i class="fas fa-credit-card me-2"></i>Fees & Payments
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="portfolio-tab" data-bs-toggle="pill" data-bs-target="#portfolio" type="button">
+          <i class="fas fa-folder-open me-2"></i>Portfolio
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="timetable-tab" data-bs-toggle="pill" data-bs-target="#timetable" type="button">
+          <i class="fas fa-calendar me-2"></i>Timetable
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="materials-tab" data-bs-toggle="pill" data-bs-target="#materials" type="button">
+          <i class="fas fa-file-alt me-2"></i>Materials
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="feedback-tab" data-bs-toggle="pill" data-bs-target="#feedback" type="button">
+          <i class="fas fa-comments me-2"></i>Feedback
+        </button>
+      </li>
+    </ul>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="studentTabContent">
+      <!-- Dashboard Tab -->
+      <div class="tab-pane fade show active" id="dashboard" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Recent Activities -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Recent Activities</h5>
+              </div>
+              <div class="card-body">
+                <div id="recentActivities"></div>
+              </div>
+            </div>
+
+            <!-- Academic Progress Chart -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-line me-2"></i>Academic Progress</h5>
+              </div>
+              <div class="card-body">
+                <canvas id="progressChart" width="400" height="200"></canvas>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <!-- Upcoming Events -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Upcoming Events</h5>
+              </div>
+              <div class="card-body">
+                <div id="upcomingEvents"></div>
+              </div>
+            </div>
+
+            <!-- Quick Actions -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Quick Actions</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-outline-primary" onclick="showSection('fees')">
+                    <i class="fas fa-credit-card me-2"></i>Pay Fees
+                  </button>
+                  <button class="btn btn-outline-success" onclick="showSection('academics')">
+                    <i class="fas fa-download me-2"></i>Download Report Card
+                  </button>
+                  <button class="btn btn-outline-info" onclick="showSection('materials')">
+                    <i class="fas fa-book me-2"></i>View Materials
+                  </button>
+                  <button class="btn btn-outline-warning" onclick="showSection('feedback')">
+                    <i class="fas fa-comment me-2"></i>Give Feedback
+                  </button>
                 </div>
               </div>
-              <button class="btn btn-primary mt-3" type="submit">Save Student</button>
-            </form>
-          </div>
-        </div>
-        <!-- Timeline & Audit Log -->
-        <div class="card mb-4 animate__animated animate__fadeInUp">
-          <div class="card-header">Student Timeline & Audit Log</div>
-          <div class="card-body">
-            <div class="timeline" id="studentTimeline"></div>
-            <hr>
-            <div class="audit-log" id="auditLog"></div>
-          </div>
-        </div>
-        <!-- Surveys & Feedback -->
-        <div class="card mb-4 animate__animated animate__fadeInUp">
-          <div class="card-header">Feedback & Surveys</div>
-          <div class="card-body">
-            <span class="survey-link" id="surveyLink">Take Student Feedback Survey</span>
-            <div id="surveyResults" class="mt-3"></div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-lg-4">
-        <!-- Performance Heatmap -->
-        <div class="card mb-4 animate__animated animate__fadeIn">
-          <div class="card-header">Performance Heatmap</div>
-          <div class="card-body">
-            <div id="performanceHeatmap"></div>
+
+      <!-- Academics Tab -->
+      <div class="tab-pane fade" id="academics" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Academic Results -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-bar me-2"></i>Academic Results</h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Subject</th>
+                        <th>Term 1</th>
+                        <th>Term 2</th>
+                        <th>Term 3</th>
+                        <th>Average</th>
+                        <th>Grade</th>
+                      </tr>
+                    </thead>
+                    <tbody id="academicResults">
+                      <!-- Populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+
+            <!-- Performance Analytics -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Performance Analytics</h5>
+              </div>
+              <div class="card-body">
+                <canvas id="performanceChart" width="400" height="200"></canvas>
+              </div>
+            </div>
           </div>
-        </div>
-        <!-- Birthday & Document Alerts -->
-        <div class="card mb-4 animate__animated animate__fadeIn">
-          <div class="card-header">Smart Alerts</div>
-          <div class="card-body">
-            <div id="birthdayAlert"></div>
-            <div id="docExpiryAlert"></div>
-            <div id="missingDocAlert"></div>
-          </div>
-        </div>
-        <!-- Integrations & Advanced Features -->
-        <div class="card mb-4 animate__animated animate__fadeIn">
-          <div class="card-header">Integrations & Advanced</div>
-          <div class="card-body">
-            <button class="btn btn-outline-success w-100 mb-2" id="smsBtn"><i class="fa fa-sms"></i> Send SMS (Demo)</button>
-            <button class="btn btn-outline-primary w-100 mb-2" id="whatsappBtn"><i class="fa fa-whatsapp"></i> WhatsApp (Demo)</button>
-            <button class="btn btn-outline-secondary w-100 mb-2" id="driveBtn"><i class="fa fa-google-drive"></i> Google Drive Sync (Demo)</button>
-            <button class="btn btn-outline-dark w-100 mb-2" id="biometricBtn"><i class="fa fa-fingerprint"></i> Biometrics (Demo)</button>
+
+          <div class="col-lg-4">
+            <!-- GPA Summary -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-star me-2"></i>GPA Summary</h5>
+              </div>
+              <div class="card-body text-center">
+                <div class="mb-3">
+                  <svg width="120" height="120" class="progress-ring">
+                    <circle cx="60" cy="60" r="50" stroke="#e9ecef" stroke-width="8" fill="transparent"/>
+                    <circle cx="60" cy="60" r="50" stroke="#28a745" stroke-width="8" fill="transparent" 
+                            stroke-dasharray="314" stroke-dashoffset="78.5" class="progress-ring-circle"/>
+                  </svg>
+                </div>
+                <h3 class="text-success" id="currentGPA">3.75</h3>
+                <p class="text-muted">Current GPA</p>
+                <div class="row text-center">
+                  <div class="col-6">
+                    <h5 class="text-primary">3.8</h5>
+                    <small class="text-muted">Term 1</small>
+                  </div>
+                  <div class="col-6">
+                    <h5 class="text-success">3.7</h5>
+                    <small class="text-muted">Term 2</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Download Documents -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-download me-2"></i>Download Documents</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-outline-primary" onclick="downloadDocument('report-card')">
+                    <i class="fas fa-file-pdf me-2"></i>Report Card
+                  </button>
+                  <button class="btn btn-outline-success" onclick="downloadDocument('student-id')">
+                    <i class="fas fa-id-card me-2"></i>Student ID
+                  </button>
+                  <button class="btn btn-outline-info" onclick="downloadDocument('certificate')">
+                    <i class="fas fa-certificate me-2"></i>Certificates
+                  </button>
+                  <button class="btn btn-outline-warning" onclick="downloadDocument('transcript')">
+                    <i class="fas fa-file-alt me-2"></i>Transcript
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <!-- Student List Section -->
-    <div class="card mt-4 animate__animated animate__fadeInUp">
-      <div class="card-header">Student List</div>
-      <div class="card-body">
-        <table class="table table-striped align-middle" id="studentsTable">
-          <thead>
-            <tr>
-              <th>Reg No</th>
-              <th>Name</th>
-              <th>Class</th>
-              <th>Guardian</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            <!-- Populated by JS -->
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <!-- Student Detail Modal -->
-    <div class="modal fade" id="studentDetailModal" tabindex="-1" aria-labelledby="studentDetailModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="studentDetailModalLabel">Student Details</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
+      <!-- Fees Tab -->
+      <div class="tab-pane fade" id="fees" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Fee Summary -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-money-bill-wave me-2"></i>Fee Summary</h5>
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                      <h4 class="text-success" id="totalFees">$2,500</h4>
+                      <p class="mb-0">Total Fees</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                      <h4 class="text-primary" id="paidFees">$2,350</h4>
+                      <p class="mb-0">Paid</p>
+                    </div>
+                  </div>
+                  <div class="col-md-4">
+                    <div class="text-center p-3 bg-light rounded">
+                      <h4 class="text-danger" id="pendingFeesAmount">$150</h4>
+                      <p class="mb-0">Pending</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment History -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Payment History</h5>
+              </div>
+              <div class="card-body">
+                <div class="table-responsive">
+                  <table class="table table-hover">
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Description</th>
+                        <th>Amount</th>
+                        <th>Method</th>
+                        <th>Status</th>
+                        <th>Receipt</th>
+                      </tr>
+                    </thead>
+                    <tbody id="paymentHistory">
+                      <!-- Populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="modal-body">
-            <div id="studentDetailContent">
-              <!-- Populated by JS -->
+
+          <div class="col-lg-4">
+            <!-- Make Payment -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-credit-card me-2"></i>Make Payment</h5>
+              </div>
+              <div class="card-body">
+                <form id="paymentForm">
+                  <div class="mb-3">
+                    <label class="form-label">Payment Type</label>
+                    <select class="form-select" id="paymentType" required>
+                      <option value="">Select Payment Type</option>
+                      <option value="tuition">Tuition Fees</option>
+                      <option value="library">Library Fees</option>
+                      <option value="sports">Sports Fees</option>
+                      <option value="other">Other Fees</option>
+                    </select>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control" id="paymentAmount" placeholder="Enter amount" required>
+                  </div>
+                  <div class="mb-3">
+                    <label class="form-label">Payment Method</label>
+                    <div id="paymentMethods">
+                      <div class="payment-method" onclick="selectPaymentMethod('mobile-money')">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="paymentMethod" value="mobile-money" id="mobileMoney">
+                          <label class="form-check-label" for="mobileMoney">
+                            <i class="fas fa-mobile-alt me-2"></i>Mobile Money
+                          </label>
+                        </div>
+                      </div>
+                      <div class="payment-method" onclick="selectPaymentMethod('card')">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="paymentMethod" value="card" id="card">
+                          <label class="form-check-label" for="card">
+                            <i class="fas fa-credit-card me-2"></i>Credit/Debit Card
+                          </label>
+                        </div>
+                      </div>
+                      <div class="payment-method" onclick="selectPaymentMethod('bank')">
+                        <div class="form-check">
+                          <input class="form-check-input" type="radio" name="paymentMethod" value="bank" id="bank">
+                          <label class="form-check-label" for="bank">
+                            <i class="fas fa-university me-2"></i>Bank Transfer
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" class="btn btn-success w-100">
+                    <i class="fas fa-lock me-2"></i>Pay Securely
+                  </button>
+                </form>
+              </div>
+            </div>
+
+            <!-- Scholarships & Bursaries -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Scholarships & Bursaries</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-grid gap-2">
+                  <button class="btn btn-outline-primary" onclick="applyScholarship()">
+                    <i class="fas fa-edit me-2"></i>Apply for Scholarship
+                  </button>
+                  <button class="btn btn-outline-success" onclick="applyBursary()">
+                    <i class="fas fa-hand-holding-heart me-2"></i>Apply for Bursary
+                  </button>
+                  <button class="btn btn-outline-info" onclick="viewScholarships()">
+                    <i class="fas fa-search me-2"></i>Available Scholarships
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Portfolio Tab -->
+      <div class="tab-pane fade" id="portfolio" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Academic History -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-history me-2"></i>Academic History</h5>
+              </div>
+              <div class="card-body">
+                <div id="academicHistory"></div>
+              </div>
+            </div>
+
+            <!-- Skill Badges -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-medal me-2"></i>Skill Badges & Certifications</h5>
+              </div>
+              <div class="card-body">
+                <div id="skillBadges"></div>
+              </div>
+            </div>
+
+            <!-- Extracurricular Activities -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-running me-2"></i>Extracurricular Activities</h5>
+              </div>
+              <div class="card-body">
+                <div id="extracurricularActivities"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <!-- Student Profile -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-user me-2"></i>Student Profile</h5>
+              </div>
+              <div class="card-body text-center">
+                <img src="https://via.placeholder.com/120x120/28a745/ffffff?text=S" class="profile-photo mb-3" id="profilePhoto">
+                <h5 id="profileStudentName">Student Name</h5>
+                <p class="text-muted" id="profileClass">Class</p>
+                <div class="row text-center">
+                  <div class="col-6">
+                    <h6 class="text-primary">Student ID</h6>
+                    <small id="profileStudentId">STU001</small>
+                  </div>
+                  <div class="col-6">
+                    <h6 class="text-success">Status</h6>
+                    <small class="badge bg-success">Active</small>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Achievements -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-trophy me-2"></i>Achievements</h5>
+              </div>
+              <div class="card-body">
+                <div class="d-flex flex-wrap justify-content-center" id="achievements">
+                  <!-- Populated by JavaScript -->
+                </div>
+              </div>
+            </div>
+
+            <!-- Documents -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-file-alt me-2"></i>Documents</h5>
+              </div>
+              <div class="card-body">
+                <div id="studentDocuments"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Timetable Tab -->
+      <div class="tab-pane fade" id="timetable" role="tabpanel">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Class Timetable</h5>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="table table-bordered">
+                <thead>
+                  <tr>
+                    <th>Time</th>
+                    <th>Monday</th>
+                    <th>Tuesday</th>
+                    <th>Wednesday</th>
+                    <th>Thursday</th>
+                    <th>Friday</th>
+                  </tr>
+                </thead>
+                <tbody id="timetableBody">
+                  <!-- Populated by JavaScript -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Materials Tab -->
+      <div class="tab-pane fade" id="materials" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Assigned Materials -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-book me-2"></i>Assigned Materials</h5>
+              </div>
+              <div class="card-body">
+                <div id="assignedMaterials"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <!-- Material Categories -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-filter me-2"></i>Filter by Category</h5>
+              </div>
+              <div class="card-body">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="textbooks" id="textbooks" checked>
+                  <label class="form-check-label" for="textbooks">Textbooks</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="assignments" id="assignments" checked>
+                  <label class="form-check-label" for="assignments">Assignments</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="notes" id="notes" checked>
+                  <label class="form-check-label" for="notes">Notes</label>
+                </div>
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" value="videos" id="videos" checked>
+                  <label class="form-check-label" for="videos">Videos</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Feedback Tab -->
+      <div class="tab-pane fade" id="feedback" role="tabpanel">
+        <div class="row">
+          <div class="col-lg-8">
+            <!-- Feedback Forms -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-comment-dots me-2"></i>Give Feedback</h5>
+              </div>
+              <div class="card-body">
+                <ul class="nav nav-tabs" id="feedbackTabs" role="tablist">
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="teacher-feedback-tab" data-bs-toggle="tab" data-bs-target="#teacher-feedback" type="button">
+                      <i class="fas fa-chalkboard-teacher me-2"></i>Teachers
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="facility-feedback-tab" data-bs-toggle="tab" data-bs-target="#facility-feedback" type="button">
+                      <i class="fas fa-building me-2"></i>Facilities
+                    </button>
+                  </li>
+                  <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="lesson-feedback-tab" data-bs-toggle="tab" data-bs-target="#lesson-feedback" type="button">
+                      <i class="fas fa-book-open me-2"></i>Lessons
+                    </button>
+                  </li>
+                </ul>
+                <div class="tab-content mt-3" id="feedbackTabContent">
+                  <div class="tab-pane fade show active" id="teacher-feedback" role="tabpanel">
+                    <form id="teacherFeedbackForm">
+                      <div class="mb-3">
+                        <label class="form-label">Select Teacher</label>
+                        <select class="form-select" id="teacherSelect" required>
+                          <option value="">Choose a teacher...</option>
+                          <option value="math">Mr. Johnson - Mathematics</option>
+                          <option value="english">Ms. Smith - English</option>
+                          <option value="science">Mr. Brown - Science</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating">
+                          <i class="fas fa-star" data-rating="1"></i>
+                          <i class="fas fa-star" data-rating="2"></i>
+                          <i class="fas fa-star" data-rating="3"></i>
+                          <i class="fas fa-star" data-rating="4"></i>
+                          <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" id="teacherComments" rows="3" placeholder="Share your thoughts..."></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="facility-feedback" role="tabpanel">
+                    <form id="facilityFeedbackForm">
+                      <div class="mb-3">
+                        <label class="form-label">Select Facility</label>
+                        <select class="form-select" id="facilitySelect" required>
+                          <option value="">Choose a facility...</option>
+                          <option value="library">Library</option>
+                          <option value="lab">Science Lab</option>
+                          <option value="sports">Sports Ground</option>
+                          <option value="cafeteria">Cafeteria</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating">
+                          <i class="fas fa-star" data-rating="1"></i>
+                          <i class="fas fa-star" data-rating="2"></i>
+                          <i class="fas fa-star" data-rating="3"></i>
+                          <i class="fas fa-star" data-rating="4"></i>
+                          <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" id="facilityComments" rows="3" placeholder="Share your thoughts..."></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                    </form>
+                  </div>
+                  <div class="tab-pane fade" id="lesson-feedback" role="tabpanel">
+                    <form id="lessonFeedbackForm">
+                      <div class="mb-3">
+                        <label class="form-label">Select Subject</label>
+                        <select class="form-select" id="subjectSelect" required>
+                          <option value="">Choose a subject...</option>
+                          <option value="math">Mathematics</option>
+                          <option value="english">English</option>
+                          <option value="science">Science</option>
+                          <option value="history">History</option>
+                        </select>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Rating</label>
+                        <div class="rating">
+                          <i class="fas fa-star" data-rating="1"></i>
+                          <i class="fas fa-star" data-rating="2"></i>
+                          <i class="fas fa-star" data-rating="3"></i>
+                          <i class="fas fa-star" data-rating="4"></i>
+                          <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                      </div>
+                      <div class="mb-3">
+                        <label class="form-label">Comments</label>
+                        <textarea class="form-control" id="lessonComments" rows="3" placeholder="Share your thoughts..."></textarea>
+                      </div>
+                      <button type="submit" class="btn btn-primary">Submit Feedback</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-4">
+            <!-- Surveys & Polls -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-poll me-2"></i>Surveys & Polls</h5>
+              </div>
+              <div class="card-body">
+                <div id="surveysList"></div>
+              </div>
+            </div>
+
+            <!-- Suggestions -->
+            <div class="card mb-4">
+              <div class="card-header">
+                <h5 class="mb-0"><i class="fas fa-lightbulb me-2"></i>Suggestions</h5>
+              </div>
+              <div class="card-body">
+                <form id="suggestionForm">
+                  <div class="mb-3">
+                    <label class="form-label">Your Suggestion</label>
+                    <textarea class="form-control" id="suggestionText" rows="3" placeholder="Share your ideas with the administration..."></textarea>
+                  </div>
+                  <button type="submit" class="btn btn-outline-primary">Submit Suggestion</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
+
+  <!-- Modals -->
+  <!-- Payment Modal -->
+  <div class="modal fade" id="paymentModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Payment Processing</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="paymentProcessing">
+            <div class="text-center">
+              <div class="spinner-border text-primary mb-3" role="status">
+                <span class="visually-hidden">Loading...</span>
+              </div>
+              <h5>Processing Payment...</h5>
+              <p class="text-muted">Please wait while we process your payment securely.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Modal -->
+  <div class="modal fade" id="notificationsModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Notifications</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div id="notificationsList"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrious@4.0.2/dist/qrious.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="assets/js/script.js"></script>
-  <script>
-    // Check if user is logged in and is a student
-    if (!localStorage.getItem('schoolms_logged_in') || localStorage.getItem('user_type') !== 'student') {
-      window.location.href = 'index.html';
-    }
-
-    function logout() {
-      localStorage.removeItem('schoolms_logged_in');
-      localStorage.removeItem('user_type');
-      localStorage.removeItem('student_id');
-      localStorage.removeItem('platform');
-      window.location.href = 'index.html';
-    }
-  </script>
+  <script src="assets/js/student-portal.js"></script>
 </body>
 </html> 

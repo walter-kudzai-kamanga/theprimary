@@ -2,6 +2,7 @@
 
 document.addEventListener('DOMContentLoaded', function() {
   // --- Personalization ---
+  //STU001 and student123
   const user = {
     name: 'Walter Kamanga',
     role: 'Administrator',

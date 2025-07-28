@@ -7,6 +7,7 @@
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="assets/css/animate.min.css">
   <link rel="stylesheet" href="assets/css/style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
     .hero-bg {
       background: url('https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=1200&q=80') center/cover no-repeat;
@@ -65,6 +66,153 @@
       height: 100%;
       border: 0;
     }
+    
+    /* New Feature Cards Styles */
+    .feature-card {
+      background: rgba(255,255,255,0.95);
+      border-radius: 1rem;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.15);
+      padding: 2rem;
+      text-align: center;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      height: 100%;
+    }
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.2);
+    }
+    .feature-icon {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+      color: white;
+      font-size: 2rem;
+    }
+    .bg-purple {
+      background: linear-gradient(135deg, #667eea 0%, #282728 100%);
+    }
+    .text-purple {
+      color: #667eea !important;
+    }
+    .btn-purple {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      border: none;
+      color: white;
+    }
+    .btn-purple:hover {
+      background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+      color: white;
+    }
+    
+    /* Quick Links Styles */
+    .quick-link-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 1rem;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+      text-decoration: none;
+      color: #333;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+    }
+    .quick-link-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+      color: #007bff;
+      text-decoration: none;
+    }
+    .quick-link-card i {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      color: #007bff;
+    }
+    .quick-link-card span {
+      font-weight: 600;
+      font-size: 0.9rem;
+    }
+    
+    /* Social Media Styles */
+    .social-links {
+      display: flex;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+    .social-link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 50px;
+      height: 50px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 50%;
+      color: white;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-size: 1.5rem;
+    }
+    .social-link:hover {
+      background: rgba(255,255,255,0.3);
+      color: white;
+      transform: scale(1.1);
+    }
+    .instagram-feed {
+      display: flex;
+      gap: 0.5rem;
+      overflow-x: auto;
+      padding: 0.5rem 0;
+    }
+    .instagram-post {
+      flex-shrink: 0;
+      width: 80px;
+      height: 80px;
+      border-radius: 0.5rem;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    .instagram-post img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .feature-card {
+        padding: 1.5rem;
+      }
+      .feature-icon {
+        width: 60px;
+        height: 60px;
+        font-size: 1.5rem;
+      }
+      .quick-link-card {
+        padding: 1rem;
+      }
+      .quick-link-card i {
+        font-size: 1.5rem;
+      }
+      .social-links {
+        justify-content: center;
+      }
+    }
+    
+    /* Accessibility Features */
+    .high-contrast {
+      filter: contrast(150%);
+    }
+    .large-text {
+      font-size: 1.2em !important;
+    }
+    .extra-large-text {
+      font-size: 1.4em !important;
+    }
   </style>
 </head>
 <body>
@@ -74,22 +222,189 @@
       <h1 class="display-3 fw-bold mb-3">Welcome to <span class="text-primary">Kamanga Primary</span></h1>
       <h3 class="mb-3">Empowering Young Minds for a Brighter Future</h3>
       <p class="lead mb-4">A modern, innovative school management system for the digital age.<br>Empowering students, teachers, and parents to achieve excellence together.</p>
-      <div class="d-flex justify-content-center">
-        <div class="login-cta-card animate__animated animate__fadeInUp animate__delay-1s">
-          <h5 class="mb-3 text-primary">Staff Portal</h5>
-          <button class="btn btn-lg btn-primary px-5 py-2 fw-bold shadow mb-3" data-bs-toggle="modal" data-bs-target="#staffLoginModal">Staff Login</button>
-          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access school management dashboard and tools.</p>
+      
+      <!-- Advanced Features Grid -->
+      <div class="row g-4 justify-content-center mt-4">
+        <!-- Student Portal -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-1s">
+            <div class="feature-icon bg-primary">
+              <i class="fas fa-user-graduate"></i>
+            </div>
+            <h5 class="mb-3 text-primary">Student Portal</h5>
+            <p class="mb-3">View homework, progress reports, grades, attendance records, and communicate with teachers.</p>
+            <button class="btn btn-primary w-100" data-bs-toggle="modal" data-bs-target="#studentPortalModal">
+              <i class="fas fa-sign-in-alt me-2"></i>Student Login
+            </button>
+          </div>
+        </div>
+
+        <!-- Teacher Portal -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-2s">
+            <div class="feature-icon bg-success">
+              <i class="fas fa-chalkboard-teacher"></i>
+            </div>
+            <h5 class="mb-3 text-success">Teacher Portal</h5>
+            <p class="mb-3">Class management, attendance tracking, homework uploads, grading, and parent communication.</p>
+            <button class="btn btn-success w-100" data-bs-toggle="modal" data-bs-target="#teacherPortalModal">
+              <i class="fas fa-sign-in-alt me-2"></i>Teacher Login
+            </button>
+          </div>
+        </div>
+
+        <!-- Homework System -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-3s">
+            <div class="feature-icon bg-info">
+              <i class="fas fa-book-open"></i>
+            </div>
+            <h5 class="mb-3 text-info">Homework System</h5>
+            <p class="mb-3">Receive, submit, and track homework assignments with file attachments and due dates.</p>
+            <button class="btn btn-info w-100" data-bs-toggle="modal" data-bs-target="#homeworkModal">
+              <i class="fas fa-tasks me-2"></i>Access Homework
+            </button>
+          </div>
+        </div>
+
+        <!-- eLearning Platform -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-4s">
+            <div class="feature-icon bg-warning">
+              <i class="fas fa-laptop"></i>
+            </div>
+            <h5 class="mb-3 text-warning">eLearning Platform</h5>
+            <p class="mb-3">Educational resources, videos, worksheets, and links to online learning platforms.</p>
+            <button class="btn btn-warning w-100" data-bs-toggle="modal" data-bs-target="#eLearningModal">
+              <i class="fas fa-graduation-cap me-2"></i>Start Learning
+            </button>
+          </div>
         </div>
       </div>
-      <div class="d-flex justify-content-center mt-4">
-        <div class="login-cta-card animate__animated animate__fadeInUp animate__delay-2s">
-          <h5 class="mb-3 text-success">Student Platforms</h5>
-          <div class="d-grid gap-2">
-            <button class="btn btn-success px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#studentPortalModal">Student Portal</button>
-            <button class="btn btn-info px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#homeworkModal">Homework Platform</button>
-            <button class="btn btn-warning px-4 py-2 fw-bold shadow" data-bs-toggle="modal" data-bs-target="#onlineClassModal">Online Class Platform</button>
+
+      <!-- Additional Features Row -->
+      <div class="row g-4 justify-content-center mt-3">
+        <!-- Parent Portal -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-5s">
+            <div class="feature-icon bg-secondary">
+              <i class="fas fa-users"></i>
+            </div>
+            <h5 class="mb-3 text-secondary">Parent Portal</h5>
+            <p class="mb-3">Monitor child's progress, communicate with teachers, and access school information.</p>
+            <button class="btn btn-secondary w-100" data-bs-toggle="modal" data-bs-target="#parentPortalModal">
+              <i class="fas fa-user-friends me-2"></i>Parent Login
+            </button>
           </div>
-          <p class="mt-3 mb-0 text-muted" style="font-size:0.95rem;">Access assignments, homework, and online assessments.</p>
+        </div>
+
+        <!-- Notifications -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-6s">
+            <div class="feature-icon bg-danger">
+              <i class="fas fa-bell"></i>
+            </div>
+            <h5 class="mb-3 text-danger">Smart Notifications</h5>
+            <p class="mb-3">Real-time alerts for closures, emergencies, and important announcements via SMS/email.</p>
+            <button class="btn btn-danger w-100" data-bs-toggle="modal" data-bs-target="#notificationsModal">
+              <i class="fas fa-cog me-2"></i>Manage Alerts
+            </button>
+          </div>
+        </div>
+
+        <!-- Accessibility -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-7s">
+            <div class="feature-icon bg-dark">
+              <i class="fas fa-universal-access"></i>
+            </div>
+            <h5 class="mb-3 text-dark">Accessibility</h5>
+            <p class="mb-3">Screen reader support, adjustable fonts, high contrast mode, and multi-language options.</p>
+            <button class="btn btn-dark w-100" data-bs-toggle="modal" data-bs-target="#accessibilityModal">
+              <i class="fas fa-wheelchair me-2"></i>Accessibility
+            </button>
+          </div>
+        </div>
+
+        <!-- Newsletter -->
+        <div class="col-lg-3 col-md-6">
+          <div class="feature-card animate__animated animate__fadeInUp animate__delay-8s">
+            <div class="feature-icon bg-purple">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <h5 class="mb-3 text-purple">Newsletter</h5>
+            <p class="mb-3">Stay updated with school news, events, and important announcements via email.</p>
+            <button class="btn btn-purple w-100" data-bs-toggle="modal" data-bs-target="#newsletterModal">
+              <i class="fas fa-paper-plane me-2"></i>Subscribe
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Links Section -->
+  <section class="quick-links-section py-4 bg-light">
+    <div class="container">
+      <div class="row g-3">
+        <div class="col-md-3 col-6">
+          <a href="#" class="quick-link-card" data-bs-toggle="modal" data-bs-target="#newsUpdatesModal">
+            <i class="fas fa-newspaper"></i>
+            <span>News & Updates</span>
+          </a>
+        </div>
+        <div class="col-md-3 col-6">
+          <a href="#" class="quick-link-card" data-bs-toggle="modal" data-bs-target="#admissionsModal">
+            <i class="fas fa-user-plus"></i>
+            <span>Admissions</span>
+          </a>
+        </div>
+        <div class="col-md-3 col-6">
+          <a href="#" class="quick-link-card" data-bs-toggle="modal" data-bs-target="#schoolCalendarModal">
+            <i class="fas fa-calendar-alt"></i>
+            <span>School Calendar</span>
+          </a>
+        </div>
+        <div class="col-md-3 col-6">
+          <a href="#" class="quick-link-card" data-bs-toggle="modal" data-bs-target="#contactUsModal">
+            <i class="fas fa-phone"></i>
+            <span>Contact Us</span>
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Social Media Integration -->
+  <section class="social-media-section py-4 bg-primary text-white">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h3 class="mb-3">Stay Connected</h3>
+          <p class="mb-4">Follow us on social media for the latest updates, photos, and school activities.</p>
+          <div class="social-links">
+            <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-youtube"></i></a>
+            <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="social-feed">
+            <h5 class="mb-3">Latest from Instagram</h5>
+            <div class="instagram-feed">
+              <!-- Instagram feed placeholder -->
+              <div class="instagram-post">
+                <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=200&q=80" alt="School Activity">
+              </div>
+              <div class="instagram-post">
+                <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=200&q=80" alt="Classroom">
+              </div>
+              <div class="instagram-post">
+                <img src="https://images.unsplash.com/photo-1465101046530-73398c7f28ca?auto=format&fit=crop&w=200&q=80" alt="Students">
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -273,6 +588,495 @@
     </div>
   </div>
 
+  <!-- Teacher Portal Login Modal -->
+  <div class="modal fade" id="teacherPortalModal" tabindex="-1" aria-labelledby="teacherPortalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="teacherPortalModalLabel">Teacher Portal Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="teacherPortalForm">
+            <div class="mb-3">
+              <label for="teacherEmail" class="form-label">Teacher Email</label>
+              <input type="email" class="form-control" id="teacherEmail" placeholder="Enter teacher email" required>
+            </div>
+            <div class="mb-3">
+              <label for="teacherPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="teacherPassword" placeholder="Enter password" required>
+            </div>
+            <div id="teacherPortalError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-success w-100">Teacher Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Parent Portal Login Modal -->
+  <div class="modal fade" id="parentPortalModal" tabindex="-1" aria-labelledby="parentPortalModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="parentPortalModalLabel">Parent Portal Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="parentPortalForm">
+            <div class="mb-3">
+              <label for="parentEmail" class="form-label">Parent Email</label>
+              <input type="email" class="form-control" id="parentEmail" placeholder="Enter parent email" required>
+            </div>
+            <div class="mb-3">
+              <label for="parentPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="parentPassword" placeholder="Enter password" required>
+            </div>
+            <div id="parentPortalError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-secondary w-100">Parent Login</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- eLearning Platform Modal -->
+  <div class="modal fade" id="eLearningModal" tabindex="-1" aria-labelledby="eLearningModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="eLearningModalLabel">eLearning Platform Login</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <!-- Login Form -->
+          <form id="eLearningLoginForm" class="mb-4">
+            <div class="mb-3">
+              <label for="eLearningStudentId" class="form-label">Student ID</label>
+              <input type="text" class="form-control" id="eLearningStudentId" placeholder="Enter student ID" required>
+            </div>
+            <div class="mb-3">
+              <label for="eLearningPassword" class="form-label">Password</label>
+              <input type="password" class="form-control" id="eLearningPassword" placeholder="Enter password" required>
+            </div>
+            <div id="eLearningLoginError" class="alert alert-danger d-none" role="alert"></div>
+            <button type="submit" class="btn btn-warning w-100">
+              <i class="fas fa-sign-in-alt me-2"></i>Access eLearning Platform
+            </button>
+          </form>
+          
+          <!-- Platform Features Preview -->
+          <div class="row g-3">
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-video fa-3x text-warning mb-3"></i>
+                  <h6>Educational Videos</h6>
+                  <p class="small">Access subject-specific video lessons and tutorials.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-file-pdf fa-3x text-info mb-3"></i>
+                  <h6>Worksheets</h6>
+                  <p class="small">Download printable worksheets and study materials.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-gamepad fa-3x text-success mb-3"></i>
+                  <h6>Interactive Games</h6>
+                  <p class="small">Educational games for learning and practice.</p>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="card h-100">
+                <div class="card-body text-center">
+                  <i class="fas fa-link fa-3x text-primary mb-3"></i>
+                  <h6>External Resources</h6>
+                  <p class="small">Links to approved online learning platforms.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Notifications Settings Modal -->
+  <div class="modal fade" id="notificationsModal" tabindex="-1" aria-labelledby="notificationsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="notificationsModalLabel">Notification Settings</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="notificationsForm">
+            <div class="mb-3">
+              <label class="form-label">Notification Types</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="emergencyAlerts" checked>
+                <label class="form-check-label" for="emergencyAlerts">
+                  Emergency Alerts
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="schoolClosures" checked>
+                <label class="form-check-label" for="schoolClosures">
+                  School Closures
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="examDates">
+                <label class="form-check-label" for="examDates">
+                  Exam Dates
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="events">
+                <label class="form-check-label" for="events">
+                  School Events
+                </label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Delivery Methods</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="emailNotifications" checked>
+                <label class="form-check-label" for="emailNotifications">
+                  Email Notifications
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="smsNotifications">
+                <label class="form-check-label" for="smsNotifications">
+                  SMS Notifications
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="pushNotifications" checked>
+                <label class="form-check-label" for="pushNotifications">
+                  Push Notifications
+                </label>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-danger w-100">Save Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accessibility Settings Modal -->
+  <div class="modal fade" id="accessibilityModal" tabindex="-1" aria-labelledby="accessibilityModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="accessibilityModalLabel">Accessibility Settings</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="accessibilityForm">
+            <div class="mb-3">
+              <label class="form-label">Text Size</label>
+              <div class="btn-group w-100" role="group">
+                <input type="radio" class="btn-check" name="textSize" id="normalText" checked>
+                <label class="btn btn-outline-primary" for="normalText">Normal</label>
+                
+                <input type="radio" class="btn-check" name="textSize" id="largeText">
+                <label class="btn btn-outline-primary" for="largeText">Large</label>
+                
+                <input type="radio" class="btn-check" name="textSize" id="extraLargeText">
+                <label class="btn btn-outline-primary" for="extraLargeText">Extra Large</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Display Options</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="highContrast">
+                <label class="form-check-label" for="highContrast">
+                  High Contrast Mode
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="screenReader">
+                <label class="form-check-label" for="screenReader">
+                  Screen Reader Support
+                </label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="languageSelect" class="form-label">Language</label>
+              <select class="form-select" id="languageSelect">
+                <option value="en">English</option>
+                <option value="es">Español</option>
+                <option value="fr">Français</option>
+                <option value="de">Deutsch</option>
+                <option value="zh">中文</option>
+              </select>
+            </div>
+            <button type="submit" class="btn btn-dark w-100">Apply Settings</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Newsletter Subscription Modal -->
+  <div class="modal fade" id="newsletterModal" tabindex="-1" aria-labelledby="newsletterModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newsletterModalLabel">Subscribe to Newsletter</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <form id="newsletterForm">
+            <div class="mb-3">
+              <label for="newsletterName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="newsletterName" placeholder="Enter your full name" required>
+            </div>
+            <div class="mb-3">
+              <label for="newsletterEmail" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="newsletterEmail" placeholder="Enter your email address" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Newsletter Categories</label>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="schoolNews" checked>
+                <label class="form-check-label" for="schoolNews">
+                  School News & Updates
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="eventsCalendar">
+                <label class="form-check-label" for="eventsCalendar">
+                  Events & Calendar
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="academicUpdates">
+                <label class="form-check-label" for="academicUpdates">
+                  Academic Updates
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="parentResources">
+                <label class="form-check-label" for="parentResources">
+                  Parent Resources
+                </label>
+              </div>
+            </div>
+            <div id="newsletterSuccess" class="alert alert-success d-none" role="alert">
+              Thank you for subscribing! You will receive our newsletter soon.
+            </div>
+            <button type="submit" class="btn btn-purple w-100">Subscribe to Newsletter</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- News & Updates Modal -->
+  <div class="modal fade" id="newsUpdatesModal" tabindex="-1" aria-labelledby="newsUpdatesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="newsUpdatesModalLabel">News & Updates</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h4>Latest News</h4>
+          <p>📢 School Reopening: We are excited to welcome students back to school on Monday, September 10th. All students are required to wear masks and follow strict hygiene protocols. Please ensure your child brings a mask and a water bottle.</p>
+          <p>🎉 Congratulations to our students who participated in the recent science fair! The winners will be announced at the assembly on Friday.</p>
+          <p>📅 Upcoming Events:
+            <ul>
+              <li>Monday, September 10th: School Reopening</li>
+              <li>Wednesday, September 12th: Parent-Teacher Meeting (5:00 PM)</li>
+              <li>Friday, September 14th: School Sports Day</li>
+            </ul>
+          </p>
+          <h4>Announcements</h4>
+          <p>🚨 Important Notice: All students must submit their homework by 5 PM on Monday. Late submissions will be marked with a penalty.</p>
+          <p>👨‍👩‍👧‍👦 Parent-Teacher Conference: We invite all parents to attend the upcoming parent-teacher conference on Wednesday, September 12th. Please book your slots in advance.</p>
+          <p>📢 School Closure: Due to heavy rains, the school will be closed on Friday, September 14th. All students are advised to stay home and follow online learning.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Admissions Modal -->
+  <div class="modal fade" id="admissionsModal" tabindex="-1" aria-labelledby="admissionsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="admissionsModalLabel">Admissions</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h4>Admissions for the Academic Year 2024-2025</h4>
+          <p>Kamanga Primary is a leading educational institution committed to providing quality education. We welcome applications from children aged 3-12 years. Our admission process is simple and transparent.</p>
+          <h5>Admission Requirements:</h5>
+          <ul>
+            <li>Age: 3-12 years (as of September 1st, 2024)</li>
+            <li>Previous academic records (if available)</li>
+            <li>Health certificate</li>
+            <li>Two passport photos</li>
+          </ul>
+          <h5>Application Process:</h5>
+          <ol>
+            <li>Submit an application form at the school office.</li>
+            <li>Attend an interview with the principal.</li>
+            <li>Complete the necessary registration formalities.</li>
+            <li>Pay the required admission fee.</li>
+          </ol>
+          <p>For more information, please contact our admissions office at <a href="tel:+260977777777">+260 977 777 777</a> or email us at <a href="mailto:admissions@kamanga.com">admissions@kamanga.com</a>.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- School Calendar Modal -->
+  <div class="modal fade" id="schoolCalendarModal" tabindex="-1" aria-labelledby="schoolCalendarModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="schoolCalendarModalLabel">School Calendar</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h4>Kamanga Primary School Calendar 2024-2025</h4>
+          <p>This calendar outlines the academic year's key events, holidays, and important dates for students, parents, and staff.</p>
+          <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Event</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>September 10, 2024</td>
+                  <td>School Reopening</td>
+                  <td>Academic</td>
+                  <td>School Campus</td>
+                </tr>
+                <tr>
+                  <td>September 12, 2024</td>
+                  <td>Parent-Teacher Meeting (5:00 PM)</td>
+                  <td>Academic</td>
+                  <td>School Auditorium</td>
+                </tr>
+                <tr>
+                  <td>September 14, 2024</td>
+                  <td>School Sports Day</td>
+                  <td>Sports</td>
+                  <td>School Field</td>
+                </tr>
+                <tr>
+                  <td>October 1, 2024</td>
+                  <td>Mid-Term Break</td>
+                  <td>Holiday</td>
+                  <td>School Closed</td>
+                </tr>
+                <tr>
+                  <td>November 20, 2024</td>
+                  <td>End of First Semester</td>
+                  <td>Academic</td>
+                  <td>School Campus</td>
+                </tr>
+                <tr>
+                  <td>December 20, 2024</td>
+                  <td>Winter Holidays</td>
+                  <td>Holiday</td>
+                  <td>School Closed</td>
+                </tr>
+                <tr>
+                  <td>January 5, 2025</td>
+                  <td>School Reopening for Second Semester</td>
+                  <td>Academic</td>
+                  <td>School Campus</td>
+                </tr>
+                <tr>
+                  <td>March 15, 2025</td>
+                  <td>Parent-Teacher Conference</td>
+                  <td>Academic</td>
+                  <td>School Campus</td>
+                </tr>
+                <tr>
+                  <td>April 1, 2025</td>
+                  <td>Summer Holidays</td>
+                  <td>Holiday</td>
+                  <td>School Closed</td>
+                </tr>
+                <tr>
+                  <td>May 10, 2025</td>
+                  <td>School Graduation</td>
+                  <td>Academic</td>
+                  <td>School Auditorium</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>For more detailed information, please visit our <a href="https://www.kamanga.com/calendar">School Calendar</a> page.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Contact Us Modal -->
+  <div class="modal fade" id="contactUsModal" tabindex="-1" aria-labelledby="contactUsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="contactUsModalLabel">Contact Us</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <h4>Get in Touch with Kamanga Primary</h4>
+          <p>We value your feedback and inquiries. Please use the form below to contact us, and we will respond as soon as possible.</p>
+          <form id="contactForm">
+            <div class="mb-3">
+              <label for="contactName" class="form-label">Full Name</label>
+              <input type="text" class="form-control" id="contactName" placeholder="Enter your full name" required>
+            </div>
+            <div class="mb-3">
+              <label for="contactEmail" class="form-label">Email Address</label>
+              <input type="email" class="form-control" id="contactEmail" placeholder="Enter your email address" required>
+            </div>
+            <div class="mb-3">
+              <label for="contactSubject" class="form-label">Subject</label>
+              <input type="text" class="form-control" id="contactSubject" placeholder="Enter subject" required>
+            </div>
+            <div class="mb-3">
+              <label for="contactMessage" class="form-label">Message</label>
+              <textarea class="form-control" id="contactMessage" rows="5" placeholder="Your message" required></textarea>
+            </div>
+            <div id="contactSuccess" class="alert alert-success d-none" role="alert">
+              Thank you for your message! We will get back to you shortly.
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Send Message</button>
+          </form>
+          <h5 class="mt-4">Visit Us</h5>
+          <p>Kamanga Primary School</p>
+          <p>123 School Lane, Kamanga</p>
+          <p>Email: <a href="mailto:info@kamanga.com">info@kamanga.com</a></p>
+          <p>Phone: <a href="tel:+260977777777">+260 977 777 777</a></p>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <footer class="text-center py-4 bg-light mt-5">
     <small>&copy; 2024 Kamanga Primary. All rights reserved.</small>
   </footer>
@@ -374,6 +1178,252 @@
       } else {
         errorDiv.textContent = 'Invalid student credentials.';
         errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Teacher Portal Login Logic
+    document.getElementById('teacherPortalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const teacherEmail = document.getElementById('teacherEmail').value.trim();
+      const teacherPassword = document.getElementById('teacherPassword').value;
+      const errorDiv = document.getElementById('teacherPortalError');
+      
+      if(teacherEmail === '' || teacherPassword === '') {
+        errorDiv.textContent = 'Please enter both teacher email and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      // In a real application, you would validate against a database
+      if(teacherEmail === 'teacher@school.com' && teacherPassword === 'teacher123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'teacher');
+        localStorage.setItem('teacher_id', 'TEA001'); // Placeholder for teacher ID
+        window.location.href = 'dashboard.html'; // Redirect to dashboard
+      } else {
+        errorDiv.textContent = 'Invalid teacher credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Parent Portal Login Logic
+    document.getElementById('parentPortalForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const parentEmail = document.getElementById('parentEmail').value.trim();
+      const parentPassword = document.getElementById('parentPassword').value;
+      const errorDiv = document.getElementById('parentPortalError');
+      
+      if(parentEmail === '' || parentPassword === '') {
+        errorDiv.textContent = 'Please enter both parent email and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      // In a real application, you would validate against a database
+      if(parentEmail === 'parent@school.com' && parentPassword === 'parent123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'parent');
+        localStorage.setItem('parent_id', 'PAR001'); // Placeholder for parent ID
+        window.location.href = 'parent-dashboard.html'; // Redirect to parent dashboard
+      } else {
+        errorDiv.textContent = 'Invalid parent credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Newsletter Subscription Logic
+    document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('newsletterName').value.trim();
+      const email = document.getElementById('newsletterEmail').value.trim();
+      const categories = [];
+      document.querySelectorAll('#newsletterForm input[type="checkbox"]:checked').forEach(checkbox => {
+        categories.push(checkbox.id);
+      });
+      const successDiv = document.getElementById('newsletterSuccess');
+      
+      if(name === '' || email === '') {
+        alert('Please enter your name and email address.');
+        return;
+      }
+      
+      // In a real application, you would send this data to a backend
+      successDiv.textContent = 'Thank you for subscribing! You will receive our newsletter soon.';
+      successDiv.classList.remove('d-none');
+      
+      // Clear form after successful subscription
+      setTimeout(() => {
+        document.getElementById('newsletterForm').reset();
+        successDiv.classList.add('d-none');
+      }, 3000);
+    });
+
+    // Notifications Settings Logic
+    document.getElementById('notificationsForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Collect notification settings
+      const settings = {
+        emergencyAlerts: document.getElementById('emergencyAlerts').checked,
+        schoolClosures: document.getElementById('schoolClosures').checked,
+        examDates: document.getElementById('examDates').checked,
+        events: document.getElementById('events').checked,
+        emailNotifications: document.getElementById('emailNotifications').checked,
+        smsNotifications: document.getElementById('smsNotifications').checked,
+        pushNotifications: document.getElementById('pushNotifications').checked
+      };
+      
+      // Save settings to localStorage (in a real app, this would go to a database)
+      localStorage.setItem('notificationSettings', JSON.stringify(settings));
+      
+      alert('Notification settings saved successfully!');
+      
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('notificationsModal'));
+      modal.hide();
+    });
+
+    // Accessibility Settings Logic
+    document.getElementById('accessibilityForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      
+      // Get selected text size
+      const textSize = document.querySelector('input[name="textSize"]:checked').id;
+      const highContrast = document.getElementById('highContrast').checked;
+      const screenReader = document.getElementById('screenReader').checked;
+      const language = document.getElementById('languageSelect').value;
+      
+      // Apply text size
+      document.body.classList.remove('large-text', 'extra-large-text');
+      if (textSize === 'largeText') {
+        document.body.classList.add('large-text');
+      } else if (textSize === 'extraLargeText') {
+        document.body.classList.add('extra-large-text');
+      }
+      
+      // Apply high contrast
+      if (highContrast) {
+        document.body.classList.add('high-contrast');
+      } else {
+        document.body.classList.remove('high-contrast');
+      }
+      
+      // Save settings to localStorage
+      const settings = {
+        textSize: textSize,
+        highContrast: highContrast,
+        screenReader: screenReader,
+        language: language
+      };
+      localStorage.setItem('accessibilitySettings', JSON.stringify(settings));
+      
+      alert('Accessibility settings applied successfully!');
+      
+      // Close modal
+      const modal = bootstrap.Modal.getInstance(document.getElementById('accessibilityModal'));
+      modal.hide();
+    });
+
+    // eLearning Platform Login Logic
+    document.getElementById('eLearningLoginForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const studentId = document.getElementById('eLearningStudentId').value.trim();
+      const password = document.getElementById('eLearningPassword').value;
+      const errorDiv = document.getElementById('eLearningLoginError');
+      
+      if(studentId === '' || password === '') {
+        errorDiv.textContent = 'Please enter both student ID and password.';
+        errorDiv.classList.remove('d-none');
+        return;
+      }
+      
+      // Use the same credentials as other student portals for consistency
+      if(studentId === 'STU001' && password === 'student123') {
+        localStorage.setItem('schoolms_logged_in', '1');
+        localStorage.setItem('user_type', 'student');
+        localStorage.setItem('student_id', studentId);
+        localStorage.setItem('platform', 'elearning');
+        
+        // Redirect to online class platform
+        window.location.href = 'online-class.html';
+      } else {
+        errorDiv.textContent = 'Invalid student credentials.';
+        errorDiv.classList.remove('d-none');
+      }
+    });
+
+    // Contact Form Logic
+    document.getElementById('contactForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const name = document.getElementById('contactName').value.trim();
+      const email = document.getElementById('contactEmail').value.trim();
+      const subject = document.getElementById('contactSubject').value.trim();
+      const message = document.getElementById('contactMessage').value.trim();
+      const successDiv = document.getElementById('contactSuccess');
+
+      if(name === '' || email === '' || subject === '' || message === '') {
+        alert('Please fill in all fields.');
+        return;
+      }
+
+      // In a real application, you would send this data to a backend
+      successDiv.textContent = 'Thank you for your message! We will get back to you shortly.';
+      successDiv.classList.remove('d-none');
+
+      // Clear form after successful submission
+      setTimeout(() => {
+        document.getElementById('contactForm').reset();
+        successDiv.classList.add('d-none');
+      }, 3000);
+    });
+
+    // Load saved settings on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      // Load notification settings
+      const savedNotifications = localStorage.getItem('notificationSettings');
+      if (savedNotifications) {
+        const settings = JSON.parse(savedNotifications);
+        Object.keys(settings).forEach(key => {
+          const element = document.getElementById(key);
+          if (element) {
+            element.checked = settings[key];
+          }
+        });
+      }
+      
+      // Load accessibility settings
+      const savedAccessibility = localStorage.getItem('accessibilitySettings');
+      if (savedAccessibility) {
+        const settings = JSON.parse(savedAccessibility);
+        
+        // Apply text size
+        if (settings.textSize) {
+          document.body.classList.remove('large-text', 'extra-large-text');
+          if (settings.textSize === 'largeText') {
+            document.body.classList.add('large-text');
+          } else if (settings.textSize === 'extraLargeText') {
+            document.body.classList.add('extra-large-text');
+          }
+        }
+        
+        // Apply high contrast
+        if (settings.highContrast) {
+          document.body.classList.add('high-contrast');
+        }
+        
+        // Set form values
+        if (settings.textSize) {
+          document.getElementById(settings.textSize).checked = true;
+        }
+        if (settings.highContrast !== undefined) {
+          document.getElementById('highContrast').checked = settings.highContrast;
+        }
+        if (settings.screenReader !== undefined) {
+          document.getElementById('screenReader').checked = settings.screenReader;
+        }
+        if (settings.language) {
+          document.getElementById('languageSelect').value = settings.language;
+        }
       }
     });
 
