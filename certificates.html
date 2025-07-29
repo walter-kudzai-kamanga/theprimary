@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Certificates | Kamanga Primary</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body { background: #f4f6fb; }
+    .cert-card { border-radius: 16px; box-shadow: 0 4px 24px rgba(0,0,0,0.07); background: #fff; margin-bottom: 24px; transition: box-shadow 0.2s; }
+    .cert-card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.13); }
+    .cert-badge { border-radius: 8px; font-size: 0.8rem; padding: 4px 10px; margin-right: 6px; }
+    .cert-status { font-size: 0.9rem; font-weight: 600; }
+    .cert-status.issued { color: #28a745; }
+    .cert-status.awaiting { color: #ffc107; }
+    .cert-status.processing { color: #17a2b8; }
+    .cert-status.expired { color: #dc3545; }
+    .cert-tags .badge { margin-right: 4px; }
+    .cert-preview-img { max-width: 100%; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    .cert-list-search { max-width: 350px; }
+    .timeline { position: relative; margin: 2rem 0; }
+    .timeline::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 4px; background: #e9ecef; border-radius: 2px; }
+    .timeline-event { position: relative; margin-left: 60px; margin-bottom: 32px; }
+    .timeline-event:last-child { margin-bottom: 0; }
+    .timeline-dot { position: absolute; left: -40px; top: 0; width: 32px; height: 32px; background: #fff; border: 4px solid #28a745; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; color: #28a745; box-shadow: 0 2px 8px rgba(0,0,0,0.07); }
+    .badge-micro { background: linear-gradient(45deg, #007bff, #6610f2); color: #fff; border-radius: 50%; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin: 0 8px 8px 0; }
+    .cert-upload-box { border: 2px dashed #20c997; border-radius: 12px; padding: 24px; background: #f8f9fa; text-align: center; cursor: pointer; transition: border-color 0.2s; }
+    .cert-upload-box:hover { border-color: #28a745; }
+    .summary-card { background: linear-gradient(135deg, #28a745, #20c997); color: #fff; border-radius: 16px; box-shadow: 0 4px 24px rgba(40,167,69,0.07); }
+    .summary-card h2 { font-size: 2.5rem; }
+    .summary-card .lead { font-size: 1.2rem; }
+    .cert-action-btn { margin-right: 8px; }
+    .cert-qr { width: 80px; height: 80px; margin: 0 auto; }
+    .cert-detail-label { font-weight: 600; color: #6c757d; }
+    .cert-detail-value { color: #495057; }
+    .cert-detail-badge { font-size: 0.9rem; }
+    .cert-share-btn { margin-right: 8px; }
+    .cert-category-tab .nav-link { font-weight: 600; }
+    .cert-category-tab .nav-link.active { background: #28a745; color: #fff; }
+    .cert-request-form .form-label { font-weight: 500; }
+    .cert-request-form .form-select, .cert-request-form .form-control { border-radius: 8px; }
+    .cert-upload-list .badge { margin-right: 4px; }
+    @media (max-width: 991px) {
+      .timeline-event { margin-left: 40px; }
+      .timeline-dot { left: -30px; width: 24px; height: 24px; font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Certificates Page Content will go here -->
+  <!-- ... (full advanced certificates page code will be inserted here) ... -->
+  <script src="assets/js/bootstrap.bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script>
+    // Placeholder for certificates page JS logic
+  </script>
+</body>
+</html> 
