@@ -49,12 +49,801 @@
   </style>
 </head>
 <body>
-  <!-- Certificates Page Content will go here -->
-  <!-- ... (full advanced certificates page code will be inserted here) ... -->
+  <!-- Header -->
+  <header class="bg-success text-white py-3">
+    <div class="container">
+      <div class="row align-items-center">
+        <div class="col-md-6">
+          <h1 class="mb-2"><i class="fas fa-certificate me-2"></i>Certificates & Achievements</h1>
+          <p class="mb-0">Track your academic and extracurricular accomplishments</p>
+        </div>
+        <div class="col-md-6 text-end">
+          <a href="students.html" class="btn btn-light">
+            <i class="fas fa-arrow-left me-2"></i>Back to Portal
+          </a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <div class="container-fluid mt-4">
+    <!-- Achievements Summary -->
+    <div class="row mb-4">
+      <div class="col-lg-8">
+        <div class="summary-card p-4">
+          <div class="row align-items-center">
+            <div class="col-md-6">
+              <h2 id="totalCertificates">12</h2>
+              <p class="lead mb-0">Certificates Earned This Year</p>
+            </div>
+            <div class="col-md-6">
+              <div class="row text-center">
+                <div class="col-4">
+                  <h4>6</h4>
+                  <small>STEM</small>
+                </div>
+                <div class="col-4">
+                  <h4>3</h4>
+                  <small>Debate</small>
+                </div>
+                <div class="col-4">
+                  <h4>3</h4>
+                  <small>Sports</small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5><i class="fas fa-download me-2"></i>Download Summary</h5>
+            <p class="text-muted">Get a complete report of all your achievements</p>
+            <button class="btn btn-success" onclick="downloadSummary()">
+              <i class="fas fa-file-pdf me-2"></i>Download Report
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <ul class="nav nav-pills mb-4 cert-category-tab" id="certTabs" role="tablist">
+      <li class="nav-item" role="presentation">
+        <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+          <i class="fas fa-list me-2"></i>All Certificates
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="academic-tab" data-bs-toggle="pill" data-bs-target="#academic" type="button">
+          <i class="fas fa-graduation-cap me-2"></i>Academic
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="participation-tab" data-bs-toggle="pill" data-bs-target="#participation" type="button">
+          <i class="fas fa-users me-2"></i>Participation
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="merit-tab" data-bs-toggle="pill" data-bs-target="#merit" type="button">
+          <i class="fas fa-trophy me-2"></i>Merit
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="extracurricular-tab" data-bs-toggle="pill" data-bs-target="#extracurricular" type="button">
+          <i class="fas fa-running me-2"></i>Extra-curricular
+        </button>
+      </li>
+      <li class="nav-item" role="presentation">
+        <button class="nav-link" id="digital-tab" data-bs-toggle="pill" data-bs-target="#digital" type="button">
+          <i class="fas fa-laptop-code me-2"></i>Digital Skills
+        </button>
+      </li>
+    </ul>
+
+    <!-- Search and Filter -->
+    <div class="row mb-4">
+      <div class="col-md-6">
+        <div class="input-group cert-list-search">
+          <span class="input-group-text"><i class="fas fa-search"></i></span>
+          <input type="text" class="form-control" id="certSearch" placeholder="Search certificates...">
+        </div>
+      </div>
+      <div class="col-md-6 text-end">
+        <button class="btn btn-outline-primary" onclick="showRequestModal()">
+          <i class="fas fa-plus me-2"></i>Request Certificate
+        </button>
+        <button class="btn btn-outline-success" onclick="showUploadModal()">
+          <i class="fas fa-upload me-2"></i>Upload External
+        </button>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <div class="tab-content" id="certTabContent">
+      <!-- All Certificates -->
+      <div class="tab-pane fade show active" id="all" role="tabpanel">
+        <div class="row" id="allCertificates">
+          <!-- Certificate cards will be populated by JavaScript -->
+        </div>
+      </div>
+
+      <!-- Academic Certificates -->
+      <div class="tab-pane fade" id="academic" role="tabpanel">
+        <div class="row" id="academicCertificates">
+          <!-- Academic certificate cards -->
+        </div>
+      </div>
+
+      <!-- Participation Certificates -->
+      <div class="tab-pane fade" id="participation" role="tabpanel">
+        <div class="row" id="participationCertificates">
+          <!-- Participation certificate cards -->
+        </div>
+      </div>
+
+      <!-- Merit Certificates -->
+      <div class="tab-pane fade" id="merit" role="tabpanel">
+        <div class="row" id="meritCertificates">
+          <!-- Merit certificate cards -->
+        </div>
+      </div>
+
+      <!-- Extra-curricular Certificates -->
+      <div class="tab-pane fade" id="extracurricular" role="tabpanel">
+        <div class="row" id="extracurricularCertificates">
+          <!-- Extra-curricular certificate cards -->
+        </div>
+      </div>
+
+      <!-- Digital Skills Certificates -->
+      <div class="tab-pane fade" id="digital" role="tabpanel">
+        <div class="row" id="digitalCertificates">
+          <!-- Digital skills certificate cards -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline View -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Certificate Timeline</h5>
+          </div>
+          <div class="card-body">
+            <div class="timeline">
+              <div class="timeline-event">
+                <div class="timeline-dot">
+                  <i class="fas fa-certificate"></i>
+                </div>
+                <div class="card cert-card">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-md-8">
+                        <h6 class="mb-1">Grade 8 Final Report</h6>
+                        <p class="text-muted mb-2">Academic Excellence Award</p>
+                        <div class="cert-tags">
+                          <span class="badge bg-primary">Academic</span>
+                          <span class="badge bg-success">Top 5%</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span class="cert-status issued">Issued</span>
+                        <p class="text-muted mb-0">Dec 2024</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="timeline-event">
+                <div class="timeline-dot">
+                  <i class="fas fa-trophy"></i>
+                </div>
+                <div class="card cert-card">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-md-8">
+                        <h6 class="mb-1">Debate Club Championship</h6>
+                        <p class="text-muted mb-2">First Place - Regional Competition</p>
+                        <div class="cert-tags">
+                          <span class="badge bg-info">Participation</span>
+                          <span class="badge bg-warning">Leadership</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span class="cert-status issued">Issued</span>
+                        <p class="text-muted mb-0">Nov 2024</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="timeline-event">
+                <div class="timeline-dot">
+                  <i class="fas fa-medal"></i>
+                </div>
+                <div class="card cert-card">
+                  <div class="card-body">
+                    <div class="row align-items-center">
+                      <div class="col-md-8">
+                        <h6 class="mb-1">Science Olympiad</h6>
+                        <p class="text-muted mb-2">Mathematics Competition Winner</p>
+                        <div class="cert-tags">
+                          <span class="badge bg-primary">Academic</span>
+                          <span class="badge bg-danger">STEM</span>
+                        </div>
+                      </div>
+                      <div class="col-md-4 text-end">
+                        <span class="cert-status issued">Issued</span>
+                        <p class="text-muted mb-0">Oct 2024</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Micro-Credentials & Badges -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div class="card">
+          <div class="card-header">
+            <h5 class="mb-0"><i class="fas fa-medal me-2"></i>Micro-Credentials & Badges</h5>
+          </div>
+          <div class="card-body">
+            <div class="d-flex flex-wrap justify-content-center">
+              <div class="badge-micro" title="Coding Fundamentals">
+                <i class="fas fa-code"></i>
+              </div>
+              <div class="badge-micro" title="Public Speaking">
+                <i class="fas fa-microphone"></i>
+              </div>
+              <div class="badge-micro" title="Leadership">
+                <i class="fas fa-crown"></i>
+              </div>
+              <div class="badge-micro" title="Teamwork">
+                <i class="fas fa-users"></i>
+              </div>
+              <div class="badge-micro" title="Problem Solving">
+                <i class="fas fa-puzzle-piece"></i>
+              </div>
+              <div class="badge-micro" title="Creativity">
+                <i class="fas fa-palette"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Certificate Preview Modal -->
+  <div class="modal fade" id="certPreviewModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Certificate Preview</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-lg-8">
+              <img src="https://via.placeholder.com/800x600/28a745/ffffff?text=Certificate+Preview" 
+                   class="cert-preview-img w-100" id="certPreviewImage" alt="Certificate Preview">
+            </div>
+            <div class="col-lg-4">
+              <div class="card">
+                <div class="card-header">
+                  <h6 class="mb-0">Certificate Details</h6>
+                </div>
+                <div class="card-body">
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Title:</label>
+                    <p class="cert-detail-value" id="certTitle">Grade 8 Final Report</p>
+                  </div>
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Issuing Authority:</label>
+                    <p class="cert-detail-value" id="certAuthority">Kamanga Primary School</p>
+                  </div>
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Date Issued:</label>
+                    <p class="cert-detail-value" id="certDate">December 15, 2024</p>
+                  </div>
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Certificate Type:</label>
+                    <span class="badge bg-primary cert-detail-badge" id="certType">Academic</span>
+                  </div>
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Status:</label>
+                    <span class="cert-status issued" id="certStatus">Issued</span>
+                  </div>
+                  <div class="mb-3">
+                    <label class="cert-detail-label">Verification Code:</label>
+                    <p class="cert-detail-value" id="certVerificationCode">CERT-2024-001234</p>
+                  </div>
+                  <div class="mb-3">
+                    <div id="certQR" class="cert-qr"></div>
+                    <small class="text-muted">Scan to verify</small>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="card mt-3">
+                <div class="card-header">
+                  <h6 class="mb-0">Actions</h6>
+                </div>
+                <div class="card-body">
+                  <div class="d-grid gap-2">
+                    <button class="btn btn-primary" onclick="downloadCertificate('pdf')">
+                      <i class="fas fa-file-pdf me-2"></i>Download PDF
+                    </button>
+                    <button class="btn btn-success" onclick="downloadCertificate('image')">
+                      <i class="fas fa-image me-2"></i>Download Image
+                    </button>
+                    <button class="btn btn-info" onclick="printCertificate()">
+                      <i class="fas fa-print me-2"></i>Print Certificate
+                    </button>
+                    <button class="btn btn-warning" onclick="shareCertificate()">
+                      <i class="fas fa-share-alt me-2"></i>Share Certificate
+                    </button>
+                    <button class="btn btn-secondary" onclick="verifyCertificate()">
+                      <i class="fas fa-shield-alt me-2"></i>Verify Certificate
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Request Certificate Modal -->
+  <div class="modal fade" id="requestCertModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Request Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="certRequestForm" class="cert-request-form">
+            <div class="mb-3">
+              <label class="form-label">Certificate Type</label>
+              <select class="form-select" id="requestCertType" required>
+                <option value="">Select certificate type...</option>
+                <option value="academic">Academic Report</option>
+                <option value="participation">Participation Certificate</option>
+                <option value="merit">Merit Award</option>
+                <option value="leadership">Leadership Certificate</option>
+                <option value="attendance">Perfect Attendance</option>
+                <option value="behavior">Good Behavior</option>
+                <option value="reprint">Certificate Reprint</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Reason for Request</label>
+              <textarea class="form-control" id="requestReason" rows="3" 
+                        placeholder="Please explain why you need this certificate..." required></textarea>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Delivery Type</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="deliveryType" value="digital" id="digitalDelivery" checked>
+                <label class="form-check-label" for="digitalDelivery">Digital (PDF)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="deliveryType" value="hardcopy" id="hardcopyDelivery">
+                <label class="form-check-label" for="hardcopyDelivery">Hard Copy</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Expected Turnaround</label>
+              <select class="form-select" id="turnaroundTime">
+                <option value="urgent">Urgent (1-2 days)</option>
+                <option value="normal" selected>Normal (3-5 days)</option>
+                <option value="standard">Standard (1 week)</option>
+              </select>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-paper-plane me-2"></i>Submit Request
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Upload External Certificate Modal -->
+  <div class="modal fade" id="uploadCertModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Upload External Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <form id="uploadCertForm">
+            <div class="mb-3">
+              <label class="form-label">Certificate Title</label>
+              <input type="text" class="form-control" id="uploadCertTitle" 
+                     placeholder="e.g., Udemy Python Course Certificate" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Issuing Organization</label>
+              <input type="text" class="form-control" id="uploadCertOrg" 
+                     placeholder="e.g., Udemy, Coursera, Music School" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Certificate Type</label>
+              <select class="form-select" id="uploadCertType" required>
+                <option value="">Select type...</option>
+                <option value="external">External Course</option>
+                <option value="music">Music/Sports</option>
+                <option value="online">Online Learning</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Date Earned</label>
+              <input type="date" class="form-control" id="uploadCertDate" required>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Certificate File</label>
+              <input type="file" class="form-control" id="uploadCertFile" 
+                     accept=".pdf,.jpg,.jpeg,.png" required>
+              <small class="text-muted">Supported formats: PDF, JPG, PNG</small>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Visibility</label>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="certVisibility" value="public" id="publicCert" checked>
+                <label class="form-check-label" for="publicCert">Public (visible to school)</label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="certVisibility" value="private" id="privateCert">
+                <label class="form-check-label" for="privateCert">Private (only you)</label>
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Notes (Optional)</label>
+              <textarea class="form-control" id="uploadCertNotes" rows="3" 
+                        placeholder="Additional notes about this certificate..."></textarea>
+            </div>
+            <div class="d-grid">
+              <button type="submit" class="btn btn-success">
+                <i class="fas fa-upload me-2"></i>Upload Certificate
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Certificate Modal -->
+  <div class="modal fade" id="shareCertModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Share Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Share Link</label>
+            <div class="input-group">
+              <input type="text" class="form-control" id="shareLink" 
+                     value="https://kamangaprimary.edu.zm/certificates/verify/CERT-2024-001234" readonly>
+              <button class="btn btn-outline-secondary" onclick="copyShareLink()">
+                <i class="fas fa-copy"></i>
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Share via</label>
+            <div class="d-grid gap-2">
+              <button class="btn btn-outline-primary cert-share-btn" onclick="shareViaEmail()">
+                <i class="fas fa-envelope me-2"></i>Email
+              </button>
+              <button class="btn btn-outline-success cert-share-btn" onclick="shareViaWhatsApp()">
+                <i class="fab fa-whatsapp me-2"></i>WhatsApp
+              </button>
+              <button class="btn btn-outline-info cert-share-btn" onclick="shareViaLinkedIn()">
+                <i class="fab fa-linkedin me-2"></i>LinkedIn
+              </button>
+            </div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Download with QR Code</label>
+            <button class="btn btn-outline-secondary w-100" onclick="downloadWithQR()">
+              <i class="fas fa-qrcode me-2"></i>Download Certificate with QR
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Verify Certificate Modal -->
+  <div class="modal fade" id="verifyCertModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Verify Certificate</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body text-center">
+          <div class="mb-4">
+            <i class="fas fa-shield-check text-success" style="font-size: 3rem;"></i>
+          </div>
+          <h5 class="text-success">Certificate Verified!</h5>
+          <p class="text-muted">This certificate is authentic and has been issued by Kamanga Primary School.</p>
+          <div class="card">
+            <div class="card-body">
+              <h6>Certificate Details</h6>
+              <p class="mb-1"><strong>Title:</strong> Grade 8 Final Report</p>
+              <p class="mb-1"><strong>Student:</strong> Alice Johnson</p>
+              <p class="mb-1"><strong>Issued:</strong> December 15, 2024</p>
+              <p class="mb-1"><strong>Verification Code:</strong> CERT-2024-001234</p>
+              <p class="mb-0"><strong>Status:</strong> <span class="text-success">Valid</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
   <script>
-    // Placeholder for certificates page JS logic
+    // Sample certificate data
+    const certificates = [
+      {
+        id: 1,
+        title: "Grade 8 Final Report",
+        authority: "Kamanga Primary School",
+        dateIssued: "2024-12-15",
+        type: "Academic",
+        status: "issued",
+        tags: ["Academic", "Top 5%"],
+        description: "Awarded for outstanding academic performance in Grade 8",
+        verificationCode: "CERT-2024-001234"
+      },
+      {
+        id: 2,
+        title: "Debate Club Championship",
+        authority: "Regional Debate Association",
+        dateIssued: "2024-11-20",
+        type: "Participation",
+        status: "issued",
+        tags: ["Participation", "Leadership"],
+        description: "First Place in Regional Debate Competition",
+        verificationCode: "CERT-2024-001235"
+      },
+      {
+        id: 3,
+        title: "Science Olympiad Winner",
+        authority: "National Science Foundation",
+        dateIssued: "2024-10-10",
+        type: "Merit",
+        status: "issued",
+        tags: ["Academic", "STEM"],
+        description: "Mathematics Competition Winner",
+        verificationCode: "CERT-2024-001236"
+      },
+      {
+        id: 4,
+        title: "Perfect Attendance",
+        authority: "Kamanga Primary School",
+        dateIssued: "2024-09-30",
+        type: "Participation",
+        status: "issued",
+        tags: ["Attendance", "Discipline"],
+        description: "Awarded for perfect attendance throughout the term",
+        verificationCode: "CERT-2024-001237"
+      },
+      {
+        id: 5,
+        title: "Python Programming Basics",
+        authority: "Coursera",
+        dateIssued: "2024-08-15",
+        type: "Digital Skills",
+        status: "issued",
+        tags: ["Coding", "Online Course"],
+        description: "Completed Python programming fundamentals course",
+        verificationCode: "CERT-2024-001238"
+      },
+      {
+        id: 6,
+        title: "Leadership Excellence",
+        authority: "Kamanga Primary School",
+        dateIssued: "2024-07-20",
+        type: "Merit",
+        status: "awaiting",
+        tags: ["Leadership", "School"],
+        description: "Awarded for exceptional leadership in student council",
+        verificationCode: "CERT-2024-001239"
+      }
+    ];
+
+    // Initialize the page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadCertificates();
+      generateQRCode();
+      setupEventListeners();
+    });
+
+    function loadCertificates() {
+      const allContainer = document.getElementById('allCertificates');
+      allContainer.innerHTML = '';
+
+      certificates.forEach(cert => {
+        const certCard = createCertificateCard(cert);
+        allContainer.appendChild(certCard);
+      });
+    }
+
+    function createCertificateCard(cert) {
+      const card = document.createElement('div');
+      card.className = 'col-lg-6 col-xl-4 mb-4';
+      card.innerHTML = `
+        <div class="card cert-card">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <h6 class="card-title mb-0">${cert.title}</h6>
+              <span class="cert-status ${cert.status}">${cert.status.charAt(0).toUpperCase() + cert.status.slice(1)}</span>
+            </div>
+            <p class="text-muted mb-2">${cert.authority}</p>
+            <p class="text-muted mb-3">${new Date(cert.dateIssued).toLocaleDateString()}</p>
+            <div class="cert-tags mb-3">
+              ${cert.tags.map(tag => `<span class="badge bg-primary">${tag}</span>`).join('')}
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-sm btn-outline-primary" onclick="previewCertificate(${cert.id})">
+                <i class="fas fa-eye me-1"></i>Preview
+              </button>
+              <div class="btn-group">
+                <button class="btn btn-sm btn-outline-success" onclick="downloadCertificate('pdf', ${cert.id})">
+                  <i class="fas fa-download"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-info" onclick="shareCertificate(${cert.id})">
+                  <i class="fas fa-share-alt"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `;
+      return card;
+    }
+
+    function previewCertificate(certId) {
+      const cert = certificates.find(c => c.id === certId);
+      if (cert) {
+        document.getElementById('certTitle').textContent = cert.title;
+        document.getElementById('certAuthority').textContent = cert.authority;
+        document.getElementById('certDate').textContent = new Date(cert.dateIssued).toLocaleDateString();
+        document.getElementById('certType').textContent = cert.type;
+        document.getElementById('certStatus').textContent = cert.status.charAt(0).toUpperCase() + cert.status.slice(1);
+        document.getElementById('certVerificationCode').textContent = cert.verificationCode;
+        
+        const modal = new bootstrap.Modal(document.getElementById('certPreviewModal'));
+        modal.show();
+      }
+    }
+
+    function generateQRCode() {
+      const qrContainer = document.getElementById('certQR');
+      if (qrContainer) {
+        QRCode.toCanvas(qrContainer, 'CERT-2024-001234', function (error) {
+          if (error) console.error(error);
+        });
+      }
+    }
+
+    function setupEventListeners() {
+      // Search functionality
+      document.getElementById('certSearch').addEventListener('input', function(e) {
+        const searchTerm = e.target.value.toLowerCase();
+        const cards = document.querySelectorAll('.cert-card');
+        
+        cards.forEach(card => {
+          const title = card.querySelector('.card-title').textContent.toLowerCase();
+          const authority = card.querySelector('.text-muted').textContent.toLowerCase();
+          
+          if (title.includes(searchTerm) || authority.includes(searchTerm)) {
+            card.closest('.col-lg-6').style.display = 'block';
+          } else {
+            card.closest('.col-lg-6').style.display = 'none';
+          }
+        });
+      });
+
+      // Form submissions
+      document.getElementById('certRequestForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Certificate request submitted successfully!');
+        bootstrap.Modal.getInstance(document.getElementById('requestCertModal')).hide();
+      });
+
+      document.getElementById('uploadCertForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        alert('Certificate uploaded successfully!');
+        bootstrap.Modal.getInstance(document.getElementById('uploadCertModal')).hide();
+      });
+    }
+
+    // Modal functions
+    function showRequestModal() {
+      const modal = new bootstrap.Modal(document.getElementById('requestCertModal'));
+      modal.show();
+    }
+
+    function showUploadModal() {
+      const modal = new bootstrap.Modal(document.getElementById('uploadCertModal'));
+      modal.show();
+    }
+
+    function shareCertificate(certId) {
+      const modal = new bootstrap.Modal(document.getElementById('shareCertModal'));
+      modal.show();
+    }
+
+    function verifyCertificate() {
+      const modal = new bootstrap.Modal(document.getElementById('verifyCertModal'));
+      modal.show();
+    }
+
+    // Action functions
+    function downloadCertificate(format, certId) {
+      alert(`Downloading certificate in ${format.toUpperCase()} format...`);
+    }
+
+    function printCertificate() {
+      window.print();
+    }
+
+    function downloadSummary() {
+      alert('Downloading achievement summary...');
+    }
+
+    function copyShareLink() {
+      const linkInput = document.getElementById('shareLink');
+      linkInput.select();
+      document.execCommand('copy');
+      alert('Link copied to clipboard!');
+    }
+
+    function shareViaEmail() {
+      window.open('mailto:?subject=Certificate Verification&body=Please verify my certificate at: ' + 
+                  document.getElementById('shareLink').value);
+    }
+
+    function shareViaWhatsApp() {
+      window.open('https://wa.me/?text=Please verify my certificate: ' + 
+                  document.getElementById('shareLink').value);
+    }
+
+    function shareViaLinkedIn() {
+      window.open('https://www.linkedin.com/sharing/share-offsite/?url=' + 
+                  encodeURIComponent(document.getElementById('shareLink').value));
+    }
+
+    function downloadWithQR() {
+      alert('Downloading certificate with embedded QR code...');
+    }
   </script>
 </body>
 </html> 
