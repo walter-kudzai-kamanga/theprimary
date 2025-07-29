@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="assets/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
   <link rel="stylesheet" href="assets/css/style.css">
   <style>
     body { background: #f4f6fb; }
@@ -42,9 +43,341 @@
     .cert-request-form .form-label { font-weight: 500; }
     .cert-request-form .form-select, .cert-request-form .form-control { border-radius: 8px; }
     .cert-upload-list .badge { margin-right: 4px; }
+    
+    /* Modern Certificate Styles */
+    .certificate-container {
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .certificate-container:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15);
+    }
+    
+    .certificate {
+      background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+      border: 3px solid #28a745;
+      border-radius: 20px;
+      padding: 40px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(40,167,69,0.15);
+    }
+    
+    .certificate::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 20%, rgba(40,167,69,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(32,201,151,0.05) 0%, transparent 50%),
+        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="10" height="10" patternUnits="userSpaceOnUse"><path d="M 10 0 L 0 0 0 10" fill="none" stroke="%23e9ecef" stroke-width="0.5"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+      opacity: 0.4;
+      pointer-events: none;
+    }
+    
+    .certificate-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 40px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .school-logo {
+      width: 80px;
+      height: 80px;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2rem;
+      box-shadow: 0 4px 16px rgba(40,167,69,0.3);
+    }
+    
+    .school-info {
+      text-align: center;
+      flex: 1;
+      margin: 0 20px;
+    }
+    
+    .school-info h1 {
+      font-size: 1.8rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 8px;
+      letter-spacing: 2px;
+    }
+    
+    .school-motto {
+      font-size: 0.9rem;
+      color: #6c757d;
+      font-style: italic;
+      margin-bottom: 4px;
+    }
+    
+    .school-address {
+      font-size: 0.8rem;
+      color: #495057;
+      margin-bottom: 0;
+    }
+    
+    .certificate-seal {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      box-shadow: 0 4px 16px rgba(220,53,69,0.3);
+    }
+    
+    .certificate-body {
+      position: relative;
+      z-index: 2;
+    }
+    
+    .certificate-title {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .certificate-title h2 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      color: #2c3e50;
+      margin-bottom: 10px;
+      letter-spacing: 3px;
+    }
+    
+    .title-underline {
+      width: 120px;
+      height: 4px;
+      background: linear-gradient(90deg, #28a745, #20c997);
+      margin: 0 auto;
+      border-radius: 2px;
+    }
+    
+    .certificate-content {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+    
+    .presentation-text {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+    
+    .student-name {
+      margin: 30px 0;
+    }
+    
+    .student-name h3 {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: #28a745;
+      margin-bottom: 0;
+      text-shadow: 2px 2px 4px rgba(40,167,69,0.1);
+      letter-spacing: 2px;
+      background: linear-gradient(135deg, #28a745, #20c997);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .achievement-text {
+      font-size: 1.1rem;
+      color: #6c757d;
+      margin-bottom: 20px;
+    }
+    
+    .achievement-title {
+      margin: 30px 0;
+    }
+    
+    .achievement-title h4 {
+      font-size: 1.8rem;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0;
+      letter-spacing: 1px;
+    }
+    
+    .achievement-description {
+      font-size: 1rem;
+      color: #495057;
+      line-height: 1.6;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+    
+    .certificate-footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      margin-top: 50px;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .signature-section {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .signature-line {
+      width: 150px;
+      height: 2px;
+      background: #2c3e50;
+      margin: 0 auto 10px;
+    }
+    
+    .signature-name {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 4px;
+    }
+    
+    .signature-title {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-bottom: 0;
+    }
+    
+    .date-section {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .date-label {
+      font-size: 0.9rem;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+    
+    .date-value {
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 0;
+    }
+    
+    .verification-section {
+      text-align: center;
+      flex: 1;
+    }
+    
+    .verification-code {
+      margin-bottom: 15px;
+    }
+    
+    .code-label {
+      font-size: 0.8rem;
+      color: #6c757d;
+      margin-bottom: 4px;
+    }
+    
+    .code-value {
+      font-family: 'Courier New', monospace;
+      font-weight: 600;
+      color: #28a745;
+      margin-bottom: 0;
+      font-size: 0.9rem;
+    }
+    
+    .qr-code-placeholder {
+      width: 60px;
+      height: 60px;
+      background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+      border: 2px solid #dee2e6;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #6c757d;
+      font-size: 1.5rem;
+      margin: 0 auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      transition: all 0.3s ease;
+    }
+    
+    .qr-code-placeholder:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    
+    .certificate-border {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      pointer-events: none;
+    }
+    
+    .border-pattern {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      bottom: 10px;
+      border: 2px solid rgba(40,167,69,0.3);
+      border-radius: 15px;
+      background: linear-gradient(45deg, transparent 30%, rgba(40,167,69,0.05) 50%, transparent 70%);
+    }
+    
+    .certificate::after {
+      content: '';
+      position: absolute;
+      top: 15px;
+      left: 15px;
+      right: 15px;
+      bottom: 15px;
+      border: 1px solid rgba(40,167,69,0.1);
+      border-radius: 12px;
+      pointer-events: none;
+    }
+    
     @media (max-width: 991px) {
       .timeline-event { margin-left: 40px; }
       .timeline-dot { left: -30px; width: 24px; height: 24px; font-size: 1rem; }
+      
+      .certificate {
+        padding: 20px;
+      }
+      
+      .certificate-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+      }
+      
+      .school-info h1 {
+        font-size: 1.4rem;
+      }
+      
+      .student-name h3 {
+        font-size: 2rem;
+      }
+      
+      .certificate-footer {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
     }
   </style>
 </head>
@@ -70,25 +403,41 @@
     <!-- Achievements Summary -->
     <div class="row mb-4">
       <div class="col-lg-8">
-        <div class="summary-card p-4">
+        <div class="summary-card p-4 position-relative overflow-hidden">
+          <div class="position-absolute top-0 end-0 p-3">
+            <i class="bi bi-trophy-fill text-white opacity-25" style="font-size: 4rem;"></i>
+          </div>
           <div class="row align-items-center">
             <div class="col-md-6">
-              <h2 id="totalCertificates">12</h2>
-              <p class="lead mb-0">Certificates Earned This Year</p>
+              <div class="d-flex align-items-center mb-3">
+                <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                  <i class="bi bi-award-fill text-white" style="font-size: 2rem;"></i>
+                </div>
+                <div>
+                  <h2 id="totalCertificates" class="mb-0 text-white">12</h2>
+                  <p class="lead mb-0 text-white-50">Certificates Earned This Year</p>
+                </div>
+              </div>
             </div>
             <div class="col-md-6">
               <div class="row text-center">
                 <div class="col-4">
-                  <h4>6</h4>
-                  <small>STEM</small>
+                  <div class="bg-white bg-opacity-25 rounded p-2 mb-2">
+                    <h4 class="text-white mb-0">6</h4>
+                    <small class="text-white-50">STEM</small>
+                  </div>
                 </div>
                 <div class="col-4">
-                  <h4>3</h4>
-                  <small>Debate</small>
+                  <div class="bg-white bg-opacity-25 rounded p-2 mb-2">
+                    <h4 class="text-white mb-0">3</h4>
+                    <small class="text-white-50">Debate</small>
+                  </div>
                 </div>
                 <div class="col-4">
-                  <h4>3</h4>
-                  <small>Sports</small>
+                  <div class="bg-white bg-opacity-25 rounded p-2 mb-2">
+                    <h4 class="text-white mb-0">3</h4>
+                    <small class="text-white-50">Sports</small>
+                  </div>
                 </div>
               </div>
             </div>
@@ -96,12 +445,15 @@
         </div>
       </div>
       <div class="col-lg-4">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5><i class="fas fa-download me-2"></i>Download Summary</h5>
-            <p class="text-muted">Get a complete report of all your achievements</p>
-            <button class="btn btn-success" onclick="downloadSummary()">
-              <i class="fas fa-file-pdf me-2"></i>Download Report
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body text-center d-flex flex-column">
+            <div class="bg-success bg-opacity-10 rounded-circle p-3 mx-auto mb-3" style="width: 80px; height: 80px;">
+              <i class="bi bi-download text-success" style="font-size: 2rem;"></i>
+            </div>
+            <h5 class="fw-bold">Download Summary</h5>
+            <p class="text-muted flex-grow-1">Get a complete report of all your achievements</p>
+            <button class="btn btn-success btn-lg" onclick="downloadSummary()">
+              <i class="bi bi-file-earmark-pdf me-2"></i>Download Report
             </button>
           </div>
         </div>
@@ -109,54 +461,71 @@
     </div>
 
     <!-- Navigation Tabs -->
-    <ul class="nav nav-pills mb-4 cert-category-tab" id="certTabs" role="tablist">
-      <li class="nav-item" role="presentation">
-        <button class="nav-link active" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
-          <i class="fas fa-list me-2"></i>All Certificates
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="academic-tab" data-bs-toggle="pill" data-bs-target="#academic" type="button">
-          <i class="fas fa-graduation-cap me-2"></i>Academic
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="participation-tab" data-bs-toggle="pill" data-bs-target="#participation" type="button">
-          <i class="fas fa-users me-2"></i>Participation
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="merit-tab" data-bs-toggle="pill" data-bs-target="#merit" type="button">
-          <i class="fas fa-trophy me-2"></i>Merit
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="extracurricular-tab" data-bs-toggle="pill" data-bs-target="#extracurricular" type="button">
-          <i class="fas fa-running me-2"></i>Extra-curricular
-        </button>
-      </li>
-      <li class="nav-item" role="presentation">
-        <button class="nav-link" id="digital-tab" data-bs-toggle="pill" data-bs-target="#digital" type="button">
-          <i class="fas fa-laptop-code me-2"></i>Digital Skills
-        </button>
-      </li>
-    </ul>
+    <div class="card border-0 shadow-sm mb-4">
+      <div class="card-body p-0">
+        <ul class="nav nav-pills nav-fill cert-category-tab" id="certTabs" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button class="nav-link active rounded-0 border-0" id="all-tab" data-bs-toggle="pill" data-bs-target="#all" type="button">
+              <i class="bi bi-collection me-2"></i>All Certificates
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-0 border-0" id="academic-tab" data-bs-toggle="pill" data-bs-target="#academic" type="button">
+              <i class="bi bi-mortarboard me-2"></i>Academic
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-0 border-0" id="participation-tab" data-bs-toggle="pill" data-bs-target="#participation" type="button">
+              <i class="bi bi-people me-2"></i>Participation
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-0 border-0" id="merit-tab" data-bs-toggle="pill" data-bs-target="#merit" type="button">
+              <i class="bi bi-trophy me-2"></i>Merit
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-0 border-0" id="extracurricular-tab" data-bs-toggle="pill" data-bs-target="#extracurricular" type="button">
+              <i class="bi bi-lightning me-2"></i>Extra-curricular
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button class="nav-link rounded-0 border-0" id="digital-tab" data-bs-toggle="pill" data-bs-target="#digital" type="button">
+              <i class="bi bi-code-slash me-2"></i>Digital Skills
+            </button>
+          </li>
+        </ul>
+      </div>
+    </div>
 
     <!-- Search and Filter -->
     <div class="row mb-4">
       <div class="col-md-6">
-        <div class="input-group cert-list-search">
-          <span class="input-group-text"><i class="fas fa-search"></i></span>
-          <input type="text" class="form-control" id="certSearch" placeholder="Search certificates...">
+        <div class="input-group cert-list-search shadow-sm">
+          <span class="input-group-text border-0 bg-light">
+            <i class="bi bi-search text-muted"></i>
+          </span>
+          <input type="text" class="form-control border-0 bg-light" id="certSearch" placeholder="Search certificates...">
+          <button class="btn btn-outline-secondary border-0 bg-light" type="button" data-bs-toggle="dropdown">
+            <i class="bi bi-funnel"></i>
+          </button>
+          <ul class="dropdown-menu">
+            <li><a class="dropdown-item" href="#" onclick="filterByStatus('all')">All Status</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterByStatus('issued')">Issued</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterByStatus('awaiting')">Awaiting</a></li>
+            <li><a class="dropdown-item" href="#" onclick="filterByStatus('processing')">Processing</a></li>
+          </ul>
         </div>
       </div>
       <div class="col-md-6 text-end">
-        <button class="btn btn-outline-primary" onclick="showRequestModal()">
-          <i class="fas fa-plus me-2"></i>Request Certificate
-        </button>
-        <button class="btn btn-outline-success" onclick="showUploadModal()">
-          <i class="fas fa-upload me-2"></i>Upload External
-        </button>
+        <div class="btn-group" role="group">
+          <button class="btn btn-outline-primary" onclick="showRequestModal()">
+            <i class="bi bi-plus-circle me-2"></i>Request Certificate
+          </button>
+          <button class="btn btn-outline-success" onclick="showUploadModal()">
+            <i class="bi bi-cloud-upload me-2"></i>Upload External
+          </button>
+        </div>
       </div>
     </div>
 
@@ -208,30 +577,41 @@
     <!-- Timeline View -->
     <div class="row mt-5">
       <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-calendar-alt me-2"></i>Certificate Timeline</h5>
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent border-0">
+            <div class="d-flex align-items-center">
+              <div class="bg-primary bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-calendar-event text-primary"></i>
+              </div>
+              <h5 class="mb-0 fw-bold">Certificate Timeline</h5>
+            </div>
           </div>
           <div class="card-body">
             <div class="timeline">
               <div class="timeline-event">
-                <div class="timeline-dot">
-                  <i class="fas fa-certificate"></i>
+                <div class="timeline-dot bg-success">
+                  <i class="bi bi-award-fill text-white"></i>
                 </div>
-                <div class="card cert-card">
+                <div class="card cert-card border-0 shadow-sm">
                   <div class="card-body">
                     <div class="row align-items-center">
                       <div class="col-md-8">
-                        <h6 class="mb-1">Grade 8 Final Report</h6>
+                        <div class="d-flex align-items-center mb-2">
+                          <h6 class="mb-0 fw-bold">Grade 8 Final Report</h6>
+                          <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle-fill me-1"></i>Issued
+                          </span>
+                        </div>
                         <p class="text-muted mb-2">Academic Excellence Award</p>
                         <div class="cert-tags">
-                          <span class="badge bg-primary">Academic</span>
-                          <span class="badge bg-success">Top 5%</span>
+                          <span class="badge bg-primary bg-opacity-75">Academic</span>
+                          <span class="badge bg-success bg-opacity-75">Top 5%</span>
                         </div>
                       </div>
                       <div class="col-md-4 text-end">
-                        <span class="cert-status issued">Issued</span>
-                        <p class="text-muted mb-0">Dec 2024</p>
+                        <p class="text-muted mb-0">
+                          <i class="bi bi-calendar-event me-1"></i>Dec 2024
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -239,23 +619,29 @@
               </div>
               
               <div class="timeline-event">
-                <div class="timeline-dot">
-                  <i class="fas fa-trophy"></i>
+                <div class="timeline-dot bg-warning">
+                  <i class="bi bi-trophy-fill text-white"></i>
                 </div>
-                <div class="card cert-card">
+                <div class="card cert-card border-0 shadow-sm">
                   <div class="card-body">
                     <div class="row align-items-center">
                       <div class="col-md-8">
-                        <h6 class="mb-1">Debate Club Championship</h6>
+                        <div class="d-flex align-items-center mb-2">
+                          <h6 class="mb-0 fw-bold">Debate Club Championship</h6>
+                          <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle-fill me-1"></i>Issued
+                          </span>
+                        </div>
                         <p class="text-muted mb-2">First Place - Regional Competition</p>
                         <div class="cert-tags">
-                          <span class="badge bg-info">Participation</span>
-                          <span class="badge bg-warning">Leadership</span>
+                          <span class="badge bg-info bg-opacity-75">Participation</span>
+                          <span class="badge bg-warning bg-opacity-75">Leadership</span>
                         </div>
                       </div>
                       <div class="col-md-4 text-end">
-                        <span class="cert-status issued">Issued</span>
-                        <p class="text-muted mb-0">Nov 2024</p>
+                        <p class="text-muted mb-0">
+                          <i class="bi bi-calendar-event me-1"></i>Nov 2024
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -263,23 +649,29 @@
               </div>
 
               <div class="timeline-event">
-                <div class="timeline-dot">
-                  <i class="fas fa-medal"></i>
+                <div class="timeline-dot bg-danger">
+                  <i class="bi bi-lightning-fill text-white"></i>
                 </div>
-                <div class="card cert-card">
+                <div class="card cert-card border-0 shadow-sm">
                   <div class="card-body">
                     <div class="row align-items-center">
                       <div class="col-md-8">
-                        <h6 class="mb-1">Science Olympiad</h6>
+                        <div class="d-flex align-items-center mb-2">
+                          <h6 class="mb-0 fw-bold">Science Olympiad</h6>
+                          <span class="badge bg-success ms-2">
+                            <i class="bi bi-check-circle-fill me-1"></i>Issued
+                          </span>
+                        </div>
                         <p class="text-muted mb-2">Mathematics Competition Winner</p>
                         <div class="cert-tags">
-                          <span class="badge bg-primary">Academic</span>
-                          <span class="badge bg-danger">STEM</span>
+                          <span class="badge bg-primary bg-opacity-75">Academic</span>
+                          <span class="badge bg-danger bg-opacity-75">STEM</span>
                         </div>
                       </div>
                       <div class="col-md-4 text-end">
-                        <span class="cert-status issued">Issued</span>
-                        <p class="text-muted mb-0">Oct 2024</p>
+                        <p class="text-muted mb-0">
+                          <i class="bi bi-calendar-event me-1"></i>Oct 2024
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -294,29 +686,52 @@
     <!-- Micro-Credentials & Badges -->
     <div class="row mt-5">
       <div class="col-12">
-        <div class="card">
-          <div class="card-header">
-            <h5 class="mb-0"><i class="fas fa-medal me-2"></i>Micro-Credentials & Badges</h5>
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-transparent border-0">
+            <div class="d-flex align-items-center">
+              <div class="bg-warning bg-opacity-10 rounded-circle p-2 me-3">
+                <i class="bi bi-patch-check text-warning"></i>
+              </div>
+              <h5 class="mb-0 fw-bold">Micro-Credentials & Badges</h5>
+            </div>
           </div>
           <div class="card-body">
-            <div class="d-flex flex-wrap justify-content-center">
-              <div class="badge-micro" title="Coding Fundamentals">
-                <i class="fas fa-code"></i>
+            <div class="row g-3 justify-content-center">
+              <div class="col-auto">
+                <div class="badge-micro bg-primary" title="Coding Fundamentals">
+                  <i class="bi bi-code-slash"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Coding</p>
               </div>
-              <div class="badge-micro" title="Public Speaking">
-                <i class="fas fa-microphone"></i>
+              <div class="col-auto">
+                <div class="badge-micro bg-success" title="Public Speaking">
+                  <i class="bi bi-megaphone"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Speaking</p>
               </div>
-              <div class="badge-micro" title="Leadership">
-                <i class="fas fa-crown"></i>
+              <div class="col-auto">
+                <div class="badge-micro bg-warning" title="Leadership">
+                  <i class="bi bi-star-fill"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Leadership</p>
               </div>
-              <div class="badge-micro" title="Teamwork">
-                <i class="fas fa-users"></i>
+              <div class="col-auto">
+                <div class="badge-micro bg-info" title="Teamwork">
+                  <i class="bi bi-people-fill"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Teamwork</p>
               </div>
-              <div class="badge-micro" title="Problem Solving">
-                <i class="fas fa-puzzle-piece"></i>
+              <div class="col-auto">
+                <div class="badge-micro bg-danger" title="Problem Solving">
+                  <i class="bi bi-lightbulb"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Problem Solving</p>
               </div>
-              <div class="badge-micro" title="Creativity">
-                <i class="fas fa-palette"></i>
+              <div class="col-auto">
+                <div class="badge-micro bg-secondary" title="Creativity">
+                  <i class="bi bi-palette-fill"></i>
+                </div>
+                <p class="text-center mt-2 small fw-bold">Creativity</p>
               </div>
             </div>
           </div>
@@ -336,8 +751,77 @@
         <div class="modal-body">
           <div class="row">
             <div class="col-lg-8">
-              <img src="https://via.placeholder.com/800x600/28a745/ffffff?text=Certificate+Preview" 
-                   class="cert-preview-img w-100" id="certPreviewImage" alt="Certificate Preview">
+              <div class="certificate-container" id="certificatePreview">
+                <div class="certificate">
+                  <div class="certificate-header">
+                    <div class="school-logo">
+                      <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <div class="school-info">
+                      <h1>KAMANGA PRIMARY SCHOOL</h1>
+                      <p class="school-motto">Excellence in Education, Character, and Leadership</p>
+                      <p class="school-address">Lusaka, Zambia | Established 1995</p>
+                    </div>
+                    <div class="certificate-seal">
+                      <div class="seal-inner">
+                        <i class="fas fa-star"></i>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="certificate-body">
+                    <div class="certificate-title">
+                      <h2>CERTIFICATE OF ACHIEVEMENT</h2>
+                      <div class="title-underline"></div>
+                    </div>
+                    
+                    <div class="certificate-content">
+                      <p class="presentation-text">
+                        This is to certify that
+                      </p>
+                      <div class="student-name">
+                        <h3>ALICE JOHNSON</h3>
+                      </div>
+                      <p class="achievement-text">
+                        has successfully demonstrated exceptional performance and dedication in
+                      </p>
+                      <div class="achievement-title">
+                        <h4>GRADE 8 ACADEMIC EXCELLENCE</h4>
+                      </div>
+                      <p class="achievement-description">
+                        achieving outstanding results across all subjects with distinction in Mathematics, 
+                        Science, and English Literature. This certificate recognizes the student's commitment 
+                        to academic excellence, leadership qualities, and positive contribution to the school community.
+                      </p>
+                    </div>
+                    
+                    <div class="certificate-footer">
+                      <div class="signature-section">
+                        <div class="signature-line"></div>
+                        <p class="signature-name">Mrs. Sarah Mwamba</p>
+                        <p class="signature-title">Principal</p>
+                      </div>
+                      <div class="date-section">
+                        <p class="date-label">Date of Issue</p>
+                        <p class="date-value">December 15, 2024</p>
+                      </div>
+                      <div class="verification-section">
+                        <div class="verification-code">
+                          <p class="code-label">Verification Code</p>
+                          <p class="code-value">CERT-2024-001234</p>
+                        </div>
+                        <div class="qr-code-placeholder">
+                          <i class="fas fa-qrcode"></i>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div class="certificate-border">
+                    <div class="border-pattern"></div>
+                  </div>
+                </div>
+              </div>
             </div>
             <div class="col-lg-4">
               <div class="card">
@@ -396,6 +880,9 @@
                     </button>
                     <button class="btn btn-secondary" onclick="verifyCertificate()">
                       <i class="fas fa-shield-alt me-2"></i>Verify Certificate
+                    </button>
+                    <button class="btn btn-dark" onclick="downloadWithQR()">
+                      <i class="fas fa-qrcode me-2"></i>Download with QR
                     </button>
                   </div>
                 </div>
@@ -607,6 +1094,8 @@
 
   <script src="assets/js/bootstrap.bundle.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script>
     // Sample certificate data
     const certificates = [
@@ -683,6 +1172,11 @@
       loadCertificates();
       generateQRCode();
       setupEventListeners();
+      
+      // Set default certificate preview
+      if (certificates.length > 0) {
+        updateCertificatePreview(certificates[0]);
+      }
     });
 
     function loadCertificates() {
@@ -698,28 +1192,53 @@
     function createCertificateCard(cert) {
       const card = document.createElement('div');
       card.className = 'col-lg-6 col-xl-4 mb-4';
+      
+      const statusColors = {
+        'issued': 'success',
+        'awaiting': 'warning',
+        'processing': 'info',
+        'expired': 'danger'
+      };
+      
+      const statusIcons = {
+        'issued': 'bi-check-circle-fill',
+        'awaiting': 'bi-clock-fill',
+        'processing': 'bi-gear-fill',
+        'expired': 'bi-x-circle-fill'
+      };
+      
       card.innerHTML = `
-        <div class="card cert-card">
-          <div class="card-body">
+        <div class="card cert-card border-0 shadow-sm h-100">
+          <div class="card-body d-flex flex-column">
             <div class="d-flex justify-content-between align-items-start mb-3">
-              <h6 class="card-title mb-0">${cert.title}</h6>
-              <span class="cert-status ${cert.status}">${cert.status.charAt(0).toUpperCase() + cert.status.slice(1)}</span>
+              <h6 class="card-title mb-0 fw-bold">${cert.title}</h6>
+              <span class="badge bg-${statusColors[cert.status]} rounded-pill">
+                <i class="bi ${statusIcons[cert.status]} me-1"></i>
+                ${cert.status.charAt(0).toUpperCase() + cert.status.slice(1)}
+              </span>
             </div>
-            <p class="text-muted mb-2">${cert.authority}</p>
-            <p class="text-muted mb-3">${new Date(cert.dateIssued).toLocaleDateString()}</p>
-            <div class="cert-tags mb-3">
-              ${cert.tags.map(tag => `<span class="badge bg-primary">${tag}</span>`).join('')}
+            <p class="text-muted mb-2">
+              <i class="bi bi-building me-1"></i>${cert.authority}
+            </p>
+            <p class="text-muted mb-3">
+              <i class="bi bi-calendar-event me-1"></i>${new Date(cert.dateIssued).toLocaleDateString()}
+            </p>
+            <div class="cert-tags mb-3 flex-grow-1">
+              ${cert.tags.map(tag => `<span class="badge bg-primary bg-opacity-75 me-1 mb-1">${tag}</span>`).join('')}
             </div>
-            <div class="d-flex justify-content-between">
+            <div class="d-flex justify-content-between align-items-center mt-auto">
               <button class="btn btn-sm btn-outline-primary" onclick="previewCertificate(${cert.id})">
-                <i class="fas fa-eye me-1"></i>Preview
+                <i class="bi bi-eye me-1"></i>Preview
               </button>
-              <div class="btn-group">
-                <button class="btn btn-sm btn-outline-success" onclick="downloadCertificate('pdf', ${cert.id})">
-                  <i class="fas fa-download"></i>
+              <div class="btn-group btn-group-sm">
+                <button class="btn btn-outline-success" onclick="downloadCertificate('pdf', ${cert.id})" title="Download PDF">
+                  <i class="bi bi-file-earmark-pdf"></i>
                 </button>
-                <button class="btn btn-sm btn-outline-info" onclick="shareCertificate(${cert.id})">
-                  <i class="fas fa-share-alt"></i>
+                <button class="btn btn-outline-info" onclick="shareCertificate(${cert.id})" title="Share">
+                  <i class="bi bi-share"></i>
+                </button>
+                <button class="btn btn-outline-secondary" onclick="downloadCertificate('image', ${cert.id})" title="Download Image">
+                  <i class="bi bi-image"></i>
                 </button>
               </div>
             </div>
@@ -732,6 +1251,10 @@
     function previewCertificate(certId) {
       const cert = certificates.find(c => c.id === certId);
       if (cert) {
+        // Update certificate preview content
+        updateCertificatePreview(cert);
+        
+        // Update modal details
         document.getElementById('certTitle').textContent = cert.title;
         document.getElementById('certAuthority').textContent = cert.authority;
         document.getElementById('certDate').textContent = new Date(cert.dateIssued).toLocaleDateString();
@@ -741,6 +1264,72 @@
         
         const modal = new bootstrap.Modal(document.getElementById('certPreviewModal'));
         modal.show();
+      }
+    }
+
+    function updateCertificatePreview(cert) {
+      const certificatePreview = document.getElementById('certificatePreview');
+      if (certificatePreview) {
+        // Update student name - extract from certificate title or use a default
+        const studentName = certificatePreview.querySelector('.student-name h3');
+        if (studentName) {
+          // Try to extract student name from certificate title, fallback to "STUDENT NAME"
+          const nameParts = cert.title.split(' ');
+          if (nameParts.length >= 2) {
+            studentName.textContent = nameParts.slice(0, 2).join(' ').toUpperCase();
+          } else {
+            studentName.textContent = "STUDENT NAME";
+          }
+        }
+        
+        // Update achievement title
+        const achievementTitle = certificatePreview.querySelector('.achievement-title h4');
+        if (achievementTitle) {
+          achievementTitle.textContent = cert.title.toUpperCase();
+        }
+        
+        // Update achievement description
+        const achievementDesc = certificatePreview.querySelector('.achievement-description');
+        if (achievementDesc) {
+          achievementDesc.textContent = cert.description;
+        }
+        
+        // Update date with proper formatting
+        const dateValue = certificatePreview.querySelector('.date-value');
+        if (dateValue) {
+          const date = new Date(cert.dateIssued);
+          dateValue.textContent = date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+          });
+        }
+        
+        // Update verification code
+        const codeValue = certificatePreview.querySelector('.code-value');
+        if (codeValue) {
+          codeValue.textContent = cert.verificationCode;
+        }
+        
+        // Update certificate type in the title
+        const certTitle = certificatePreview.querySelector('.certificate-title h2');
+        if (certTitle) {
+          const typeMap = {
+            'Academic': 'CERTIFICATE OF ACADEMIC EXCELLENCE',
+            'Participation': 'CERTIFICATE OF PARTICIPATION',
+            'Merit': 'CERTIFICATE OF MERIT',
+            'Digital Skills': 'CERTIFICATE OF DIGITAL ACHIEVEMENT',
+            'External': 'CERTIFICATE OF COMPLETION'
+          };
+          certTitle.textContent = typeMap[cert.type] || 'CERTIFICATE OF ACHIEVEMENT';
+        }
+        
+        // Add animation effect
+        certificatePreview.style.opacity = '0';
+        setTimeout(() => {
+          certificatePreview.style.transition = 'opacity 0.5s ease';
+          certificatePreview.style.opacity = '1';
+        }, 100);
       }
     }
 
@@ -774,15 +1363,69 @@
       // Form submissions
       document.getElementById('certRequestForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert('Certificate request submitted successfully!');
+        showToast('Certificate request submitted successfully!', 'success');
         bootstrap.Modal.getInstance(document.getElementById('requestCertModal')).hide();
       });
 
       document.getElementById('uploadCertForm').addEventListener('submit', function(e) {
         e.preventDefault();
-        alert('Certificate uploaded successfully!');
+        showToast('Certificate uploaded successfully!', 'success');
         bootstrap.Modal.getInstance(document.getElementById('uploadCertModal')).hide();
       });
+    }
+    
+    function filterByStatus(status) {
+      const cards = document.querySelectorAll('.cert-card');
+      
+      cards.forEach(card => {
+        const statusBadge = card.querySelector('.badge');
+        const statusText = statusBadge.textContent.toLowerCase().trim();
+        
+        if (status === 'all' || statusText.includes(status)) {
+          card.closest('.col-lg-6').style.display = 'block';
+        } else {
+          card.closest('.col-lg-6').style.display = 'none';
+        }
+      });
+    }
+    
+    function showToast(message, type = 'info') {
+      const toastContainer = document.getElementById('toastContainer') || createToastContainer();
+      
+      const toast = document.createElement('div');
+      toast.className = `toast align-items-center text-white bg-${type} border-0`;
+      toast.setAttribute('role', 'alert');
+      toast.setAttribute('aria-live', 'assertive');
+      toast.setAttribute('aria-atomic', 'true');
+      
+      toast.innerHTML = `
+        <div class="d-flex">
+          <div class="toast-body">
+            <i class="bi bi-${type === 'success' ? 'check-circle' : 'info-circle'} me-2"></i>
+            ${message}
+          </div>
+          <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+      `;
+      
+      toastContainer.appendChild(toast);
+      
+      const bsToast = new bootstrap.Toast(toast);
+      bsToast.show();
+      
+      // Remove toast after it's hidden
+      toast.addEventListener('hidden.bs.toast', () => {
+        toast.remove();
+      });
+    }
+    
+    function createToastContainer() {
+      const container = document.createElement('div');
+      container.id = 'toastContainer';
+      container.className = 'toast-container position-fixed top-0 end-0 p-3';
+      container.style.zIndex = '9999';
+      document.body.appendChild(container);
+      return container;
     }
 
     // Modal functions
@@ -808,15 +1451,140 @@
 
     // Action functions
     function downloadCertificate(format, certId) {
-      alert(`Downloading certificate in ${format.toUpperCase()} format...`);
+      const cert = certificates.find(c => c.id === certId) || certificates[0];
+      
+      if (format === 'pdf') {
+        downloadCertificateAsPDF(cert);
+      } else if (format === 'image') {
+        downloadCertificateAsImage(cert);
+      }
+    }
+    
+    function downloadCertificateAsPDF(cert) {
+      // Update certificate with current data
+      updateCertificatePreview(cert);
+      
+      setTimeout(() => {
+        const certificateElement = document.getElementById('certificatePreview');
+        
+        html2canvas(certificateElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: certificateElement.offsetWidth,
+          height: certificateElement.offsetHeight
+        }).then(canvas => {
+          const imgData = canvas.toDataURL('image/png');
+          const pdf = new jsPDF('landscape', 'mm', 'a4');
+          
+          const imgWidth = 297; // A4 width in mm
+          const imgHeight = (canvas.height * imgWidth) / canvas.width;
+          
+          pdf.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+          pdf.save(`certificate_${cert.id}_${new Date().getTime()}.pdf`);
+        });
+      }, 500);
+    }
+    
+    function downloadCertificateAsImage(cert) {
+      // Update certificate with current data
+      updateCertificatePreview(cert);
+      
+      setTimeout(() => {
+        const certificateElement = document.getElementById('certificatePreview');
+        
+        html2canvas(certificateElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: certificateElement.offsetWidth,
+          height: certificateElement.offsetHeight
+        }).then(canvas => {
+          const link = document.createElement('a');
+          link.download = `certificate_${cert.id}_${new Date().getTime()}.png`;
+          link.href = canvas.toDataURL();
+          link.click();
+        });
+      }, 500);
     }
 
     function printCertificate() {
-      window.print();
+      const cert = certificates.find(c => c.id === 1) || certificates[0];
+      updateCertificatePreview(cert);
+      
+      setTimeout(() => {
+        const certificateElement = document.getElementById('certificatePreview');
+        
+        html2canvas(certificateElement, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: '#ffffff',
+          width: certificateElement.offsetWidth,
+          height: certificateElement.offsetHeight
+        }).then(canvas => {
+          const printWindow = window.open('', '_blank');
+          printWindow.document.write('<html><head><title>Certificate Print</title></head><body><img src="' + canvas.toDataURL() + '" style="width:100%;max-width:800px;"></body></html>');
+          printWindow.document.close();
+          printWindow.focus();
+          setTimeout(() => printWindow.print(), 100);
+        });
+      }, 500);
     }
 
     function downloadSummary() {
-      alert('Downloading achievement summary...');
+      // Create a comprehensive summary PDF
+      const pdf = new jsPDF('portrait', 'mm', 'a4');
+      
+      // Add header
+      pdf.setFontSize(24);
+      pdf.setTextColor(40, 167, 69);
+      pdf.text('KAMANGA PRIMARY SCHOOL', 105, 30, { align: 'center' });
+      
+      pdf.setFontSize(14);
+      pdf.setTextColor(108, 117, 125);
+      pdf.text('Student Achievement Summary', 105, 45, { align: 'center' });
+      
+      // Add student info
+      pdf.setFontSize(12);
+      pdf.setTextColor(44, 62, 80);
+      pdf.text('Student: Alice Johnson', 20, 70);
+      pdf.text('Class: Grade 8', 20, 80);
+      pdf.text('Academic Year: 2024', 20, 90);
+      
+      // Add certificate list
+      pdf.setFontSize(14);
+      pdf.setTextColor(40, 167, 69);
+      pdf.text('Certificates Earned:', 20, 110);
+      
+      let yPosition = 125;
+      certificates.forEach((cert, index) => {
+        if (yPosition > 250) {
+          pdf.addPage();
+          yPosition = 20;
+        }
+        
+        pdf.setFontSize(12);
+        pdf.setTextColor(44, 62, 80);
+        pdf.text(`${index + 1}. ${cert.title}`, 25, yPosition);
+        
+        pdf.setFontSize(10);
+        pdf.setTextColor(108, 117, 125);
+        pdf.text(`   Issued: ${new Date(cert.dateIssued).toLocaleDateString()}`, 30, yPosition + 5);
+        pdf.text(`   Type: ${cert.type}`, 30, yPosition + 10);
+        
+        yPosition += 20;
+      });
+      
+      // Add footer
+      pdf.setFontSize(10);
+      pdf.setTextColor(108, 117, 125);
+      pdf.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 280);
+      pdf.text('Kamanga Primary School - Excellence in Education', 105, 280, { align: 'center' });
+      
+      pdf.save(`achievement_summary_${new Date().getTime()}.pdf`);
     }
 
     function copyShareLink() {
@@ -842,7 +1610,41 @@
     }
 
     function downloadWithQR() {
-      alert('Downloading certificate with embedded QR code...');
+      const cert = certificates.find(c => c.id === 1) || certificates[0];
+      
+      // Update certificate with current data
+      updateCertificatePreview(cert);
+      
+      setTimeout(() => {
+        const certificateElement = document.getElementById('certificatePreview');
+        
+        // Generate QR code for verification
+        const qrContainer = certificateElement.querySelector('.qr-code-placeholder');
+        if (qrContainer) {
+          QRCode.toCanvas(qrContainer, cert.verificationCode, {
+            width: 60,
+            height: 60,
+            margin: 2
+          }, function (error) {
+            if (error) console.error(error);
+            
+            // After QR code is generated, download the certificate
+            html2canvas(certificateElement, {
+              scale: 2,
+              useCORS: true,
+              allowTaint: true,
+              backgroundColor: '#ffffff',
+              width: certificateElement.offsetWidth,
+              height: certificateElement.offsetHeight
+            }).then(canvas => {
+              const link = document.createElement('a');
+              link.download = `certificate_with_qr_${cert.id}_${new Date().getTime()}.png`;
+              link.href = canvas.toDataURL();
+              link.click();
+            });
+          });
+        }
+      }, 500);
     }
   </script>
 </body>
